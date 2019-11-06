@@ -9,29 +9,12 @@ import jp.go.aist.rtm.rtcbuilder.generator.param.idl.ServiceClassParam;
 import jp.go.aist.rtm.rtcbuilder.util.RTCUtil;
 
 public class RTCUtilPy {
-	public static boolean checkDefault(String target, List<DataTypeParam> typeList) {
-		for(DataTypeParam type : typeList) {
-			if(type.isDefault()) {
-				if(target.trim().equals(type.getFullPath().trim())) {
-					if(0<type.getDefinedTypes().size()) {
-						if(type.getDefinedTypes().get(0).startsWith("Img")
-								||type.getDefinedTypes().get(0).startsWith("JARA_ARM")) {
-							continue;
-						}
-					}
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	public static List<String> checkDefaultModuile(List<IdlFileParam> targetFiles, List<DataTypeParam> typeList) {
 		List<String> result = new ArrayList<String>();
 		List<String> check = new ArrayList<String>();
 		check.add("RTC");
 		check.add("OpenRTM_aist");
-		
+
 		for(IdlFileParam target : targetFiles) {
 			if(RTCUtil.checkDefault(target.getIdlPath(), typeList) == false) continue;
 			if(target.isDataPort()) {

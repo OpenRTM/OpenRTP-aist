@@ -134,11 +134,11 @@ public class PythonGenerateManager extends GenerateManager {
 		}
 
 		result.add(generatePythonSource(contextMap));
-		
+
 		if(isStaticFSM) {
 			result.add(generatePythonFSM(contextMap));
 		}
-		
+
 		result.add(generateScript1604(contextMap));
 		result.add(generateScript1804(contextMap));
 		result.add(generateAppVeyorTemplate(contextMap));
@@ -189,7 +189,7 @@ public class PythonGenerateManager extends GenerateManager {
 		String infile = "python/fsm/Py_FSM.py.vsl";
 		return generate(infile, outfile, contextMap);
 	}
-	
+
 	// 1.0系 (ビルド環境)
 
 	public GeneratedResult generateIDLCompileBat(Map<String, Object> contextMap) {
@@ -231,19 +231,19 @@ public class PythonGenerateManager extends GenerateManager {
 		String infile = "python/Py_SVC_idl_example.py.vsl";
 		return generate(infile, outfile, contextMap);
 	}
-	
+
 	public GeneratedResult generateScript1604(Map<String, Object> contextMap) {
 		String outfile = "scripts/ubuntu_1604/Dockerfile";
 		String infile = "python/scripts/Dockerfile_ubuntu_1604.vsl";
 		return generate(infile, outfile, contextMap);
 	}
-	
+
 	public GeneratedResult generateScript1804(Map<String, Object> contextMap) {
 		String outfile = "scripts/ubuntu_1804/Dockerfile";
 		String infile = "python/scripts/Dockerfile_ubuntu_1804.vsl";
 		return generate(infile, outfile, contextMap);
 	}
-	
+
 	public GeneratedResult generateAppVeyorTemplate(Map<String, Object> contextMap) {
 		String outfile = ".appveyor.yml";
 		String infile = "python/appveyor.vsl";
