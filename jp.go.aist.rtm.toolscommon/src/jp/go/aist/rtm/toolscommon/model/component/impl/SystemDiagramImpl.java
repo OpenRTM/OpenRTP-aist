@@ -840,6 +840,8 @@ public class SystemDiagramImpl extends ModelElementImpl implements SystemDiagram
 		}
 	}
 
+	private MessageDialog msgDialog = null;
+	
 	void synchronizeRemote() {
 		if (getParentSystemDiagram() == null) {
 			try {
@@ -855,10 +857,15 @@ public class SystemDiagramImpl extends ModelElementImpl implements SystemDiagram
 							Shell shell = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getShell();
 							shell.getDisplay().asyncExec(new Runnable() {
 							    public void run() {
-						            MessageDialog.openError(shell,
-						            		Messages.getString("IPCaution.title"),
-						            		Messages.getString("IPCaution.message01") + " (" + oldAddress + " -> " + currentIP + ")" + System.lineSeparator()
-						            		+ Messages.getString("IPCaution.message02"));
+							    	if(msgDialog != null) {
+							    		msgDialog.close();
+							    	}
+							    	String title = Messages.getString("IPCaution.title");
+							    	String message = Messages.getString("IPCaution.message01") + " (" + oldAddress + " -> " + currentIP + ")" + System.lineSeparator()
+				            							+ Messages.getString("IPCaution.message02");
+							    	String[] buttonLabels = new String[] { "OK" };
+							    	msgDialog = new MessageDialog(shell, title, null, message, MessageDialog.ERROR, buttonLabels, 0);
+							    	msgDialog.open();
 							    }
 							});
 						}
@@ -866,7 +873,7 @@ public class SystemDiagramImpl extends ModelElementImpl implements SystemDiagram
 				}
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
-			}
+			}	
 			
 			for (Component component : getUnmodifiedComponents()) {
 				if (component instanceof CorbaComponentImpl) {
