@@ -1,0 +1,87 @@
+﻿<!--
+# -*- Buildfile -*-
+# @file  build_ProcessingExample.xml
+# @brief RTComponent makefile for "ProcessingExample component"
+# @date  $Date$
+#
+# $Id$
+ -->
+<project name="ProcessingExample" default="generatedoc">
+	<property name="source" value="src" />
+	<property name="dest" value="bin" />
+	<property name="doc" value="doc" />
+	<property name="testsource" value="test/src" />
+	<property environment="env" />
+
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<target name="setWindows" if="isWindows">
+		<property name="idlj.path" value="${env.JAVA_HOME}/bin/idlj" />
+		<property name="rtm.idl.path" value="${env.RTM_IDL_DIR}" />
+	</target>
+
+	<target name="setUnix" if="isUnix">
+		<property name="idlj.path" value="${java.home}/../bin/idlj" />
+		<property name="rtm.idl.path" value="${env.RTM_IDL_DIR2}" />
+	</target>
+
+	<target name="mkdir">
+		<mkdir dir="${dest}" />
+		<mkdir dir="src/temp" />
+	</target>
+
+	<target name="idlcompile"  depends="mkdir, setWindows, setUnix">
+		<echo message="idlj.path : ${idlj.path}"/>
+		<exec executable="${idlj.path}">
+			<arg line="-td 'src' -i '${rtm.idl.path}' -fall 'idl/test.idl'"/>
+		</exec>
+		<native2ascii src="src/temp" dest="src"/>
+		<delete dir="src/temp"/>
+	</target>
+
+	<target name="compile" depends="idlcompile">
+		<javac includeantruntime="false" srcdir="${source}/Sample" destdir="${dest}">
+			<classpath>
+				<fileset dir="${env.RTM_JAVA_ROOT}/jar">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="generatejar" depends="compile">
+		<delete file="Sample.jar" />
+		<jar destfile="Sample.jar"
+		basedir="${source}/Sample"
+		excludes="" />
+	</target>
+
+	<target name="generatedoc" depends="generatejar">
+		<javadoc 
+                        Locale="ja_JP"
+                        destdir="${doc}"
+                        docencoding="UTF-8"
+			author="true" doctitle="ProcessingExample" 
+			nodeprecated="false" nodeprecatedlist="false" 
+                        noindex="false" nonavbar="false" notree="false" 
+			package="yes" splitindex="true" 
+                        use="true" version="true" charset="UTF-8" 
+                        >
+			<classpath>
+				<fileset dir="${env.RTM_JAVA_ROOT}/jar">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+			<sourcefiles>
+				<fileset dir="${source}">
+					<include name="**/*.pde"/>
+				</fileset>
+                	</sourcefiles>
+                </javadoc>
+	</target>
+</project>

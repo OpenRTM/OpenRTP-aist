@@ -1,0 +1,733 @@
+// -*- Java -*-
+// <rtc-template block="description">
+/*!
+ * @file  ${rtcParam.name}Impl.java
+ * @brief ${rtcParam.description}
+#set( $Date$ = "dummy" )
+ * @date  \$Date$
+#if( ${rtcParam.docCreator.length()} > 0 )
+ *
+ * @author ${tmpltHelper.convertAuthorDoc(${rtcParam.docCreator})}
+#end
+#if( ${rtcParam.docLicense.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docLicense})}
+#end
+ *
+#set( $Id$ = "dummy" )
+ * \$Id$
+ */
+// </rtc-template>
+
+#if( ${rtcParam.inports.size()} > 0 || ${rtcParam.outports.size()} > 0 )
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+#end
+
+#foreach($type in ${javaConv.getPortTypes(${rtcParam})})  
+${javaConv.getDataportPackageName(${type})}
+#end
+import jp.go.aist.rtm.RTC.DataFlowComponentBase;
+import jp.go.aist.rtm.RTC.Manager;
+#if( ${tmpltHelper.checkFSM(${rtcParam})} )
+import jp.go.aist.rtm.RTC.jfsm.Event;
+import jp.go.aist.rtm.RTC.jfsm.Machine;
+import jp.go.aist.rtm.RTC.jfsm.machine.EventBase;
+import jp.go.aist.rtm.RTC.port.EventInPort;
+#end
+#if( ${rtcParam.inports.size()} > 0 )
+import jp.go.aist.rtm.RTC.port.InPort;
+#end
+#if( ${rtcParam.outports.size()} > 0 )
+import jp.go.aist.rtm.RTC.port.OutPort;
+#end
+#if( ${rtcParam.inports.size()} > 0 || ${rtcParam.outports.size()} > 0 || ${tmpltHelper.checkFSM(${rtcParam})} )
+import jp.go.aist.rtm.RTC.util.DataRef;
+#end
+#if( ${rtcParam.originalConsumerIdls.size()} > 0 )
+import jp.go.aist.rtm.RTC.port.CorbaConsumer;
+#end
+#if( ${rtcParam.originalProviderIdls.size()} > 0 || ${rtcParam.originalConsumerIdls.size()} > 0 )
+import jp.go.aist.rtm.RTC.port.CorbaPort;
+#end
+#if( ${rtcParam.originalProviderIdls.size()} > 0 )
+import org.omg.PortableServer.POAPackage.ObjectNotActive;
+import org.omg.PortableServer.POAPackage.ServantAlreadyActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
+#end
+#if( ${rtcParam.configParams.size()} > 0 )
+#foreach($type in ${javaConv.getParamTypes(${rtcParam})})  
+import jp.go.aist.rtm.RTC.util.${type};
+#end
+#end
+#if( ${javaConv.useReturnCode(${rtcParam})} )
+import RTC.ReturnCode_t;
+#end
+#if(${rtcParam.servicePorts.size()}>0)
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+#foreach($serviceInterface in ${servicePort.servicePortInterfaces})
+#if(${serviceInterface.index}==1)
+#if(${tmpltHelper.isModule(${serviceInterface.interfaceType})})import ${tmpltHelper.convFormat(${serviceInterface.interfaceType})};
+#end#end#end#end#end#end
+#if( ${tmpltHelper.existFSMEvent(${fsmParam})})
+import jp.go.aist.rtm.RTC.port.ConnectorListener;
+import jp.go.aist.rtm.RTC.port.ConnectorListenerType;
+import jp.go.aist.rtm.RTC.connectorListener.ReturnCode;
+import jp.go.aist.rtm.RTC.port.ConnectorBase;
+#end
+#if( ${tmpltHelper.existFSMEvent(${fsmParam})})
+#foreach($dataType in ${tmpltHelperJava.getEventDataTypes(${fsmParam})})
+${dataType}
+#end
+#end
+
+// <rtc-template block="component_description">
+/**
+ * ${rtcParam.name}Impl
+ * <p>
+ * ${rtcParam.description}
+#if( ${rtcParam.docDescription.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docDescription})}
+#end
+#if( ${rtcParam.docInOut.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docInOut})}
+#end
+#if( ${rtcParam.docAlgorithm.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docAlgorithm})}
+#end
+#if( ${rtcParam.docReference.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docReference})}
+#end
+ *
+ */
+// </rtc-template>
+public class ${rtcParam.name}Impl extends DataFlowComponentBase {
+
+  /**
+   * constructor
+   * @param manager Manager Object
+   */
+    public ${rtcParam.name}Impl(Manager manager) {  
+        super(manager);
+        // <rtc-template block="initializer">
+#foreach($port in ${rtcParam.inports})  
+        m_${port.tmplVarName}_val = new ${javaConv.getDataTypeName(${port.type})}();
+        initializeParam(m_${port.tmplVarName}_val);
+        m_${port.tmplVarName} = new DataRef<${javaConv.getDataTypeName(${port.type})}>(m_${port.tmplVarName}_val);
+        m_${port.name}In = new InPort<${javaConv.getDataTypeName(${port.type})}>("${port.name}", m_${port.tmplVarName});
+#end
+#foreach($port in ${rtcParam.outports})  
+        m_${port.tmplVarName}_val = new ${javaConv.getDataTypeName(${port.type})}();
+        initializeParam(m_${port.tmplVarName}_val);
+        m_${port.tmplVarName} = new DataRef<${javaConv.getDataTypeName(${port.type})}>(m_${port.tmplVarName}_val);
+        m_${port.name}Out = new OutPort<${javaConv.getDataTypeName(${port.type})}>("${port.name}", m_${port.tmplVarName});
+#end
+#if(${rtcParam.servicePorts.size()}>0)
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+        m_${servicePort.name}Port = new CorbaPort("${servicePort.name}");
+#end#end#end
+#if( ${tmpltHelper.checkFSM(${rtcParam})} )
+        m_fsm = new Machine<>(${tmpltHelper.getTopFSMName(${rtcParam})}.class, ${rtcParam.name}Protocol.class, null);
+        m_${rtcParam.getEventport().tmplVarName} = new DataRef<Machine<${tmpltHelper.getTopFSMName(${rtcParam})}, ${rtcParam.name}Protocol>>(m_fsm);
+        m_${rtcParam.getEventport().name}In = new EventInPort<Machine<${tmpltHelper.getTopFSMName(${rtcParam})}, ${rtcParam.name}Protocol>>("${rtcParam.getEventport().name}", m_${rtcParam.getEventport().tmplVarName});
+#end
+        // </rtc-template>
+
+    }
+
+    /*#if(${rtcParam.configParams.size()}==0)*#else!#end
+
+#if(${rtcParam.getDocActionOverView(0).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(0)})}
+#end
+     *
+     * The initialize action (on CREATED-&gt;ALIVE transition)
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(0).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(0)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(0).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(0)})}
+#end
+     * 
+     */
+#if( ${rtcParam.configParams.size()}>0 || ${rtcParam.inports.size()}>0 || ${rtcParam.outports.size()}>0 || ${rtcParam.servicePorts.size()}>0 || !${rtcParam.IsNotImplemented(0)} )
+    @Override
+    protected ReturnCode_t onInitialize() {
+        // Registration: InPort/OutPort/Service
+        // <rtc-template block="registration">
+#if( ${rtcParam.inports.size()} > 0 )
+        // Set InPort buffers
+#foreach($port in ${rtcParam.inports})  
+        addInPort("${port.name}", m_${port.name}In);
+#end
+#end
+#if( ${rtcParam.outports.size()} > 0 )
+        
+        // Set OutPort buffer
+#foreach($port in ${rtcParam.outports})  
+        addOutPort("${port.name}", m_${port.name}Out);
+#end
+#end
+#if( ${rtcParam.providerIdlPathes.size()} > 0 )
+        
+        // Set service provider to Ports
+#if(${rtcParam.servicePorts.size()}>0)
+        try {
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+#foreach($serviceInterface in ${servicePort.servicePortInterfaces})
+#if(${serviceInterface.index}==0)
+            m_${servicePort.name}Port.registerProvider("${serviceInterface.name}", "${tmpltHelper.convFormat(${serviceInterface.interfaceType})}", m_${serviceInterface.tmplVarName});
+#end#end#end#end
+        } catch (ServantAlreadyActive e) {
+            e.printStackTrace();
+        } catch (WrongPolicy e) {
+            e.printStackTrace();
+        } catch (ObjectNotActive e) {
+            e.printStackTrace();
+        }
+#end#end
+#if(${rtcParam.servicePorts.size()}>0)
+        
+        // Set service consumers to Ports
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+#foreach($serviceInterface in ${servicePort.servicePortInterfaces})
+#if(${serviceInterface.index}==1)
+        m_${servicePort.name}Port.registerConsumer("${serviceInterface.name}", "${tmpltHelper.convFormat(${serviceInterface.interfaceType})}", m_${serviceInterface.tmplVarName}Base);
+#end#end#end#end#end
+#if(${rtcParam.servicePorts.size()}>0)
+        
+        // Set CORBA Service Ports
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+        addPort(m_${servicePort.name}Port);
+#end#end#end
+        // </rtc-template>
+#foreach($configParam in ${rtcParam.configParams})  
+        bindParameter("${configParam.name}", m_${configParam.tmplVarName}, "${configParam.defaultVal}");
+#end
+#if(${tmpltHelper.checkDetailContent(0,${rtcParam})})${rtcParam.getDetailContent(0)}
+#end
+#if( ${tmpltHelper.checkFSM(${rtcParam})} )
+        addInPort("${rtcParam.getEventport().name}", m_${rtcParam.getEventport().name}In);
+        
+#foreach($eachTrans in ${fsmParam.getAllTransListNoDupl()})
+#if( ${eachTrans.event.length()} > 0 )
+#if( ${eachTrans.existEventParam()} )
+#if( ${eachTrans.existDataType()} )
+        m_${rtcParam.getEventport().name}In.bindEvent("${eachTrans.event}", "${eachTrans.event}", new ${javaConv.getDataTypeName(${eachTrans.dataType})}() );
+#else
+        m_${rtcParam.getEventport().name}In.bindEvent("${eachTrans.event}", "${eachTrans.event}");
+#end
+#end
+#end
+#end
+#end
+
+        return super.onInitialize();
+    }
+#else
+//    @Override
+//    protected ReturnCode_t onInitialize() {
+        // Registration: InPort/OutPort/Service
+        // <rtc-template block="registration">
+        // </rtc-template>
+//        return super.onInitialize();
+//    }
+#end
+
+    /**
+#if(${rtcParam.getDocActionOverView(1).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(1)})}
+#end
+     *
+     * The finalize action (on ALIVE-&gt;END transition)
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(1).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(1)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(1).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(1)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(1)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(1)})//#end    protected ReturnCode_t onFinalize() {
+#if(${tmpltHelper.checkDetailContent(1,${rtcParam})})${rtcParam.getDetailContent(1)}
+#end
+#if(${rtcParam.IsNotImplemented(1)})//#end        return super.onFinalize();
+#if(${rtcParam.IsNotImplemented(1)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(2).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(2)})}
+#end
+     *
+     * The startup action when ExecutionContext startup
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(2).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(2)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(2).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(2)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(2)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(2)})//#end    protected ReturnCode_t onStartup(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(2,${rtcParam})})${rtcParam.getDetailContent(2)}
+#end
+#if(${rtcParam.IsNotImplemented(2)})//#end        return super.onStartup(ec_id);
+#if(${rtcParam.IsNotImplemented(2)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(3).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(3)})}
+#end
+     *
+     * The shutdown action when ExecutionContext stop
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(3).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(3)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(3).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(3)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(3)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(3)})//#end    protected ReturnCode_t onShutdown(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(3,${rtcParam})})${rtcParam.getDetailContent(3)}
+#end
+#if(${rtcParam.IsNotImplemented(3)})//#end        return super.onShutdown(ec_id);
+#if(${rtcParam.IsNotImplemented(3)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(4).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(4)})}
+#end
+     *
+     * The activated action (Active state entry action)
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(4).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(4)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(4).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(4)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(4)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(4)})//#end    protected ReturnCode_t onActivated(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(4,${rtcParam})})${rtcParam.getDetailContent(4)}
+#end
+#if(${rtcParam.IsNotImplemented(4)})//#end        return super.onActivated(ec_id);
+#if(${rtcParam.IsNotImplemented(4)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(5).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(5)})}
+#end
+     *
+     * The deactivated action (Active state exit action)
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(5).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(5)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(5).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(5)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(5)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(5)})//#end    protected ReturnCode_t onDeactivated(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(5,${rtcParam})})${rtcParam.getDetailContent(5)}
+#end
+#if(${rtcParam.IsNotImplemented(5)})//#end        return super.onDeactivated(ec_id);
+#if(${rtcParam.IsNotImplemented(5)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(9).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(9)})}
+#end
+     *
+     * The execution action that is invoked periodically
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(9).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(9)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(9).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(9)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(9)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(9)})//#end    protected ReturnCode_t onExecute(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(9,${rtcParam})})${rtcParam.getDetailContent(9)}
+#end
+#if(${rtcParam.IsNotImplemented(9)})//#end        return super.onExecute(ec_id);
+#if(${rtcParam.IsNotImplemented(9)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(6).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(6)})}
+#end
+     *
+     * The aborting action when main logic error occurred.
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(6).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(6)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(6).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(6)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(6)})//#end  @Override
+#if(${rtcParam.IsNotImplemented(6)})//#end  public ReturnCode_t onAborting(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(6,${rtcParam})})${rtcParam.getDetailContent(6)}
+#end
+#if(${rtcParam.IsNotImplemented(6)})//#end      return super.onAborting(ec_id);
+#if(${rtcParam.IsNotImplemented(6)})//#end  }
+
+    /**
+#if(${rtcParam.getDocActionOverView(7).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(7)})}
+#end
+     *
+     * The error action in ERROR state
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(7).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(7)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(7).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(7)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(7)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(7)})//#end    public ReturnCode_t onError(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(7,${rtcParam})})${rtcParam.getDetailContent(7)}
+#end
+#if(${rtcParam.IsNotImplemented(7)})//#end        return super.onError(ec_id);
+#if(${rtcParam.IsNotImplemented(7)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(8).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(8)})}
+#end
+     *
+     * The reset action that is invoked resetting
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(8).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(8)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(8).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(8)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(8)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(8)})//#end    protected ReturnCode_t onReset(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(8,${rtcParam})})${rtcParam.getDetailContent(8)}
+#end
+#if(${rtcParam.IsNotImplemented(8)})//#end        return super.onReset(ec_id);
+#if(${rtcParam.IsNotImplemented(8)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(10).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(10)})}
+#end
+     *
+     * The state update action that is invoked after onExecute() action
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(10).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(10)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(10).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(10)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(10)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(10)})//#end    protected ReturnCode_t onStateUpdate(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(10,${rtcParam})})${rtcParam.getDetailContent(10)}
+#end
+#if(${rtcParam.IsNotImplemented(10)})//#end        return super.onStateUpdate(ec_id);
+#if(${rtcParam.IsNotImplemented(10)})//#end    }
+
+    /**
+#if(${rtcParam.getDocActionOverView(11).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(11)})}
+#end
+     *
+     * The action that is invoked when execution context's rate is changed
+     *
+     * @param ec_id target ExecutionContext Id
+     *
+     * @return RTC::ReturnCode_t
+     * 
+#if(${rtcParam.getDocActionPreCondition(11).length()}>0)     * @pre ${tmpltHelperJava.convertPreDocJava(${rtcParam.getDocActionPreCondition(11)})}
+#end
+#if(${rtcParam.getDocActionPostCondition(11).length()}>0)     * @post ${tmpltHelperJava.convertPostDocJava(${rtcParam.getDocActionPostCondition(11)})}
+#end
+     * 
+     */
+#if(${rtcParam.IsNotImplemented(11)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(11)})//#end    protected ReturnCode_t onRateChanged(int ec_id) {
+#if(${tmpltHelper.checkDetailContent(11,${rtcParam})})${rtcParam.getDetailContent(11)}
+#end
+#if(${rtcParam.IsNotImplemented(11)})//#end        return super.onRateChanged(ec_id);
+#if(${rtcParam.IsNotImplemented(11)})//#end    }
+//
+    /**
+     */
+#if( ${rtcParam.configParams.size()} > 0 )
+    // Configuration variable declaration
+    // <rtc-template block="config_declare">
+#foreach($configParam in ${rtcParam.configParams})  
+    /*!
+     * ${tmpltHelperJava.convertDescDocJava(${configParam.docDescription})}
+     * - Name: ${configParam.docDataName} ${configParam.tmplVarName}
+     * - DefaultValue: ${configParam.defaultVal}
+#if(${configParam.docUnit.length()}>0)     * - Unit: ${tmpltHelperJava.convertUnitDocJava(${configParam.docUnit})}
+#end
+#if(${configParam.docRange.length()}>0)     * - Range: ${tmpltHelperJava.convertRangeDocJava(${configParam.docRange})}
+#end
+#if(${configParam.docConstraint.length()}>0)     * - Constraint: ${tmpltHelperJava.convertConstraintDocJava(${configParam.docConstraint})}
+#end
+     */
+    protected ${javaConv.convJava2ParamHolder(${configParam.type},true)} m_${configParam.tmplVarName} = new ${javaConv.convJava2ParamHolder(${configParam.type},true)}();
+#end
+    // </rtc-template>
+
+#end
+
+    /**
+     */
+    // DataInPort declaration
+    // <rtc-template block="inport_declare">
+#foreach($port in ${rtcParam.inports})  
+    protected ${javaConv.getDataTypeName(${port.type})} m_${port.tmplVarName}_val;
+    protected DataRef<${javaConv.getDataTypeName(${port.type})}> m_${port.tmplVarName};
+    /*!
+#if(${port.docDescription.length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${port.docDescription})}
+#end
+#if(${port.docType.length()}>0)     * - Type: ${tmpltHelperJava.convertTypeDocJava(${port.docType})}
+#end
+#if(${port.docNum.length()}>0)     * - Number: ${tmpltHelperJava.convertNumberDocJava(${port.docNum})}
+#end
+#if(${port.docSemantics.length()}>0)     * - Semantics: ${tmpltHelperJava.convertSemanticsDocJava(${port.docSemantics})}
+#end
+#if(${port.docUnit.length()}>0)     * - Unit: ${tmpltHelperJava.convertTypeDocJava(${port.docUnit})}
+#end
+#if(${port.docOccurrence.length()}>0)     * - Frequency: ${tmpltHelperJava.convertFrequencyDocJava(${port.docOccurrence})}
+#end
+#if(${port.docOperation.length()}>0)     * - Operation Cycle: ${tmpltHelperJava.convertCycleDocJava(${port.docOperation})}
+#end
+     */
+    protected InPort<${javaConv.getDataTypeName(${port.type})}> m_${port.name}In;
+
+#end
+#if( ${tmpltHelper.checkFSM(${rtcParam})} )
+    protected Machine<${tmpltHelper.getTopFSMName(${rtcParam})}, ${rtcParam.name}Protocol> m_fsm;
+    protected DataRef<Machine<${tmpltHelper.getTopFSMName(${rtcParam})}, ${rtcParam.name}Protocol>> m_${rtcParam.getEventport().tmplVarName};
+    /*!
+     */
+    protected EventInPort<Machine<${tmpltHelper.getTopFSMName(${rtcParam})}, ${rtcParam.name}Protocol>> m_${rtcParam.getEventport().name}In;
+#end
+    
+    // </rtc-template>
+
+    // DataOutPort declaration
+    // <rtc-template block="outport_declare">
+#foreach($port in ${rtcParam.outports})  
+    protected ${javaConv.getDataTypeName(${port.type})} m_${port.tmplVarName}_val;
+    protected DataRef<${javaConv.getDataTypeName(${port.type})}> m_${port.tmplVarName};
+    /*!
+#if(${port.docDescription.length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${port.docDescription})}
+#end
+#if(${port.docType.length()}>0)     * - Type: ${tmpltHelperJava.convertTypeDocJava(${port.docType})}
+#end
+#if(${port.docNum.length()}>0)     * - Number: ${tmpltHelperJava.convertNumberDocJava(${port.docNum})}
+#end
+#if(${port.docSemantics.length()}>0)     * - Semantics: ${tmpltHelperJava.convertSemanticsDocJava(${port.docSemantics})}
+#end
+#if(${port.docUnit.length()}>0)     * - Unit: ${tmpltHelperJava.convertTypeDocJava(${port.docUnit})}
+#end
+#if(${port.docOccurrence.length()}>0)     * - Frequency: ${tmpltHelperJava.convertFrequencyDocJava(${port.docOccurrence})}
+#end
+#if(${port.docOperation.length()}>0)     * - Operation Cycle: ${tmpltHelperJava.convertCycleDocJava(${port.docOperation})}
+#end
+     */
+    protected OutPort<${javaConv.getDataTypeName(${port.type})}> m_${port.name}Out;
+
+#end
+    
+    // </rtc-template>
+
+    // CORBA Port declaration
+    // <rtc-template block="corbaport_declare">
+#if(${rtcParam.servicePorts.size()}>0)
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+    /*!
+#if(${servicePort.docDescription.length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${servicePort.docDescription})}
+#end
+#if(${servicePort.docIfDescription.length()}>0)     * Interface: ${tmpltHelperJava.convertInterfaceDocJava(${servicePort.docIfDescription})}
+#end
+     */
+    protected CorbaPort m_${servicePort.name}Port;
+#end#end#end
+    
+    // </rtc-template>
+
+    // Service declaration
+    // <rtc-template block="service_declare">
+#if(${rtcParam.servicePorts.size()}>0)
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+#foreach($serviceInterface in ${servicePort.servicePortInterfaces})
+#if(${serviceInterface.index}==0)
+    /*!
+#if(${serviceInterface.docDescription.length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${serviceInterface.docDescription})}
+#end
+#if(${serviceInterface.docArgument.length()}>0)     * - Argument:      ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docArgument})}
+#end
+#if(${serviceInterface.docReturn.length()}>0)     * - Return Value:  ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docReturn})}
+#end
+#if(${serviceInterface.docException.length()}>0)     * - Exception:     ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docException})}
+#end
+#if(${serviceInterface.docPreCondition.length()}>0)     * - PreCondition:  ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docPreCondition})}
+#end
+#if(${serviceInterface.docPostCondition.length()}>0)     * - PostCondition: ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docPostCondition})}
+#end
+     */
+    protected ${serviceInterface.interfaceRawType}${tmpltHelper.serviceImplSuffix} m_${serviceInterface.tmplVarName} = new ${serviceInterface.interfaceRawType}${tmpltHelper.serviceImplSuffix}();
+#end#end#end#end#end
+    
+    // </rtc-template>
+
+    // Consumer declaration
+    // <rtc-template block="consumer_declare">
+#if(${rtcParam.servicePorts.size()}>0)
+#foreach($servicePort in ${rtcParam.servicePorts})
+#if(${servicePort.servicePortInterfaces.size()}>0)
+#foreach($serviceInterface in ${servicePort.servicePortInterfaces})
+#if(${serviceInterface.index}==1)
+    protected CorbaConsumer<${serviceInterface.interfaceRawType}> m_${serviceInterface.tmplVarName}Base = new CorbaConsumer<${serviceInterface.interfaceRawType}>(${serviceInterface.interfaceRawType}.class);
+    /*!
+#if(${serviceInterface.docDescription.length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${serviceInterface.docDescription})}
+#end
+#if(${serviceInterface.docArgument.length()}>0)     * - Argument:      ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docArgument})}
+#end
+#if(${serviceInterface.docReturn.length()}>0)     * - Return Value:  ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docReturn})}
+#end
+#if(${serviceInterface.docException.length()}>0)     * - Exception:     ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docException})}
+#end
+#if(${serviceInterface.docPreCondition.length()}>0)     * - PreCondition:  ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docPreCondition})}
+#end
+#if(${serviceInterface.docPostCondition.length()}>0)     * - PostCondition: ${tmpltHelperJava.convertInterfaceDetailDocJava(${serviceInterface.docPostCondition})}
+#end
+     */
+    protected ${serviceInterface.interfaceRawType} m_${serviceInterface.tmplVarName};
+#end#end#end#end#end
+    
+    // </rtc-template>
+
+#foreach($privateAttribute in ${rtcParam.privateAttributes})
+  ${privateAttribute}
+#end
+#foreach($privateOperation in ${rtcParam.privateOperations})
+  ${privateOperation}
+#end
+#foreach($protectedAttribute in ${rtcParam.protectedAttributes})
+  ${protectedAttribute}
+#end
+#foreach($protectedOperation in ${rtcParam.protectedOperations})
+  ${protectedOperation}
+#end
+#foreach($publicAttribute in ${rtcParam.publicAttributes})
+  ${publicAttribute}
+#end
+#foreach($publicOperation in ${rtcParam.publicOperations})
+  ${publicOperation}
+#end
+#if(${tmpltHelper.checkContents(${rtcParam.publicOpeSource})})${rtcParam.publicOpeSource}
+#end
+#if(${tmpltHelper.checkContents(${rtcParam.protectedOpeSource})})${rtcParam.protectedOpeSource}
+#end
+#if(${tmpltHelper.checkContents(${rtcParam.privateOpeSource})})${rtcParam.privateOpeSource}
+#end
+
+#if( ${rtcParam.inports.size()} > 0 || ${rtcParam.outports.size()} > 0 )
+    private void initializeParam(Object target) {
+        Class<?> targetClass = target.getClass();
+        ClassLoader loader = target.getClass().getClassLoader();
+        //
+        Field[] fields = targetClass.getFields();
+        for(Field field : fields) {
+            if(field.getType().isPrimitive()) continue;
+            
+            try {
+                if(field.getType().isArray()) {
+                    Object arrayValue = null;
+                    Class<?> clazz = null;
+                    if(field.getType().getComponentType().isPrimitive()) {
+                        clazz = field.getType().getComponentType();
+                    } else {
+                        clazz = loader.loadClass(field.getType().getComponentType().getName());
+                    }
+                    arrayValue = Array.newInstance(clazz, 0);
+                    field.set(target, arrayValue);
+                    
+                } else {
+                    Constructor<?>[] constList = field.getType().getConstructors();
+                    if(constList.length==0) {
+                        Method[] methodList = field.getType().getMethods();
+                        for(Method method : methodList) {
+                            if(method.getName().equals("from_int")==false) continue;
+                            Object objFld = method.invoke(target, new Object[]{ new Integer(0) });
+                            field.set(target, objFld);
+                            break;
+                        }
+                        
+                    } else {
+                        Class<?> classFld = Class.forName(field.getType().getName(), true, loader);
+                        Object objFld = classFld.newInstance();
+                        initializeParam(objFld);
+                        field.set(target, objFld);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+#end
+}

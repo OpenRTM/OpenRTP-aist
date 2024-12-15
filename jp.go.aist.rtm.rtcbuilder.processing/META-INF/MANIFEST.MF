@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 20.0-b12 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: jp.go.aist.rtm.rtcbuilder.processing;singleton:=true
+Bundle-Version: 2.0.0
+Bundle-Activator: jp.go.aist.rtm.rtcbuilder.processing.RtcBuilderProcessingPlugin
+Bundle-Localization: plugin
+Require-Bundle: jp.go.aist.rtm.rtcbuilder,
+ org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: %providerName
+Export-Package: jp.go.aist.rtm.rtcbuilder.processing.manager,
+ jp.go.aist.rtm.rtcbuilder.processing.template.cmake,
+ jp.go.aist.rtm.rtcbuilder.processing.template.processing,
+ jp.go.aist.rtm.rtcbuilder.processing.ui.Perspective,
+ jp.go.aist.rtm.rtcbuilder.processing
+Eclipse-BuddyPolicy: registered
+Eclipse-RegisterBuddy: jp.go.aist.rtm.rtcbuilder
+Built-By: isao-_000
+Built-Date: 2015/06/19 07:41:16
+

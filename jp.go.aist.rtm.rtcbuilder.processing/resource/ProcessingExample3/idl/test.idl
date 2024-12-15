@@ -1,0 +1,10 @@
+#include "BasicDataType.idl"
+
+module Sample {
+    struct SampleDataType
+    {
+        RTC::Time tm;
+        double data1;
+        short data2;
+    };
+};

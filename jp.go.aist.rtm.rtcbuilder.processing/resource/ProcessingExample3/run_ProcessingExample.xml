@@ -1,0 +1,25 @@
+<!--
+# -*- Buildfile -*-
+# @file  run_ProcessingExample.xml
+# @brief Execute RTComponent for "ProcessingExample component" 
+# @date  $Date$
+#
+# $Id$
+ -->
+<project name="ProcessingExample" default="exec">
+    <property environment="env" />
+    <property name="option" value="" />
+
+    <target name="exec" >
+        <java classname="ProcessingExampleComp">
+            <classpath>
+                <pathelement location="bin"/>
+                <pathelement location="."/>
+                <fileset dir="${env.RTM_JAVA_ROOT}/jar">
+                    <include name="*.jar"/>
+                </fileset>
+            </classpath>
+            <arg line="${option}" />
+        </java>
+    </target>
+</project> 
