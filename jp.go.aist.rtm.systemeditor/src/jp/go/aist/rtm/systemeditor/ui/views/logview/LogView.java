@@ -421,6 +421,7 @@ public class LogView extends ViewPart {
 			case 0:
 				return entry.getTime();
 			case 1:
+				if(entry.getLevel() == null) return null;
 				return entry.getLevel().toString();
 			case 2:
 				return entry.getManager();

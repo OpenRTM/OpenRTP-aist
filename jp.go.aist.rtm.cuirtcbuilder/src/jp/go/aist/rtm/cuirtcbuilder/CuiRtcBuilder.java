@@ -209,7 +209,8 @@ public class CuiRtcBuilder {
 		}
 		String[] defaultTypeList = new String[0];
 		List<String> dataTypes = new ArrayList<String>();
-		IDLParamConverter.extractTypeDef(sourceContents, dataTypes);
+		StringBuilder builder = new StringBuilder();
+		IDLParamConverter.extractTypeDef(sourceContents, dataTypes, builder);
 		defaultTypeList = new String[dataTypes.size()];
 		defaultTypeList = dataTypes.toArray(defaultTypeList);
 		//

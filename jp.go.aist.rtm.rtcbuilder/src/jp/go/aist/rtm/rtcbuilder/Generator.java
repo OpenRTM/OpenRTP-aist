@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +60,9 @@ import jp.go.aist.rtm.rtcbuilder.manager.CXXGenerateManager;
 import jp.go.aist.rtm.rtcbuilder.manager.CommonGenerateManager;
 import jp.go.aist.rtm.rtcbuilder.manager.GenerateManager;
 import jp.go.aist.rtm.rtcbuilder.nl.Messages;
+import jp.go.aist.rtm.rtcbuilder.ui.compare.GeneratedCautionDialog;
 import jp.go.aist.rtm.rtcbuilder.ui.editors.IMessageConstants;
+import jp.go.aist.rtm.rtcbuilder.ui.preference.ComponentPreferenceManager;
 import jp.go.aist.rtm.rtcbuilder.util.FileUtil;
 import jp.go.aist.rtm.rtcbuilder.util.RTCUtil;
 import jp.go.aist.rtm.rtcbuilder.util.StringUtil;
@@ -646,7 +647,7 @@ public class Generator {
 			"yyyyMMddHHmmss");
 
 	private void writeFile(List<GeneratedResult> generatedResultList,
-			RtcParam rtcParam, MergeHandler handler) throws IOException, CoreException {
+			RtcParam rtcParam, String genTime, MergeHandler handler) throws IOException, CoreException {
 
 		IWorkspaceRoot workspaceHandle = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = workspaceHandle.getProject(rtcParam.getOutputProject());
@@ -656,9 +657,9 @@ public class Generator {
 
 		for (GeneratedResult generatedResult : generatedResultList) {
 			if (generatedResult.getName().equals("") == false) {
-				writeFile(generatedResult, project, handler);
+				writeFile(generatedResult, project, handler, genTime);
 			}
-		}
+		}	
 		for( IdlFileParam idlFile : rtcParam.getProviderIdlPathes() ) {
 			if(RTCUtil.checkDefault(idlFile.getIdlPath(), rtcParam.getParent().getDataTypeParams())) continue;
 			IFile idlTarget = project.getFile("idl" + File.separator + idlFile.getIdlFile());
@@ -707,7 +708,7 @@ public class Generator {
 	}
 
 	private void writeFile(GeneratedResult generatedResult, IProject outputProject,
-			MergeHandler handler) throws IOException {
+			MergeHandler handler, String genTime) throws IOException {
 
 		File targetFile = new File(outputProject.getLocation().toOSString(), generatedResult.getName());
 
@@ -717,10 +718,23 @@ public class Generator {
 			if (StringUtil.removeNewLine(originalFileContents).equals(
 					StringUtil.removeNewLine(generatedResult.getCode())) == false) {
 				int selectedProcess = handler.getSelectedProcess(generatedResult, originalFileContents);
-				if (selectedProcess != MergeHandler.PROCESS_ORIGINAL_ID
-						&& selectedProcess != IDialogConstants.CANCEL_ID) {
+				if (selectedProcess == MergeHandler.PROCESS_GENERATE_ID) {
+					if(ComponentPreferenceManager.getInstance().getNot_Generated_Caution() == false) {
+						GeneratedCautionDialog confirmDialog = new GeneratedCautionDialog();
+						confirmDialog.setTargetFile(generatedResult.getName() + genTime);
+						int ret = confirmDialog.open();
+						if(ret == MessageDialog.CANCEL) {	
+							writeFile(generatedResult, outputProject, handler, genTime);
+							return;
+						}
+						
+						if(confirmDialog.getSelected()) {
+							ComponentPreferenceManager.getInstance().setNot_Generated_Caution(true);
+						}
+					}
+					
 					IResource originalFile = outputProject.findMember(generatedResult.getName());
-					IFile renameFile = outputProject.getFile(generatedResult.getName() + DATE_FORMAT.format(new GregorianCalendar().getTime()) );
+					IFile renameFile = outputProject.getFile(generatedResult.getName() + genTime);
 					try {
 						originalFile.move(renameFile.getFullPath(), true, null);
 
@@ -792,13 +806,13 @@ public class Generator {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public void doGenerateWrite(GeneratorParam generatorParam, List<IdlPathParam> idlDirs,
+	public void doGenerateWrite(GeneratorParam generatorParam, List<IdlPathParam> idlDirs, String genTime,
 			MergeHandler handler) throws Exception {
 		warningMessage = "";
 		RtcParam rtcParam =  generatorParam.getRtcParam();
 		validate(rtcParam);
 		List<GeneratedResult> generatedResult = generateTemplateCode(generatorParam, idlDirs);
-		writeFile(generatedResult, rtcParam, handler);
+		writeFile(generatedResult, rtcParam, genTime, handler);
 	}
 
 	/**

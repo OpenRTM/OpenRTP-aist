@@ -1,5 +1,6 @@
 package jp.go.aist.rtm.rtcbuilder.ui.preference;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.SWT;
@@ -33,6 +34,7 @@ public class RtcBuilderPreferencePage extends AbstarctFieldEditorPreferencePage 
 		gd.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(gd);
 		createBackupParts(composite);
+		createCodeGenerateParts(composite);
 	}
 	
 	private void createBackupParts(Composite composite) {
@@ -43,8 +45,17 @@ public class RtcBuilderPreferencePage extends AbstarctFieldEditorPreferencePage 
 		addField(moduleMaxInstanceTextEditor);
 	}
 
-	private void storeBackupInitialSetting(IPreferenceStore store) {
-		store.setDefault(ComponentPreferenceManager.Generate_Backup_Num, ComponentPreferenceManager.DEFAULT_BACKUP_NUM);
+	private void createCodeGenerateParts(Composite composite) {
+		Composite codeGenGroup = createGroup(composite, 
+				Messages.getString("IPreferenceMessageConstants.CODE_GEN_TITLE_GENERATED_CAUTION"));
+		BooleanFieldEditor generatedBooleanEditor = new BooleanFieldEditor(ComponentPreferenceManager.Not_Generated_Caution,
+				Messages.getString("IPreferenceMessageConstants.CODE_GEN_GENERATED_CAUTION"),
+				codeGenGroup);
+		addField(generatedBooleanEditor);
 	}
 
+	private void storeBackupInitialSetting(IPreferenceStore store) {
+		store.setDefault(ComponentPreferenceManager.Generate_Backup_Num, ComponentPreferenceManager.DEFAULT_BACKUP_NUM);
+		store.setDefault(ComponentPreferenceManager.Not_Generated_Caution, ComponentPreferenceManager.DEFAULT_NOT_GENERATED_CAUTION);
+	}
 }

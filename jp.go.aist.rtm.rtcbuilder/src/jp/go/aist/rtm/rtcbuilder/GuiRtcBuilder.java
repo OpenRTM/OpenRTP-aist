@@ -50,7 +50,7 @@ public class GuiRtcBuilder {
 	 */
 	@Deprecated
 	public boolean doGenerateWrite(GeneratorParam generatorParam) {
-		return this.doGenerateWrite(generatorParam, null, true);
+		return this.doGenerateWrite(generatorParam, null, true, "");
 	}
 	/**
 	 * ジェネレートを行い、ファイル出力を行う
@@ -58,7 +58,7 @@ public class GuiRtcBuilder {
 	 * @param generatorParam   パラメータ
 	 * @param isShowDialog     完了時にダイアログを表示するか
 	 */
-	public boolean doGenerateWrite(GeneratorParam generatorParam, List<IdlPathParam> idlDirs, boolean isShowDialog) {
+	public boolean doGenerateWrite(GeneratorParam generatorParam, List<IdlPathParam> idlDirs, boolean isShowDialog, String genTime) {
 
 		try {
 			//設定されたパラメータのチェック
@@ -78,7 +78,7 @@ public class GuiRtcBuilder {
 					if(dialog.open() == RETURN_NO) return false;
 			}
 			//
-			generator.doGenerateWrite(generatorParam, idlDirs, new MergeHandler() {
+			generator.doGenerateWrite(generatorParam, idlDirs, genTime, new MergeHandler() {
 				public int getSelectedProcess(GeneratedResult generatedResult,
 						String originalFileContents) {
 					return compareByDialog(generatedResult,

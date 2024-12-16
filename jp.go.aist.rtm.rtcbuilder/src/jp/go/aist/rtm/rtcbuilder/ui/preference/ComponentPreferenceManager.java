@@ -166,6 +166,10 @@ public class ComponentPreferenceManager {
 	 * バックアップファイル設定数のキー
 	 */
 	public static final String Generate_Backup_Num = getClassName() + "GENERATE_BACKUP_NUM";
+	/**
+	 * Generated時の警告のキー
+	 */
+	public static final String Not_Generated_Caution = getClassName() + "NOT_GENERATE_CAUTION";
 	
 	//デフォルト値を空白から変更する場合には，getterの定義が必要
 	public static final String DEFAULT_COMPONENT_NAME = "ModuleName";
@@ -213,11 +217,11 @@ public class ComponentPreferenceManager {
 	public static final String DEFAULT_EVENTPORT_SUFFIX = "";
 	//
 	public static final int DEFAULT_BACKUP_NUM = 3;
+	public static final boolean DEFAULT_NOT_GENERATED_CAUTION = false;
 	
 	/**
 	 * コード生成時の ModuleName デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Name デフォルト値
 	 */
 	public String getBasic_ComponentName() {
@@ -227,7 +231,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の ModuleDescription デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Description デフォルト値
 	 */
 	public String getBasic_Description() {
@@ -237,7 +240,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Category デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Category デフォルト値
 	 */
 	public String getBasic_Category() {
@@ -247,7 +249,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Version デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Version デフォルト値
 	 */
 	public String getBasic_Version() {
@@ -257,7 +258,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Component Type デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Component Type デフォルト値
 	 */
 	public String getBasic_ComponentType() {
@@ -267,7 +267,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Activity Type デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Activity Type デフォルト値
 	 */
 	public String getBasic_ActivityType() {
@@ -277,7 +276,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Vendor Name デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Vendor Name デフォルト値
 	 */
 	public String getBasic_VendorName() {
@@ -287,7 +285,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Max Instances デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Max Instances デフォルト値
 	 */
 	public int getBasic_MaxInstances() {
@@ -297,7 +294,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Module Execution Type デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Module Execution Type デフォルト値
 	 */
 	public String getBasic_ExecutionType() {
@@ -307,7 +303,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Execution Rate デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Execution Rate デフォルト値
 	 */
 	public double getBasic_ExecutionRate() {
@@ -317,7 +312,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の 接頭語 デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return 接頭語 デフォルト値
 	 */
 	public String getBasic_Prefix() {
@@ -328,7 +322,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の Configuration Name デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return Configuration Name デフォルト値
 	 */
 	public String getConfiguration_Name() {
@@ -338,7 +331,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の DataPort Name デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return DataPort Name デフォルト値
 	 */
 	public String getDataPort_Name() {
@@ -348,7 +340,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の ServicePort 名 デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return ServicePort 変数名 デフォルト値
 	 */
 	public String getServicePort_Name() {
@@ -358,7 +349,6 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の ServiceIF 名 デフォルト値を取得する
 	 * 
-	 * @param key キー
 	 * @return ServiceIF名 デフォルト値
 	 */
 	public String getServiceIF_Name() {
@@ -368,13 +358,29 @@ public class ComponentPreferenceManager {
 	/**
 	 * コード生成時の バックアップファイル数を取得する
 	 * 
-	 * @param key キー
 	 * @return バックアップファイル数 デフォルト値
 	 */
 	public int getBackup_Num() {
 		return getIntegaerStoreValue(Generate_Backup_Num, DEFAULT_BACKUP_NUM);
 	}
 
+	/**
+	 * コード生成時の 警告表示設定を取得する
+	 * 
+	 * @return コード生成時の 警告表示設定値
+	 */
+	public boolean getNot_Generated_Caution() {
+		return getBooleanStoreValue(Not_Generated_Caution, DEFAULT_NOT_GENERATED_CAUTION);
+	}
+
+	/**
+	 * コード生成時の 警告表示設定を設定する
+	 * 
+	 * @param value コード生成時の 警告表示設定値
+	 */
+	public void setNot_Generated_Caution(boolean value) {
+		RtcBuilderPlugin.getDefault().getPreferenceStore().setValue(Not_Generated_Caution, value);
+	}
 	/////
 	private String getStringStoreValue(String key, String defaultValue) {
 		RtcBuilderPlugin.getDefault().getPreferenceStore().setDefault(key, "");
@@ -409,6 +415,20 @@ public class ComponentPreferenceManager {
 		double resultTemp = RtcBuilderPlugin.getDefault().getPreferenceStore().getDouble(key);
 		double defaultReg = RtcBuilderPlugin.getDefault().getPreferenceStore().getDefaultDouble(key);
 		double result;
+		if (resultTemp == defaultReg) { // defaultvalue
+			result = defaultValue;
+		} else {
+			result = resultTemp;
+		}
+		return result;
+	}
+	
+	private boolean getBooleanStoreValue(String key, boolean defaultValue) {
+		RtcBuilderPlugin.getDefault().getPreferenceStore().setDefault(key, "");
+
+		boolean resultTemp = RtcBuilderPlugin.getDefault().getPreferenceStore().getBoolean(key);
+		boolean defaultReg = RtcBuilderPlugin.getDefault().getPreferenceStore().getDefaultBoolean(key);
+		boolean result;
 		if (resultTemp == defaultReg) { // defaultvalue
 			result = defaultValue;
 		} else {
