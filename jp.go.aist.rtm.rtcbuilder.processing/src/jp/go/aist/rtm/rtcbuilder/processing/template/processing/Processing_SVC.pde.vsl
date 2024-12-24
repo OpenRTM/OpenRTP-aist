@@ -1,0 +1,44 @@
+// -*-Java-*-
+/*!
+ * @file  ${tmpltHelper.getBasename(${serviceClassParam.name})}${tmpltHelper.serviceImplSuffix}.java
+ * @brief Service implementation code of ${idlFileParam.idlFile}
+#if( ${rtcParam.docCreator.length()} > 0 )
+ *
+ * @author ${tmpltHelper.convertAuthorDoc(${rtcParam.docCreator})}
+#end
+#if( ${rtcParam.docLicense.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docLicense})}
+#end
+ *
+ */
+#if(${tmpltHelper.isModule(${serviceClassParam.name})})import ${tmpltHelper.convFormat(${serviceClassParam.name})}POA;
+#end
+/**
+ * ${tmpltHelper.getBasename(${serviceClassParam.name})}${tmpltHelper.serviceImplSuffix}
+ * <p>
+ * Example class implementing IDL interface ${serviceClassParam.name}
+ */
+public class ${tmpltHelper.getBasename(${serviceClassParam.name})}${tmpltHelper.serviceImplSuffix} extends ${tmpltHelper.getBasename(${serviceClassParam.name})}POA{
+    
+    public ${tmpltHelper.getBasename(${serviceClassParam.name})}${tmpltHelper.serviceImplSuffix}() {
+        // Please add extra constructor code here.
+    }
+
+    /*
+     * Methods corresponding to IDL attributes and operations
+     */
+#foreach($serviceMethodParam in ${serviceClassParam.methods})
+    public ${javaConv.convCORBA2Java(${serviceMethodParam},${serviceClassParam})} ${serviceMethodParam.name}(#foreach($serviceArgumentParam in ${serviceMethodParam.arguments})#if($velocityCount > 1), #end${javaConv.convCORBA2JavaforArg(${serviceArgumentParam},${serviceArgumentParam.direction},${serviceClassParam})} ${serviceArgumentParam.name}#end) {
+        // Please insert your code here and remove the following warning pragma
+        // TODO "Code missing in function <${javaConv.convCORBA2JavaNoDef(${serviceMethodParam.type})} ${serviceMethodParam.name}(#foreach($serviceArgumentParam in ${serviceMethodParam.arguments})#if($velocityCount > 1), #end${javaConv.convCORBA2JavaforArg(${serviceArgumentParam.type},${serviceArgumentParam.direction})} ${serviceArgumentParam.name}#end)>"
+#if(!${serviceMethodParam.isVoid})#if(${javaConv.isRetNumber(${serviceMethodParam},${serviceClassParam})})        return 0;
+#elseif(${javaConv.isRetBoolean(${serviceMethodParam},${serviceClassParam})})        return false;
+#else        return null;
+#end
+#end
+    }
+
+#end
+//  End of example implementational code
+}

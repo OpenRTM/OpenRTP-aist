@@ -1,0 +1,88 @@
+// -*- Java -*-
+// <rtc-template block="description">
+/*!
+ * @file ${rtcParam.name}.java
+#set( $Date$ = "dummy" )
+ * @date \$Date$
+#if( ${rtcParam.docCreator.length()} > 0 )
+ *
+ * @author ${tmpltHelper.convertAuthorDoc(${rtcParam.docCreator})}
+#end
+#if( ${rtcParam.docLicense.length()} > 0 )
+ *
+ * ${tmpltHelper.convertDoc(${rtcParam.docLicense})}
+#end
+ *
+#set( $Id$ = "dummy" )
+ * \$Id$
+ */
+// </rtc-template>
+
+import jp.go.aist.rtm.RTC.Manager;
+import jp.go.aist.rtm.RTC.RTObject_impl;
+import jp.go.aist.rtm.RTC.RtcDeleteFunc;
+import jp.go.aist.rtm.RTC.RtcNewFunc;
+import jp.go.aist.rtm.RTC.RegisterModuleFunc;
+import jp.go.aist.rtm.RTC.util.Properties;
+
+//  Module specification
+//  <rtc-template block="module_spec">
+public static String ${rtcParam.name.toLowerCase()}_conf[] = {
+        "implementation_id", "${rtcParam.name}",
+        "type_name",         "${rtcParam.name}",
+        "description",       "${rtcParam.description}",
+        "version",           "${rtcParam.version}",
+        "vendor",            "${rtcParam.vender}",
+        "category",          "${rtcParam.category}",
+        "activity_type",     "${rtcParam.componentType}",
+        "max_instance",      "${rtcParam.maxInstance}",
+        "language",          "Java",
+        "lang_type",         "compile",
+#if( ${rtcParam.configParams.size()} > 0 )
+        // Configuration variables
+#foreach($configParam in ${rtcParam.configParams})  
+        "conf.default.${configParam.name}", "${configParam.defaultVal}",
+#end
+
+        // Widget
+#foreach($configParam in ${rtcParam.configParams})
+#if( ${configParam.widget.length()} > 0 )
+        "conf.__widget__.${configParam.name}", "${configParam.widget}#if( ${configParam.step.length()} > 0 ).${configParam.step}#end",
+#end
+#end
+        // Constraints
+#foreach($configParam in ${rtcParam.configParams})
+#if( ${configParam.constraint.length()} > 0 )
+        "conf.__constraints__.${configParam.name}", "${configParam.constraint}",
+#end
+#end
+
+#foreach($configParam in ${rtcParam.configParams})
+        "conf.__type__.${configParam.name}", "${configParam.type}",
+#end
+
+#end
+	    ""
+};
+//  </rtc-template>
+
+/**
+ * ${rtcParam.name}
+ * <p> 
+ * ${rtcParam.description}
+ */
+public class ${rtcParam.name} implements RtcNewFunc, RtcDeleteFunc, RegisterModuleFunc {
+
+    public RTObject_impl createRtc(Manager mgr) {
+        return new ${rtcParam.name}Impl(mgr);
+    }
+
+    public void deleteRtc(RTObject_impl rtcBase) {
+        rtcBase = null;
+    }
+    public void registerModule() {
+        Properties prop = new Properties(${rtcParam.name.toLowerCase()}_conf);
+        final Manager manager = Manager.instance();
+        manager.registerFactory(prop, new ${rtcParam.name}(), new ${rtcParam.name}());
+    }
+}
