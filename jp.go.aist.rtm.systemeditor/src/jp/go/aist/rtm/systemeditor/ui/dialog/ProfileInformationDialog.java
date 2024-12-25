@@ -1,11 +1,6 @@
 package jp.go.aist.rtm.systemeditor.ui.dialog;
 
-import jp.go.aist.rtm.systemeditor.extension.SaveProfileExtension;
-import jp.go.aist.rtm.systemeditor.factory.ProfileSaver;
-import jp.go.aist.rtm.systemeditor.nl.Messages;
-import jp.go.aist.rtm.toolscommon.model.component.Component;
-import jp.go.aist.rtm.toolscommon.model.component.SystemDiagram;
-import jp.go.aist.rtm.toolscommon.profiles.util.IDUtil;
+import static jp.go.aist.rtm.systemeditor.ui.util.RTMixin.isBlank;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -27,13 +22,18 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
-import static jp.go.aist.rtm.systemeditor.ui.util.RTMixin.*;
+import jp.go.aist.rtm.systemeditor.extension.SaveProfileExtension;
+import jp.go.aist.rtm.systemeditor.factory.ProfileSaver;
+import jp.go.aist.rtm.systemeditor.nl.Messages;
+import jp.go.aist.rtm.toolscommon.model.component.Component;
+import jp.go.aist.rtm.toolscommon.model.component.SystemDiagram;
+import jp.go.aist.rtm.toolscommon.profiles.util.IDUtil;
 
 /**
  * RTSプロファイルの保存時に表示するダイアログ
@@ -50,9 +50,11 @@ public class ProfileInformationDialog extends Dialog {
 	private Text txtSystemName;
 	private Text txtVersion;
 	private Text txtPath;
+	private Button chkReplace;
 	//
 	IDUtil.RTSId inputId;
 	private String inputPath;
+	private boolean isReplace;
 	//
 	private boolean isOverWrite = false;
 	
@@ -103,6 +105,8 @@ public class ProfileInformationDialog extends Dialog {
 		//
 		// 必須コンポーネント選択エリアを追加  2008.12.11
 		createRequiedComponentsArea(mainComposite);
+		chkReplace = createRadioCheckButton(mainComposite,
+				Messages.getString("ProfileInformationDialog.19"), SWT.CHECK);
 
 		// 拡張ポイントボタンエリアを追加
 		Composite extensionButtonComposite = new Composite(parent, SWT.NONE);
@@ -166,19 +170,28 @@ public class ProfileInformationDialog extends Dialog {
 		checkButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FileDialog dialog = new FileDialog(getShell(), SWT.SAVE);
-				dialog.setFilterExtensions(new String[] { "*.xml" }); //$NON-NLS-1$
+				DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SAVE);
 				if (txtPathLocal.getText().length() > 0)
-					dialog.setFileName(txtPathLocal.getText());
+					dialog.setFilterPath(txtPathLocal.getText());
 				String newPath = dialog.open();
 				if (newPath != null) {
-					if( !newPath.endsWith(".xml") ) newPath += ".xml"; //$NON-NLS-1$ //$NON-NLS-2$
 					txtPathLocal.setText(newPath);
 				}
 			}
 		});
 		if( isOverWrite ) checkButton.setEnabled(false);
 		return txtPathLocal;
+	}
+	private Button createRadioCheckButton(Composite composite, String labelString, int style) {
+		GridData gd;
+		Button radio = new Button(composite, style);
+		radio.setText(labelString);
+		
+		gd = new GridData(GridData.HORIZONTAL_ALIGN_END);
+		gd.horizontalSpan = 3;
+		radio.setLayoutData(gd);
+
+		return radio;
 	}
 
 	@Override
@@ -210,6 +223,7 @@ public class ProfileInformationDialog extends Dialog {
 		inputId.name = txtSystemName.getText();
 		inputId.version = txtVersion.getText();
 		inputPath = txtPath.getText();
+		isReplace = chkReplace.getSelection();
 //		inputUpdateLog = txtUpdateLog.getText();
 		// OKボタンが押されたときに必須コンポーネントであるかの設定を更新する
 		syncRequiredComponents();
@@ -236,6 +250,10 @@ public class ProfileInformationDialog extends Dialog {
 
 	public String getInputPath() {
 		return inputPath;
+	}
+
+	public boolean isReplace() {
+		return isReplace;
 	}
 
 	public String getInputSystemName() {

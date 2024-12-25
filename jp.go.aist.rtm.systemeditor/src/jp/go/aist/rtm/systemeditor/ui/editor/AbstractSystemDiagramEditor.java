@@ -2,9 +2,12 @@ package jp.go.aist.rtm.systemeditor.ui.editor;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
@@ -23,6 +26,7 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -64,6 +68,7 @@ import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -144,6 +149,8 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 	 * @return openEditorの引数として渡される（オンラインまたはオフラインの）エディタID
 	 */
 	abstract public String getEditorId();
+	
+	private String FS = System.getProperty("file.separator");
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -365,11 +372,16 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 				getSite().getShell());
 		dialog.setSystemId(getSystemDiagram().getSystemId());
 		dialog.setOverWrite(true);
-		dialog.setInputPath(file.getLocation().toOSString());
+		
+		java.nio.file.Path rawFile = Paths.get(file.getLocation().toOSString());
+		dialog.setInputPath(rawFile.getParent().getParent().toString());
 		dialog.setSystemDiagram(getSystemDiagram());
 		if (dialog.open() != IDialogConstants.OK_ID) {
 			return;
 		}
+
+		String systemName = dialog.getInputSystemName();
+		boolean isReplace = dialog.isReplace();
 
 		getSystemDiagram().setSystemId(dialog.getSystemId());
 		XMLGregorianCalendar calendar = new XMLGregorianCalendarImpl(new GregorianCalendar());
@@ -384,7 +396,7 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 		}
 
 		try {
-			save(file, monitor);
+			save(file, systemName, isReplace, monitor);
 		} catch (CoreException e) {
 			LOGGER.error("Fail to save. file=" + file, e);
 			ErrorDialog.openError(getSite().getShell(), "Error During Save",
@@ -415,6 +427,9 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 		if (dialog.open() != IDialogConstants.OK_ID) {
 			return;
 		}
+		
+		String systemName = dialog.getInputSystemName();
+		boolean isReplace = dialog.isReplace();
 
 		getSystemDiagram().setSystemId(dialog.getSystemId());
 		XMLGregorianCalendar calendar = new XMLGregorianCalendarImpl(new GregorianCalendar());
@@ -429,7 +444,22 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 			return;
 		}
 
-		IPath result = new Path(dialog.getInputPath());
+		java.nio.file.Path resultDir = Paths.get(dialog.getInputPath() + FS + systemName);
+		if(resultDir.toFile().exists()) {
+			MessageBox message = new MessageBox(getSite().getShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+			message.setText(Messages.getString("AbstractSystemDiagramEditor.34"));
+			message.setMessage(Messages.getString("AbstractSystemDiagramEditor.35"));
+			if( message.open() != SWT.YES) return;
+		} else {
+			try {
+				Files.createDirectories(resultDir);
+			} catch (IOException e) {
+				MessageDialog.openError(getSite().getShell(), Messages.getString("AbstractSystemDiagramEditor.21"), //$NON-NLS-1$
+						Messages.getString("AbstractSystemDiagramEditor.25") + resultDir.toString()); //$NON-NLS-1$
+			}
+		}
+		
+		IPath result = new Path(dialog.getInputPath() + FS + systemName + FS + systemName + ".xml");
 		final IFile newFile = createNewFile(result);
 		if (newFile == null)
 			return;
@@ -444,7 +474,7 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 							throws InvocationTargetException,
 							InterruptedException {
 						try {
-							save(newFile, monitor);
+							save(newFile, systemName, isReplace, monitor);
 						} catch (CoreException e) {
 							LOGGER.error("Fail to save. file=" + newFile, e);
 							MessageDialog.openError(getSite().getShell(), Messages.getString("AbstractSystemDiagramEditor.21"), //$NON-NLS-1$
@@ -521,7 +551,7 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 		return result;
 	}
 
-	protected void save(IFile file, IProgressMonitor progressMonitor)
+	protected void save(IFile file, String systemName, boolean isReplace, IProgressMonitor progressMonitor)
 			throws CoreException {
 
 		List<AbstractSystemDiagramEditor> editors = new ArrayList<AbstractSystemDiagramEditor>();
@@ -639,6 +669,8 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 			for (AbstractSystemDiagramEditor editor : editors) {
 				editor.changeFile(file);
 			}
+			
+			saveScript(file, profile, systemName, isReplace);
 
 			// STEP5: 拡張ポイント (RTSプロファイル保存後)
 			progressMonitor.worked(5);
@@ -672,6 +704,141 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 					.getClass().getName(), 0, "Error writing file.", e);
 			throw new CoreException(status);
 		}
+	}
+
+	private void saveScript(IFile file, RtsProfileExt profile, String systemName, boolean isReplace) {
+		java.nio.file.Path rawFile = Paths.get(file.getLocation().toOSString());
+		java.nio.file.Path targetDir = rawFile.getParent();
+		
+		saveExitScript(profile, systemName, isReplace, targetDir);
+		saveResurrectScript(systemName, targetDir);
+		saveActivateScript(systemName, targetDir);
+		saveRunScript(systemName, targetDir);
+		saveDeactivateScript(systemName, targetDir);
+		saveTeardownScript(systemName, targetDir);
+	}
+
+	private void saveTeardownScript(String systemName, java.nio.file.Path targetDir) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("rtteardown ").append(systemName).append(".xml").append("\r\n");
+		String teardownBat = targetDir.toString() + FS + "Teardown_" + systemName + ".bat";
+		writeFile(teardownBat, builder.toString());
+
+		StringBuilder builderSh = new StringBuilder();
+		builderSh.append("#!/usr/bin/env bash​​");
+		builderSh.append("\n").append("\n");
+		builderSh.append("rtteardown ").append(systemName).append(".xml").append("\n");
+		String teardownSh = targetDir.toString() + FS + "Teardown_" + systemName + ".sh";
+		writeFile(teardownSh, builderSh.toString());
+	}
+
+	private void saveDeactivateScript(String systemName, java.nio.file.Path targetDir) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("rtstop ").append(systemName).append(".xml").append("\r\n");
+		String deactivateBat = targetDir.toString() + FS + "Deactivate_" + systemName + ".bat";
+		writeFile(deactivateBat, builder.toString());
+
+		StringBuilder builderSh = new StringBuilder();
+		builderSh.append("#!/usr/bin/env bash​​");
+		builderSh.append("\n").append("\n");
+		builderSh.append("rtstop ").append(systemName).append(".xml").append("\n");
+		String deactivateSh = targetDir.toString() + FS + "Deactivate_" + systemName + ".sh";
+		writeFile(deactivateSh, builderSh.toString());
+	}
+
+	private void saveRunScript(String systemName, java.nio.file.Path targetDir) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("cmd /c Resurrect_").append(systemName).append(".bat").append("\r\n");
+		builder.append("cmd /c Activate_").append(systemName).append(".bat").append("\r\n");
+		String runBat = targetDir.toString() + FS + "Run_" + systemName + ".bat";
+		writeFile(runBat, builder.toString());
+		
+		StringBuilder builderSh = new StringBuilder();
+		builderSh.append("#!/usr/bin/env bash​​");
+		builderSh.append("\n").append("\n");
+		builderSh.append("Resurrect_").append(systemName).append(".sh").append("\n");
+		builderSh.append("Activate_").append(systemName).append(".sh").append("\n");
+		String runSh = targetDir.toString() + FS + "Run_" + systemName + ".sh";
+		writeFile(runSh, builderSh.toString());
+	}
+
+	private void saveActivateScript(String systemName, java.nio.file.Path targetDir) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("rtstart ").append(systemName).append(".xml").append("\r\n");
+		String activateBat = targetDir.toString() + FS + "Activate_" + systemName + ".bat";
+		writeFile(activateBat, builder.toString());
+
+		StringBuilder builderSh = new StringBuilder();
+		builderSh.append("#!/usr/bin/env bash​​");
+		builderSh.append("\n").append("\n");
+		builderSh.append("rtstart ").append(systemName).append(".xml").append("\n");
+		String activateSh = targetDir.toString() + FS + "Activate_" + systemName + ".sh";
+		writeFile(activateSh, builderSh.toString());
+	}
+
+	private void saveResurrectScript(String systemName, java.nio.file.Path targetDir) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("rtresurrect ").append(systemName).append(".xml").append("\r\n");
+		String resurrectBat = targetDir.toString() + FS + "Resurrect_" + systemName + ".bat";
+		writeFile(resurrectBat, builder.toString());
+		
+		StringBuilder builderSh = new StringBuilder();
+		builderSh.append("#!/usr/bin/env bash​​");
+		builderSh.append("\n").append("\n");
+		builderSh.append("rtresurrect ").append(systemName).append(".xml").append("\n");
+		String resurrectSh = targetDir.toString() + FS + "Resurrect_" + systemName + ".sh";
+		writeFile(resurrectSh, builderSh.toString());
+	}
+
+	private void saveExitScript(RtsProfileExt profile, String systemName, boolean isReplace, java.nio.file.Path targetDir) {
+		StringBuilder builder = new StringBuilder();
+		for(org.openrtp.namespaces.rts.version02.Component each : profile.getComponents()) {
+			builder.append("rtexit ");
+			if(isReplace) {
+				builder.append(replaceHostName(each.getPathUri()));
+			} else {
+				builder.append(each.getPathUri());
+			}
+			builder.append("\r\n");
+		}
+		String exitBat = targetDir.toString() + FS + "Exit_" + systemName + ".bat";
+		writeFile(exitBat, builder.toString());
+
+		StringBuilder builderSh = new StringBuilder();
+		builderSh.append("#!/usr/bin/env bash​​");
+		builderSh.append("\n").append("\n");
+		builderSh.append(builder);
+		String exitSh = targetDir.toString() + FS + "Exit_" + systemName + ".sh";
+		writeFile(exitSh, builderSh.toString().replace("\r\n", "\n"));
+	}
+	
+	private void writeFile(String fileName, String contents) {
+		try( FileOutputStream fos = new FileOutputStream(fileName) ) {
+			OutputStreamWriter osw = new OutputStreamWriter( fos , "UTF-8");
+			BufferedWriter fp = new BufferedWriter( osw );
+			fp.write (contents);
+			fp.flush();
+		} catch (Exception e) {
+			LOGGER.error("Fail to create file", e);
+		}
+	}
+	
+	private String replaceHostName(String source) {
+		StringBuilder builder = new StringBuilder();
+		
+		String[] elems = source.split("/");
+		for(String each : elems) {
+			if(0 < builder.length()) {
+				builder.append("/");
+			}
+			if(each.endsWith(".host_cxt")) {
+				builder.append("%COMPUTERNAME%.host_cxt");
+			} else {
+				builder.append(each);
+			}
+		}
+		
+		return builder.toString();
 	}
 
 	private Component getLocalObject(SystemDiagram systemDiagram,
