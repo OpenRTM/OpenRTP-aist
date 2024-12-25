@@ -1,0 +1,20 @@
+#foreach($type in ${javaConv.getEventTypes(${fsmParam})})
+${javaConv.getDataportPackageName(${type})}
+#end
+/**
+ * 
+ */
+public interface ${rtcParam.name}Protocol {
+
+#foreach($eachTrans in ${fsmParam.getAllTransListNoDupl()})
+#if( ${eachTrans.event.length()} > 0 )
+#if( ${eachTrans.existDataType()})
+    void ${eachTrans.event}(${javaConv.getDataTypeName(${eachTrans.dataType})} data);
+#else
+    void ${eachTrans.event}();
+#end
+
+#end
+#end
+}
+

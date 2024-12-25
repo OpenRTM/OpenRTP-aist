@@ -1,0 +1,48 @@
+include("@PROJECT_BINARY_DIR@/CMakeFiles/CMakeJavaCompiler.cmake")
+
+set(_srcdir @JAVAC_SOURCE_DIRS@)
+set(_destdir "@JAVAC_DEST_DIR@")
+set(_classpath "@JAVAC_CLASSPATH@")
+
+function(__java_copy_file src dest)
+    exec_program("${dol}{CMAKE_COMMAND} -E copy_if_different \"${dol}{src}\" \"${dol}{dest}\""
+        OUTPUT_VARIABLE _out
+        RETURN_VALUE _retval)
+    message(STATUS "Copying \"${dol}{src}\" to the build directory")
+    message(STATUS ${dol}{_out})
+    if(NOT "${dol}{_retval}" STREQUAL 0)
+        message(FATAL_ERROR "Problem when copying \"${dol}{src}\"")
+    endif()
+endfunction()
+
+set(_sources)
+
+foreach(_dir ${dol}{_srcdir})
+    set(_files)
+
+    file(GLOB_RECURSE _globs RELATIVE "${dol}{_dir}" "${dol}{_dir}/*")
+    foreach(_file ${dol}{_globs})
+        get_filename_component(_file_ext "${dol}{_file}" EXT)
+        if(_file MATCHES "/.svn/")
+        elseif(_file_ext MATCHES ".java${dol}")
+            list(APPEND _sources "${dol}{_dir}/${dol}{_file}")
+        else()
+            __java_copy_file("${dol}{_dir}/${dol}{_file}" "${dol}{_destdir}/${dol}{_file}")
+        endif()
+    endforeach()
+endforeach()
+
+message(STATUS "Compiling")
+foreach(f ${dol}{_sources})
+    message(STATUS "    ${dol}{f}")
+endforeach()
+
+string(REPLACE ";" " " _sources "${dol}{_sources}")
+exec_program("${dol}{CMAKE_Java_COMPILER}"
+    ARGS "-d ${dol}{_destdir} -cp \"${dol}{_classpath}\" ${dol}{_sources}"
+    OUTPUT_VARIABLE _out
+    RETURN_VALUE _retval)
+message(STATUS ${dol}{_out})
+if(NOT "${dol}{_retval}" STREQUAL 0)
+    message(FATAL_ERROR "Problem when compiling \"${dol}{_sources}\"")
+endif()

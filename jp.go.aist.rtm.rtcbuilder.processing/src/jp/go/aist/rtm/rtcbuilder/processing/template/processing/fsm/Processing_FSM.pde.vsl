@@ -1,0 +1,51 @@
+${tmpltHelperJava.getHistoryImport(${targetFsm})}
+import jp.go.aist.rtm.RTC.jfsm.Event;
+import jp.go.aist.rtm.RTC.jfsm.State;
+
+#foreach($type in ${javaConv.getEachEventTypes(${targetFsm})})
+${javaConv.getDataportPackageName(${type})}
+#end
+
+/**
+ * 
+ */
+${tmpltHelperJava.getHistory(${targetFsm})}
+public class ${targetFsm.name} extends ${targetFsm.parentName} {
+#foreach($eachTrans in ${targetFsm.getTransList()})
+#if( ${eachTrans.event.length()} > 0 )
+#if( ${eachTrans.existEventParam()} )
+    @Override
+#if( ${eachTrans.existDataType()})
+    public void ${eachTrans.event}(${javaConv.getDataTypeName(${eachTrans.dataType})} data) {
+#else
+    public void ${eachTrans.event}() {
+#end
+        setState(new State(${eachTrans.target}.class));
+    }
+
+#end
+#end
+#end
+    // The onInit method provides a special kind of entry action.
+    // On state transition, onEntry functions are called at the target state and its superstate.
+    // But an onInit function is called only at the target state.
+    @Override
+    public void onInit() {
+    ${tmpltHelperJava.checkTransition(${targetFsm})}
+    }
+
+#if( !${targetFsm.hasEntry} )//#else#end    @Override
+#if( !${targetFsm.hasEntry} )//#else#end    public void onEntry() {
+#if( !${targetFsm.hasEntry} )//#else#end    }
+
+#if( !${targetFsm.hasExit} )//#else#end    @Override
+#if( !${targetFsm.hasExit} )//#else#end    public void onExit() {
+#if( !${targetFsm.hasExit} )//#else#end    }
+
+#foreach($eachEvent in ${tmpltHelperJava.getInEventList(${fsmParam}, ${targetFsm})})
+//    @Override
+//    public void ${eachEvent}() {
+//    }
+
+#end
+}

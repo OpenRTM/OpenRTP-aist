@@ -1,0 +1,124 @@
+#set( $dollarStr = "$" )
+<!--
+# -*- Buildfile -*-
+# @file  build_${rtcParam.name}.xml
+# @brief RTComponent makefile for "${rtcParam.name} component"
+# @date  ${dollarStr}Date${dollarStr}
+#
+# ${dollarStr}Id${dollarStr}
+ -->
+<project name="${rtcParam.name}" default="generatedoc">
+	<property name="source" value="src" />
+	<property name="dest" value="bin" />
+	<property name="doc" value="doc" />
+	<property name="testsource" value="test/src" />
+	<property environment="env" />
+#if( ${rtcParam.checkWithoutDefaultPathes()} == true )
+
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<target name="setWindows" if="isWindows">
+		<property name="idlj.path" value="${env.JAVA_HOME}/bin/idlj" />
+		<property name="rtm.idl.path" value="${env.RTM_IDL_DIR}" />
+	</target>
+
+	<target name="setUnix" if="isUnix">
+		<property name="idlj.path" value="${java.home}/../bin/idlj" />
+		<property name="rtm.idl.path" value="${env.RTM_IDL_DIR2}" />
+	</target>
+#end
+
+	<target name="mkdir">
+		<mkdir dir="${dollarStr}{dest}" />
+#if( ${rtcParam.checkWithoutDefaultPathes()} == true )
+		<mkdir dir="src/temp" />
+#end
+	</target>
+
+#if( ${rtcParam.checkWithoutDefaultPathes()} == true )
+	<target name="idlcompile"  depends="mkdir, setWindows, setUnix">
+		<echo message="idlj.path : ${idlj.path}"/>
+#foreach($idlPath in ${rtcParam.providerIdlPathes})
+#if( ${idlPath.checkDefault()} == false )
+		<exec executable="${dollarStr}{idlj.path}">
+			<arg line="-td 'src/temp' -i '${rtm.idl.path}' #foreach($idlSearchPath in ${idlPath.idlSearchPathes})-i '${idlSearchPath}' #end-fall 'idl/${tmpltHelper.getFileName(${idlPath.idlFile})}'"/>
+		</exec>
+#foreach ($idl in ${idlPath.includeIdlParamsWithoutDefault})
+		<exec executable="${dollarStr}{idlj.path}">
+			<arg line="-td 'src/temp' -i '${rtm.idl.path}' #foreach($idlSearchPath in ${idlPath.idlSearchPathes})-i '${idlSearchPath}' #end-fall 'idl/${tmpltHelper.getFileName(${idl.idlFile})}'"/>
+		</exec>
+#end
+#end
+#end
+#foreach($idlPath in ${rtcParam.consumerIdlPathes})
+#if( ${idlPath.checkDefault()} == false )
+		<exec executable="${dollarStr}{idlj.path}">
+			<arg line="-td 'src' -i '${rtm.idl.path}' #foreach($idlSearchPath in ${idlPath.idlSearchPathes})-i '${idlSearchPath}' #end-fall 'idl/${tmpltHelper.getFileName(${idlPath.idlFile})}'"/>
+		</exec>
+#foreach ($idl in ${idlPath.includeIdlParamsWithoutDefault})
+		<exec executable="${dollarStr}{idlj.path}">
+			<arg line="-td 'src' -i '${rtm.idl.path}' #foreach($idlSearchPath in ${idlPath.idlSearchPathes})-i '${idlSearchPath}' #end-fall 'idl/${tmpltHelper.getFileName(${idl.idlFile})}'"/>
+		</exec>
+#end
+#end
+#end
+		<native2ascii src="src/temp" dest="src"/>
+		<delete dir="src/temp"/>
+	</target>
+
+#end
+#if( ${rtcParam.checkWithoutDefaultPathes()} == true )
+	<target name="compile" depends="idlcompile">
+#else
+	<target name="compile" depends="mkdir">
+#end
+		<javac includeantruntime="false" srcdir="${dollarStr}{source}${tmpltHelperJava.getServiceNamePath(${rtcParam})}" destdir="${dollarStr}{dest}">
+			<classpath>
+				<fileset dir="${dollarStr}{env.RTM_JAVA_ROOT}/jar">
+					<include name="*.jar"/>
+				</fileset>
+#if( ${rtcParam.libraryPathes.size()} > 0 )
+#foreach($javaRef in ${rtcParam.libraryPathes})
+				<pathelement location="'${javaRef}'"/>
+#end
+#end
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="generatejar" depends="compile">
+		<delete file="${tmpltHelperJava.getServiceName(${rtcParam})}.jar" />
+		<jar destfile="${tmpltHelperJava.getServiceName(${rtcParam})}.jar"
+		basedir="${dollarStr}{source}/${tmpltHelperJava.getServiceName(${rtcParam})}"
+		excludes="" />
+	</target>
+
+	<target name="generatedoc" depends="generatejar">
+		<javadoc 
+                        Locale="ja_JP"
+                        destdir="${dollarStr}{doc}"
+                        docencoding="UTF-8"
+			author="true" doctitle="${rtcParam.name}" 
+			nodeprecated="false" nodeprecatedlist="false" 
+                        noindex="false" nonavbar="false" notree="false" 
+			package="yes" splitindex="true" 
+                        use="true" version="true" charset="UTF-8" 
+                        >
+			<classpath>
+				<fileset dir="${dollarStr}{env.RTM_JAVA_ROOT}/jar">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+			<sourcefiles>
+				<fileset dir="${dollarStr}{source}">
+					<include name="**/*.pde"/>
+				</fileset>
+                	</sourcefiles>
+                </javadoc>
+	</target>
+</project>

@@ -1,0 +1,46 @@
+import jp.go.aist.rtm.RTC.jfsm.DataType;
+import jp.go.aist.rtm.RTC.jfsm.State;
+import jp.go.aist.rtm.RTC.jfsm.StateDef;
+
+#foreach($type in ${javaConv.getEventTypes(${fsmParam})})
+${javaConv.getDataportPackageName(${type})}
+#end
+
+/**
+ * 
+ */
+@DataType(${fsmParam.name}.Data.class)
+public class ${fsmParam.name} extends StateDef implements ${rtcParam.name}Protocol {
+
+    public static class Data {
+    }
+    
+     @Override
+    public void onInit() {
+        setState(new State(${tmpltHelper.getInitialState(${rtcParam})}.class));
+    }
+
+    @Override
+    public void onEntry() {
+    }
+
+    @Override
+    public void onExit() {
+    }
+    
+#foreach($eachTrans in ${fsmParam.getAllTransListNoDupl()})
+#if( ${eachTrans.event.length()} > 0 )
+#if( ${eachTrans.existEventParam()} )
+    @Override
+#if( ${eachTrans.existDataType()} )
+    public void ${eachTrans.event}(${javaConv.getDataTypeName(${eachTrans.dataType})} data) {
+    }
+#else
+    public void ${eachTrans.event}() {
+    }
+#end
+
+#end
+#end
+#end
+}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension point="jp.go.aist.rtm.rtcbuilder.generateManager">
+      <manager
+            managerclass="jp.go.aist.rtm.rtcbuilder.processing.manager.ProcessingGenerateManager"
+            seq="200"/>
+      <manager
+            managerclass="jp.go.aist.rtm.rtcbuilder.processing.manager.ProcessingCMakeGenerateManager"
+            seq="210"/>
+   </extension>
+
+</plugin>
