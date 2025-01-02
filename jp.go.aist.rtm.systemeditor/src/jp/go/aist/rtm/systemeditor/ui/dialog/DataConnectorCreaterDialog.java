@@ -65,17 +65,6 @@ import jp.go.aist.rtm.toolscommon.util.ConnectorUtil.SerializerInfo;
 public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 	private static final int NAME_WIDTH = 150;
 
-	static final String LABEL_DETAIL = Messages.getString("DataConnectorCreaterDialog.22");
-
-	static final String MSG_ERROR_PUSH_RATE_NOT_NUMERIC = Messages.getString("DataConnectorCreaterDialog.19");
-	static final String MSG_ERROR_SKIP_COUNT_NOT_INTEGER = Messages.getString("DataConnectorCreaterDialog.30");
-	static final String MSG_ERROR_OUTPORT_BUFF_LENGTH_NOT_INTEGER = Messages.getString("DataConnectorCreaterDialog.31");
-	static final String MSG_ERROR_OUTPORT_WRITE_TIMEOUT_NOT_NUMERIC = Messages.getString("DataConnectorCreaterDialog.32");
-	static final String MSG_ERROR_OUTPORT_READ_TIMEOUT_NOT_NUMERIC = Messages.getString("DataConnectorCreaterDialog.33");
-	static final String MSG_ERROR_INPORT_BUFF_LENGTH_NOT_INTEGER = Messages.getString("DataConnectorCreaterDialog.34");
-	static final String MSG_ERROR_INPORT_WRITE_TIMEOUT_NOT_NUMERIC = Messages.getString("DataConnectorCreaterDialog.35");
-	static final String MSG_ERROR_INPORT_READ_TIMEOUT_NOT_NUMERIC = Messages.getString("DataConnectorCreaterDialog.36");
-
 	private static final String NORMAL_COLOR = "NORMAL_COLOR"; // @jve:decl-index=0: //$NON-NLS-1$
 	private static final String ERROR_COLOR = "ERROR_COLOR"; //$NON-NLS-1$
 
@@ -90,6 +79,11 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 	private Combo pushPolicyCombo;
 	private Text skipCountText;
 	private Combo timePolicyCombo;
+	
+	private Combo directionCombo;
+	private Label directionLabel;
+	private String outportIP;
+	private String inportIP;
 
 	private ScrolledComposite propertyScrollArea;
 	
@@ -514,6 +508,108 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 			}
 		});
 		createLabel(portProfileEditComposite, "");
+		
+		//Direction
+		createLabel(portProfileEditComposite, "Connect Direction :");
+		style = SWT.DROP_DOWN | SWT.READ_ONLY;
+		directionCombo = new Combo(portProfileEditComposite, style);
+		gd = new GridData();
+		gd.horizontalAlignment = GridData.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		directionCombo.setLayoutData(gd);
+		if(connectorProfile.isIsReverse()) {
+			directionCombo.add(Messages.getString("DataConnectorCreaterDialog.combo.direction1"));
+			directionCombo.add(Messages.getString("DataConnectorCreaterDialog.combo.direction2"));
+		} else {
+			directionCombo.add(Messages.getString("DataConnectorCreaterDialog.combo.direction2"));
+			directionCombo.add(Messages.getString("DataConnectorCreaterDialog.combo.direction1"));
+		}
+		directionCombo.select(0);
+		directionCombo.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int selected = directionCombo.getSelectionIndex();
+				if(selected == 0) {
+					if(connectorProfile.isIsReverse()) {
+						directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction1_1")
+												+ " "
+												+ inportIP
+												+ " "
+												+ Messages.getString("DataConnectorCreaterDialog.label.direction1_2")
+												+ " "
+												+ outportIP
+												+ " "
+												+ Messages.getString("DataConnectorCreaterDialog.label.direction1_3"));
+					} else {
+						directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction2_1")
+												+ " "
+												+ outportIP
+												+ " "
+												+ Messages.getString("DataConnectorCreaterDialog.label.direction2_2")
+												+ " "
+												+ inportIP
+												+ " "
+												+ Messages.getString("DataConnectorCreaterDialog.label.direction2_3"));
+					}
+				} else {
+					if(connectorProfile.isIsReverse()) {
+						directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction2_1")
+								+ " "
+								+ outportIP
+								+ " "
+								+ Messages.getString("DataConnectorCreaterDialog.label.direction2_2")
+								+ inportIP
+								+ " "
+								+ Messages.getString("DataConnectorCreaterDialog.label.direction2_3"));
+					} else {
+						directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction1_1")
+								+ " "
+								+ inportIP
+								+ " "
+								+ Messages.getString("DataConnectorCreaterDialog.label.direction1_2")
+								+ outportIP
+								+ " "
+								+ Messages.getString("DataConnectorCreaterDialog.label.direction1_3"));
+					}
+				}
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+		createLabel(portProfileEditComposite, "");
+		//
+		createLabel(portProfileEditComposite, "");
+		
+		outportIP = getPortIndo(outport);
+		inportIP = getPortIndo(inport);
+		
+		directionLabel = new Label(portProfileEditComposite, SWT.WRAP);
+		if(connectorProfile.isIsReverse()) {
+			directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction1_1")
+					+ " "
+					+ inportIP
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction1_2")
+					+ outportIP
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction1_3"));
+		} else {
+			directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction2_1")
+					+ " "
+					+ outportIP
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction2_2")
+					+ inportIP
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction2_3"));
+		}
+		gd = new GridData();
+		gd.horizontalAlignment = GridData.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalSpan = 2;
+		directionLabel.setLayoutData(gd);
+		
 		return portProfileEditComposite;
 	}
 
@@ -1569,6 +1665,11 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 				}
 			}
 		}
+		
+		if(directionCombo.getSelectionIndex() == 1) {
+			connectorProfile.setIsReverse(!connectorProfile.isIsReverse());
+		}
+		
 		if (additionalTableViewer != null) {
 			List<AdditionalEntry> additional = (List<AdditionalEntry>) additionalTableViewer
 					.getInput();
@@ -1627,7 +1728,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 			}
 
 			if (!isDouble) {
-				setMessage(MSG_ERROR_PUSH_RATE_NOT_NUMERIC,
+				setMessage(Messages.getString("DataConnectorCreaterDialog.msg.push_rate"),
 						IMessageProvider.ERROR);
 			}
 		}
@@ -1643,7 +1744,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 				// void
 			}
 			if (!isInt) {
-				setMessage(MSG_ERROR_SKIP_COUNT_NOT_INTEGER,
+				setMessage(Messages.getString("DataConnectorCreaterDialog.msg.skip_count"),
 						IMessageProvider.ERROR);
 			}
 		}
@@ -1659,7 +1760,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 				// void
 			}
 			if (!isInt) {
-				setMessage(MSG_ERROR_OUTPORT_BUFF_LENGTH_NOT_INTEGER,
+				setMessage(Messages.getString("DataConnectorCreaterDialog.msg.outport_buff_length"),
 						IMessageProvider.ERROR);
 			}
 			//
@@ -1674,7 +1775,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 					// void
 				}
 				if (!isDouble) {
-					setMessage(MSG_ERROR_OUTPORT_WRITE_TIMEOUT_NOT_NUMERIC,
+					setMessage(Messages.getString("DataConnectorCreaterDialog.msg.outport_write_timeout"),
 							IMessageProvider.ERROR);
 				}
 			}
@@ -1690,7 +1791,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 					// void
 				}
 				if (!isDouble) {
-					setMessage(MSG_ERROR_OUTPORT_READ_TIMEOUT_NOT_NUMERIC,
+					setMessage(Messages.getString("DataConnectorCreaterDialog.msg.outport_read_timeout"),
 							IMessageProvider.ERROR);
 				}
 			}
@@ -1707,7 +1808,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 				// void
 			}
 			if (!isInt) {
-				setMessage(MSG_ERROR_INPORT_BUFF_LENGTH_NOT_INTEGER,
+				setMessage(Messages.getString("DataConnectorCreaterDialog.msg.inport_buff_length"),
 						IMessageProvider.ERROR);
 			}
 			//
@@ -1722,7 +1823,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 					// void
 				}
 				if (!isDouble) {
-					setMessage(MSG_ERROR_INPORT_WRITE_TIMEOUT_NOT_NUMERIC,
+					setMessage(Messages.getString("DataConnectorCreaterDialog.msg.inport_write_timeout"),
 							IMessageProvider.ERROR);
 				}
 			}
@@ -1738,7 +1839,7 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 					// void
 				}
 				if (!isDouble) {
-					setMessage(MSG_ERROR_INPORT_READ_TIMEOUT_NOT_NUMERIC,
+					setMessage(Messages.getString("DataConnectorCreaterDialog.msg.inport_read_timeout"),
 							IMessageProvider.ERROR);
 				}
 			}
@@ -1752,11 +1853,12 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 
 	@Override
 	protected Point getInitialSize() {
-		int height = 500;
+		int height = 530;
+		int width = 560;
 		if(existIFOpt) {
-			height = 800;
+			height = 830;
 		}
-		return getShell().computeSize(SWT.DEFAULT, height, true);
+		return getShell().computeSize(width, height, true);
 	}
 
 }

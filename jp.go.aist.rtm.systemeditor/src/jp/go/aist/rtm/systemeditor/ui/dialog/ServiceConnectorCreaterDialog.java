@@ -9,12 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jp.go.aist.rtm.toolscommon.model.component.Component;
-import jp.go.aist.rtm.toolscommon.model.component.ComponentFactory;
-import jp.go.aist.rtm.toolscommon.model.component.ConnectorProfile;
-import jp.go.aist.rtm.toolscommon.model.component.PortInterfaceProfile;
-import jp.go.aist.rtm.toolscommon.model.component.ServicePort;
-
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -33,17 +27,26 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+
+import jp.go.aist.rtm.systemeditor.nl.Messages;
+import jp.go.aist.rtm.toolscommon.model.component.Component;
+import jp.go.aist.rtm.toolscommon.model.component.ComponentFactory;
+import jp.go.aist.rtm.toolscommon.model.component.ConnectorProfile;
+import jp.go.aist.rtm.toolscommon.model.component.PortInterfaceProfile;
+import jp.go.aist.rtm.toolscommon.model.component.ServicePort;
 
 /**
  * サービスポート間の接続のコネクタプロファイルの選択ダイアログ
@@ -69,51 +72,43 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 
 	static final int EXEC_BUTTON_WIDTH = 70;
 
-	static final String MSG_NOMATCH_INTERFACE = getString("ServiceConnectorCreaterDialog.3");
-	static final String MSG_UNMATCH_INTERFACE = getString("ServiceConnectorCreaterDialog.4");
-
-	static final String MSG_UNMATCH_INTERFACE_TYPE = getString("ServiceConnectorCreaterDialog.13");
-	static final String MSG_UNMATCH_INTERFACE_INSTANCE = getString("ServiceConnectorCreaterDialog.14");
-
-	static final String LABEL_ENTER_PROFILE = getString("ConnectorCreaterDialogBase.1");
-
-	static final String LABEL_BUTTON_ADD = getString("Common.button.add");
-	static final String LABEL_BUTTON_DELETE = getString("Common.button.delete");
-
-	static final String LABEL_DETAIL = getString("ServiceConnectorCreaterDialog.11");
-
 	static final int PROPERTY_CONSUMER = 0;
 	static final int PROPERTY_PROVIDER = 1;
 
-	Text nameText;
+	private Text nameText;
 
-	Composite detailComposite;
+	private Combo directionCombo;
+	private Label directionLabel;
+	private String firstPortIP;
+	private String secondPortIP;
 
-	TableViewer interfaceTableViewer;
-	Table interfaceTable;
+	private Composite detailComposite;
 
-	Button addButton;
-	Button deleteButton;
+	private TableViewer interfaceTableViewer;
+	private Table interfaceTable;
 
-	Point defaultDialogSize;
+	private Button addButton;
+	private Button deleteButton;
 
-	ConnectorProfile connectorProfile;
-	ConnectorProfile dialogResult;
+	private Point defaultDialogSize;
 
-	ServicePort first;
-	ServicePort second;
+	private ConnectorProfile connectorProfile;
+	private ConnectorProfile dialogResult;
 
-	List<InterfaceEntry> interfaceList;
-	InterfaceEntry selectedEntry;
+	private ServicePort first;
+	private ServicePort second;
 
-	Map<String, ConnectorProfile.InterfaceId> consumerMap;
-	List<String> consumerLabels;
+	private List<InterfaceEntry> interfaceList;
+	private InterfaceEntry selectedEntry;
 
-	Map<String, ConnectorProfile.InterfaceId> providerMap;
-	List<String> providerLabels;
+	private Map<String, ConnectorProfile.InterfaceId> consumerMap;
+	private List<String> consumerLabels;
 
-	String baseMessage;
-	TableViewer additionalTableViewer;
+	private Map<String, ConnectorProfile.InterfaceId> providerMap;
+	private List<String> providerLabels;
+
+	private String baseMessage;
+	private TableViewer additionalTableViewer;
 
 	public ServiceConnectorCreaterDialog(Shell parentShell) {
 		super(parentShell);
@@ -203,7 +198,7 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 		mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		Label label = new Label(mainComposite, SWT.NONE);
-		label.setText(LABEL_ENTER_PROFILE);
+		label.setText(getString("ConnectorCreaterDialogBase.1"));
 		GridData labelLayloutData = new GridData(
 				GridData.HORIZONTAL_ALIGN_BEGINNING);
 		label.setLayoutData(labelLayloutData);
@@ -223,9 +218,9 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 				baseMessage = null;
 			} else {
 				if (countMatch == 0) {
-					baseMessage = MSG_NOMATCH_INTERFACE;
+					baseMessage = getString("ServiceConnectorCreaterDialog.msg.interface_not_match");
 				} else {
-					baseMessage = MSG_UNMATCH_INTERFACE;
+					baseMessage = getString("ServiceConnectorCreaterDialog.msg.interface_part_not_match");
 				}
 			}
 		} catch (Exception e) {
@@ -273,10 +268,109 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 			}
 		});
 		createLabel(portProfileEditComposite, "");
-
+		//Direction
+		createLabel(portProfileEditComposite, "Connect Direction :");
+		int style = SWT.DROP_DOWN | SWT.READ_ONLY;
+		directionCombo = new Combo(portProfileEditComposite, style);
+		gd = new GridData();
+		gd.horizontalAlignment = GridData.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		directionCombo.setLayoutData(gd);
+		
+		String firstItem =	Messages.getString("ServiceConnectorCreaterDialog.combo.direction0")
+							+ " "
+							+ first.getNameL()
+							+ " "
+							+ Messages.getString("ServiceConnectorCreaterDialog.combo.direction1")
+							+ " "
+							+ second.getNameL()
+							+ " "
+							+ Messages.getString("ServiceConnectorCreaterDialog.combo.direction2");
+		String secondItem = Messages.getString("ServiceConnectorCreaterDialog.combo.direction0") 
+							+ " "
+							+ second.getNameL()
+							+ " "
+							+ Messages.getString("ServiceConnectorCreaterDialog.combo.direction1")
+							+ " "
+							+ first.getNameL()
+							+ " "
+							+ Messages.getString("ServiceConnectorCreaterDialog.combo.direction2");
+		if(connectorProfile.isIsReverse()) {
+			directionCombo.add(secondItem);
+			directionCombo.add(firstItem);
+		} else {
+			directionCombo.add(firstItem);
+			directionCombo.add(secondItem);
+		}
+		directionCombo.select(0);
+		directionCombo.addSelectionListener(new SelectionListener() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int selected = directionCombo.getSelectionIndex();
+				if(selected == 0) {
+					if(connectorProfile.isIsReverse()) {
+						directionLabel.setText(Messages.getString("ServiceConnectorCreaterDialog.label.direction1_1")
+												+ secondPortIP
+												+ Messages.getString("ServiceConnectorCreaterDialog.label.direction1_2")
+												+ firstPortIP
+												+ Messages.getString("ServiceConnectorCreaterDialog.label.direction1_3"));
+					} else {
+						directionLabel.setText(Messages.getString("DataConnectorCreaterDialog.label.direction2_1")
+												+ firstPortIP
+												+ Messages.getString("ServiceConnectorCreaterDialog.label.direction2_2")
+												+ secondPortIP
+												+ Messages.getString("ServiceConnectorCreaterDialog.label.direction2_3"));
+					}
+				} else {
+					if(connectorProfile.isIsReverse()) {
+						directionLabel.setText(Messages.getString("ServiceConnectorCreaterDialog.label.direction2_1")
+								+ firstPortIP
+								+ Messages.getString("ServiceConnectorCreaterDialog.label.direction2_2")
+								+ secondPortIP
+								+ Messages.getString("ServiceConnectorCreaterDialog.label.direction2_3"));
+					} else {
+						directionLabel.setText(Messages.getString("ServiceConnectorCreaterDialog.label.direction1_1")
+								+ secondPortIP
+								+ Messages.getString("ServiceConnectorCreaterDialog.label.direction1_2")
+								+ firstPortIP
+								+ Messages.getString("ServiceConnectorCreaterDialog.label.direction1_3"));
+					}
+				}
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+		createLabel(portProfileEditComposite, "");
+		//
+		createLabel(portProfileEditComposite, "");
+		
+		firstPortIP = getPortIndo(first);
+		secondPortIP = getPortIndo(second);
+		
+		directionLabel = new Label(portProfileEditComposite, SWT.WRAP);
+		if(connectorProfile.isIsReverse()) {
+			directionLabel.setText(Messages.getString("ServiceConnectorCreaterDialog.label.direction1_1")
+					+ secondPortIP
+					+ Messages.getString("ServiceConnectorCreaterDialog.label.direction1_2")
+					+ firstPortIP
+					+ Messages.getString("ServiceConnectorCreaterDialog.label.direction1_3"));
+		} else {
+			directionLabel.setText(Messages.getString("ServiceConnectorCreaterDialog.label.direction2_1")
+					+ firstPortIP
+					+ Messages.getString("ServiceConnectorCreaterDialog.label.direction2_2")
+					+ secondPortIP
+					+ Messages.getString("ServiceConnectorCreaterDialog.label.direction2_3"));
+		}
+		gd = new GridData();
+		gd.horizontalAlignment = GridData.FILL;
+		gd.grabExcessHorizontalSpace = true;
+		gd.horizontalSpan = 2;
+		directionLabel.setLayoutData(gd);
+		//
 		final Button detailCheck = new Button(portProfileEditComposite,
 				SWT.CHECK);
-		detailCheck.setText(LABEL_DETAIL);
+		detailCheck.setText(getString("ServiceConnectorCreaterDialog.detail"));
 		detailCheck.setSelection(false);
 		createLabel(portProfileEditComposite, "");
 		createLabel(portProfileEditComposite, "");
@@ -337,7 +431,7 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 		gd.verticalAlignment = SWT.FILL;
 		gd.horizontalAlignment = SWT.FILL;
 		gd.grabExcessVerticalSpace = true;
-		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessHorizontalSpace = true;	
 		gd.heightHint = 120;
 		interfaceTable.setLayout(gl);
 		interfaceTable.setLayoutData(gd);
@@ -362,7 +456,7 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 		buttonComposite.setLayoutData(gd);
 
 		addButton = new Button(buttonComposite, SWT.TOP);
-		addButton.setText(LABEL_BUTTON_ADD);
+		addButton.setText(getString("Common.button.add"));
 		gd = new GridData();
 		gd.widthHint = EXEC_BUTTON_WIDTH;
 		addButton.setLayoutData(gd);
@@ -378,7 +472,7 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 		});
 
 		deleteButton = new Button(buttonComposite, SWT.TOP);
-		deleteButton.setText(LABEL_BUTTON_DELETE);
+		deleteButton.setText(getString("Common.button.delete"));
 		gd = new GridData();
 		gd.widthHint = EXEC_BUTTON_WIDTH;
 		deleteButton.setLayoutData(gd);
@@ -517,6 +611,10 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void okPressed() {
+		if(directionCombo.getSelectionIndex() == 1) {
+			connectorProfile.setIsReverse(!connectorProfile.isIsReverse());
+		}
+
 		if (additionalTableViewer != null) {
 			// 重複チェック
 			if (!checkProperties((List<AdditionalEntry>) additionalTableViewer
@@ -620,7 +718,9 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 
 	@Override
 	protected Point getInitialSize() {
-		return getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
+		int width = 600;
+		int height = 280;
+		return getShell().computeSize(width, height, true);
 	}
 
 	/** インターフェース一覧のエントリ */
@@ -655,13 +755,13 @@ public class ServiceConnectorCreaterDialog extends ConnectorDialogBase {
 			warningMessage = null;
 			if (consumer.if_tname != null
 					&& !consumer.if_tname.equals(provider.if_tname)) {
-				errorMessage = form(MSG_UNMATCH_INTERFACE_TYPE,
+				errorMessage = form(getString("ServiceConnectorCreaterDialog.msg.type_not_match"),
 						consumer.if_tname, provider.if_tname);
 				return false;
 			}
 			if (consumer.if_iname != null
 					&& !consumer.if_iname.equals(provider.if_iname)) {
-				warningMessage = form(MSG_UNMATCH_INTERFACE_INSTANCE,
+				warningMessage = form(getString("ServiceConnectorCreaterDialog.msg.name_not_match"),
 						consumer.if_iname, provider.if_iname);
 				return false;
 			}
