@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.go.aist.rtm.systemeditor.nl.Messages;
+import jp.go.aist.rtm.toolscommon.corba.CorbaUtil;
+import jp.go.aist.rtm.toolscommon.model.component.Component;
+import jp.go.aist.rtm.toolscommon.model.component.Port;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -152,6 +155,40 @@ public class ConnectorDialogBase extends TitleAreaDialog {
 		return true;
 	}
 	
+	protected String getPortInfo(Port source, boolean withComp, boolean withPort) {
+		StringBuilder builder = new StringBuilder();
+		
+		String ip = getPortAddress(source, withPort);
+		if(ip.length() == 0) return "";
+		
+		if(withComp) {
+			builder.append(source.getNameL());
+			builder.append(":");
+		}
+		builder.append("(");
+		builder.append(ip);
+		builder.append(")");
+		
+		return builder.toString();
+	}
+	
+	protected String getPortAddress(Port source, boolean witPort) {
+		Component component = (Component) source.eContainer();
+		Object first = component.getSynchronizationSupport().getRemoteObjects()[0];
+		if(first instanceof org.omg.CORBA.Object) {
+			org.omg.CORBA.Object corbaObj = (org.omg.CORBA.Object)first;
+			CorbaUtil.IORInfo info = CorbaUtil.getIORInfo(corbaObj);
+			if( 0<info.taggedProfiles.size() ) {
+				if(witPort) {
+					return info.taggedProfiles.get(0).host + " : " + info.taggedProfiles.get(0).port;
+				} else {
+					return info.taggedProfiles.get(0).host;
+				}
+			}
+		}
+		return "";
+	}
+
 	public class AdditionalEntry {
 		private String name;
 		private String value;
