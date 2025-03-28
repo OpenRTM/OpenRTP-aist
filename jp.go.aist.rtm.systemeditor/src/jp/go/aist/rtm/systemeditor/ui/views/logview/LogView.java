@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -39,8 +40,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -72,14 +75,14 @@ public class LogView extends ViewPart {
 	private List<LogParam> logList = new ArrayList<LogParam>();
 	
 	private FilteringParam filteringParam = null;
-
+	
 	public LogView() {
 	}
 
 	public LogView getLogView() {
 		return this;
 	}
-
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		GridLayout gl = new GridLayout();
@@ -152,9 +155,11 @@ public class LogView extends ViewPart {
 							logList.add(info);
 			            	if(record.isSet(0)) info.setTime(record.get(0));
 			            	if(record.isSet(1)) info.setLevel(record.get(1));
-			            	if(record.isSet(2)) info.setManager(record.get(2));
-			            	if(record.isSet(3)) info.setName(record.get(3));
-			            	if(record.isSet(4)) info.setMessage(record.get(4));
+			            	if(record.isSet(2)) info.setHost(record.get(5));
+			            	if(record.isSet(3)) info.setPid(record.get(4));
+			            	if(record.isSet(4)) info.setManager(record.get(2));
+			            	if(record.isSet(5)) info.setName(record.get(3));
+			            	if(record.isSet(6)) info.setMessage(record.get(6));
 			            }
 			        } catch (UnsupportedEncodingException e1) {
 			        } catch (FileNotFoundException e2) {
@@ -198,7 +203,13 @@ public class LogView extends ViewPart {
 						for(int index=0; index<rtclogTable.getItemCount(); index++) {
 							TableItem item = rtclogTable.getItem(index);
 							LogParam param = (LogParam)item.getData();
-							printer.printRecord(param.getTime(), param.getLevel(), param.getManager(), param.getName(), param.getMessage());
+							printer.printRecord(param.getTime(),
+												param.getLevel(),
+												param.getHost(),
+												param.getPid(),
+												param.getManager(),
+												param.getName(),
+												param.getMessage());
 						}
 					} catch (IOException ex) {
 					    ex.printStackTrace();
@@ -268,9 +279,16 @@ public class LogView extends ViewPart {
 				if(btnStart.getSelection()) {
 					String strPort = txtPort.getText();
 					int portNo = Integer.parseInt(strPort);
-					handler = new LoggerHandler();
-					handler.startServer(portNo, rtclogTableViewer);
-					btnStart.setText(Messages.getString("LogView.btnStop"));
+					try {
+						handler = new LoggerHandler();
+						handler.startServer(portNo, rtclogTableViewer);
+						btnStart.setText(Messages.getString("LogView.btnStop"));
+					} catch(Exception ex) {
+						MessageDialog.openError(getSite().getShell(),
+								"Error",
+								Messages.getString("LogView.startError"));
+						return;
+					}
 				} else {
 					if(handler!=null) {
 						try {
@@ -351,8 +369,32 @@ public class LogView extends ViewPart {
 		rtclogTableViewer = new TableViewer(composite, SWT.FULL_SELECTION
 				| SWT.SINGLE | SWT.BORDER);
 		rtclogTableViewer.setContentProvider(new ArrayContentProvider());
+		rtclogTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if(selection.isEmpty() == false) {
+					handler.setAutoScroll(false);
+				} else {
+					handler.setAutoScroll(true);
+				}
+			}
+		});
 		rtclogTableViewer.setInput(logList);
-
+		rtclogTableViewer.getTable().getVerticalBar().addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				 int topIndex = rtclogTableViewer.getTable().getTopIndex();
+		        int itemCount = rtclogTableViewer.getTable().getItemCount();
+		        int visibleRowCount = rtclogTableViewer.getTable().getClientArea().height / rtclogTableViewer.getTable().getItemHeight();
+		        if(itemCount <= topIndex + visibleRowCount) {
+		        	handler.setAutoScroll(true);
+		        } else {
+		        	handler.setAutoScroll(false);
+		        }
+			}
+        });
+		
 		filter = new LogViewerFilter();
 		rtclogTableViewer.setFilters(new ViewerFilter[] { filter });
 
@@ -368,9 +410,11 @@ public class LogView extends ViewPart {
 		rtclogTable.setHeaderVisible(true);
 
 		createColumn(rtclogTableViewer, Messages.getString("LogView.columnTime"), 120, true);
-		createColumn(rtclogTableViewer, Messages.getString("LogView.columnLevel"), 100, true);
-		createColumn(rtclogTableViewer, Messages.getString("LogView.columnManager"), 120, false);
-		createColumn(rtclogTableViewer, Messages.getString("LogView.columnID"), 120, false);
+		createColumn(rtclogTableViewer, Messages.getString("LogView.columnLevel"), 60, true);
+		createColumn(rtclogTableViewer, Messages.getString("LogView.columnHost"), 100, false);
+		createColumn(rtclogTableViewer, Messages.getString("LogView.columnPid"), 50, false);
+		createColumn(rtclogTableViewer, Messages.getString("LogView.columnManager"), 80, false);
+		createColumn(rtclogTableViewer, Messages.getString("LogView.columnID"), 100, false);
 		createColumn(rtclogTableViewer, Messages.getString("LogView.columnMessage"), 250, false);
 		
 		provider = new LogLabelProvider();
@@ -424,8 +468,12 @@ public class LogView extends ViewPart {
 				if(entry.getLevel() == null) return null;
 				return entry.getLevel().toString();
 			case 2:
-				return entry.getManager();
+				return entry.getHost();
 			case 3:
+				return entry.getPid();
+			case 4:
+				return entry.getManager();
+			case 5:
 				return entry.getName();
 			default:
 				return entry.getMessage();

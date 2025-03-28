@@ -37,6 +37,12 @@ public class LogParam {
 	@JsonProperty("message")
 	private String message;
 	
+	@JsonProperty("pid")
+	private String pid;
+
+	@JsonProperty("host")
+	private String host;
+
 	private Calendar cal;
 	
 	@JsonIgnore
@@ -100,6 +106,26 @@ public class LogParam {
 		this.message = message;
 	}
 	
+	@JsonProperty("pid")
+	public String getPid() {
+		return pid;
+	}
+	
+	@JsonProperty("pid")
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+
+	@JsonProperty("host")
+	public String getHost() {
+		return host;
+	}
+	
+	@JsonProperty("host")
+	public void setHost(String host) {
+		this.host = host;
+	}
+
 	@JsonAnyGetter
 	public Map<String, Object> getAdditionalProperties() {
 		return this.additionalProperties;
