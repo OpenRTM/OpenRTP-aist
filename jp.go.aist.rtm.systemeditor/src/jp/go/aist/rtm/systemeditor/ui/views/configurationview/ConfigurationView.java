@@ -123,6 +123,7 @@ public class ConfigurationView extends ViewPart {
 	private static final String WHITE_COLOR = "WHITE_COLOR";
 
 	private static final int BUTTON_WIDTH = 70;
+	private static final int BUTTON_WIDE_WIDTH = 100;
 
 	private static final String LABEL_BUTTON_EDIT = Messages.getString("Common.button.edit");
 	private static final String LABEL_BUTTON_APPLY = Messages.getString("Common.button.apply");
@@ -228,7 +229,7 @@ public class ConfigurationView extends ViewPart {
 		editButton.setText(LABEL_BUTTON_EDIT);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = BUTTON_WIDTH;
+		gd.widthHint = BUTTON_WIDE_WIDTH;
 		editButton.setLayoutData(gd);
 		editButton.setEnabled(false);
 		editButton.addSelectionListener(new EditSelectionAdapter(this));
@@ -236,7 +237,7 @@ public class ConfigurationView extends ViewPart {
 		applyButton = new Button(executionButtonComposite, SWT.TOP);
 		applyButton.setText(LABEL_BUTTON_APPLY);
 		gd = new GridData();
-		gd.widthHint = BUTTON_WIDTH;
+		gd.widthHint = BUTTON_WIDE_WIDTH;
 		applyButton.setLayoutData(gd);
 		applyButton.setEnabled(false);
 		applyButton.addSelectionListener(new SelectionAdapter() {
@@ -249,7 +250,7 @@ public class ConfigurationView extends ViewPart {
 		cancelButton = new Button(executionButtonComposite, SWT.TOP);
 		cancelButton.setText(LABEL_BUTTON_CANCEL);
 		gd = new GridData();
-		gd.widthHint = BUTTON_WIDTH;
+		gd.widthHint = BUTTON_WIDE_WIDTH;
 		cancelButton.setLayoutData(gd);
 		cancelButton.setEnabled(false);
 		cancelButton.addSelectionListener(new SelectionAdapter() {

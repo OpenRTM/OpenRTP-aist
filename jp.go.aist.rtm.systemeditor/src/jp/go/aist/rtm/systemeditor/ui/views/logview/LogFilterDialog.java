@@ -35,6 +35,8 @@ public class LogFilterDialog extends Dialog {
 	private Button btnTime;
 	private Button btnManager;
 	private Button btnIdentifier;
+	private Button btnPID;
+	private Button btnHost;
 	private Button btnMessage;
 	private Button btnEdit;
 	private Button btnDelete;
@@ -79,6 +81,8 @@ public class LogFilterDialog extends Dialog {
         		btnOr.setEnabled(false);
             	btnLevel.setEnabled(false);
 	            btnTime.setEnabled(false);
+	            btnPID.setEnabled(false);
+	            btnHost.setEnabled(false);
 	            btnManager.setEnabled(false);
 	            btnIdentifier.setEnabled(false);
 	            btnMessage.setEnabled(false);
@@ -112,6 +116,8 @@ public class LogFilterDialog extends Dialog {
 		            btnTime.setEnabled(true);
 		            btnManager.setEnabled(true);
 		            btnIdentifier.setEnabled(true);
+		            btnPID.setEnabled(true);
+		            btnHost.setEnabled(true);
 		            btnMessage.setEnabled(true);
 	            }
 		    }
@@ -239,6 +245,26 @@ public class LogFilterDialog extends Dialog {
 			}
 		});
 		
+		btnPID = createButton(btnComposite, Messages.getString("LogView.menuPID"));
+		btnPID.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+	            TreeItem targetItem = conditionTree.getSelection()[0];
+	            FilteringParam targetParam = (FilteringParam)targetItem.getData();
+	            addString(targetItem, targetParam, FilteringKind.PID);
+			}
+		});
+		
+		btnHost = createButton(btnComposite, Messages.getString("LogView.menuHost"));
+		btnHost.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+	            TreeItem targetItem = conditionTree.getSelection()[0];
+	            FilteringParam targetParam = (FilteringParam)targetItem.getData();
+	            addString(targetItem, targetParam, FilteringKind.HOST);
+			}
+		});
+		
 		btnMessage = createButton(btnComposite, Messages.getString("LogView.menuMessage"));
 		btnMessage.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -309,6 +335,8 @@ public class LogFilterDialog extends Dialog {
 	            	buildTimeMenu(menu, targetItem, targetParam);
 	            	buildStringMenu(menu, targetItem, targetParam, FilteringKind.MANAGER);
 	            	buildStringMenu(menu, targetItem, targetParam, FilteringKind.IDENTIFIER);
+	            	buildStringMenu(menu, targetItem, targetParam, FilteringKind.PID);
+	            	buildStringMenu(menu, targetItem, targetParam, FilteringKind.HOST);
 	            	buildStringMenu(menu, targetItem, targetParam, FilteringKind.MESSAGE);
 	            }
 	        }
@@ -492,6 +520,12 @@ public class LogFilterDialog extends Dialog {
 			break;
 		case IDENTIFIER:
 			item.setText(Messages.getString("LogView.menuIdentifier"));
+			break;
+		case PID:
+			item.setText(Messages.getString("LogView.columnPid"));
+			break;
+		case HOST:
+			item.setText(Messages.getString("LogView.columnHost"));
 			break;
 		case MESSAGE:
 			item.setText(Messages.getString("LogView.menuMessage"));

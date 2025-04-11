@@ -20,6 +20,7 @@ public class LoggerHandler {
 	private ForwardServer logServer;
 	private List<LogParam> logList;
 	private TableViewer logTable;
+	private boolean autoScroll = true;
 	
 	ForwardCallback callback = ForwardCallback.ofSyncConsumer(
 	  stream -> {
@@ -32,6 +33,12 @@ public class LoggerHandler {
 						public void run() {
 							logList.add(info);
 							logTable.refresh();
+							if(autoScroll) {
+								int itemNum = logTable.getTable().getItemCount();
+								if(0 < itemNum) {
+									logTable.getTable().setTopIndex(itemNum-1);
+								}
+							}
 						}
 					});
 	          } catch (IOException e) {
@@ -60,5 +67,9 @@ public class LoggerHandler {
 			e.printStackTrace();
 		}
 		logServer = null;
+	}
+	
+	public void setAutoScroll(boolean source) {
+		this.autoScroll = source;
 	}
 }

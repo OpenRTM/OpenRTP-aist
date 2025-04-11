@@ -56,6 +56,12 @@ public class LogViewerFilter extends ViewerFilter {
 			} else if(elem.getKind()==FilteringKind.IDENTIFIER) {
 				if(checkStringCondition(logParam.getName(), elem.getIdentifierCond(), elem.isRegexpIdentifier())==false) return false;
 				
+			} else if(elem.getKind()==FilteringKind.PID) {
+				if(checkStringCondition(logParam.getPid(), elem.getPidCond(), elem.isRegexpPid())==false) return false;
+
+			} else if(elem.getKind()==FilteringKind.HOST) {
+				if(checkStringCondition(logParam.getHost(), elem.getHostCond(), elem.isRegexpHost())==false) return false;
+
 			} else if(elem.getKind()==FilteringKind.MESSAGE) {
 				if(checkStringCondition(logParam.getMessage(), elem.getMessageCond(), elem.isRegexpMessage())==false) return false;
 			}
@@ -84,6 +90,12 @@ public class LogViewerFilter extends ViewerFilter {
 				
 			} else if(elem.getKind()==FilteringKind.IDENTIFIER) {
 				if(checkStringCondition(logParam.getName(), elem.getIdentifierCond(), elem.isRegexpIdentifier())) return true;
+				
+			} else if(elem.getKind()==FilteringKind.PID) {
+				if(checkStringCondition(logParam.getPid(), elem.getPidCond(), elem.isRegexpPid())) return true;
+				
+			} else if(elem.getKind()==FilteringKind.HOST) {
+				if(checkStringCondition(logParam.getHost(), elem.getHostCond(), elem.isRegexpHost())) return true;
 				
 			} else if(elem.getKind()==FilteringKind.MESSAGE) {
 				if(checkStringCondition(logParam.getMessage(), elem.getMessageCond(), elem.isRegexpMessage())) return true;

@@ -54,6 +54,12 @@ public class StringDialog extends Dialog {
 		case IDENTIFIER:
 			strName = Messages.getString("LogView.columnID");
 			break;
+		case PID:
+			strName = Messages.getString("LogView.columnPid");
+			break;
+		case HOST:
+			strName = Messages.getString("LogView.columnHost");
+			break;
 		case MESSAGE:
 			strName = Messages.getString("LogView.columnMessage");
 			break;
@@ -90,6 +96,18 @@ public class StringDialog extends Dialog {
 				txtCond.setText(targetParam.getIdentifierCond());
 			}
 			chkRegExp.setSelection(targetParam.isRegexpIdentifier());
+			break;
+		case PID:
+			if(targetParam.getPidCond()!=null) {
+				txtCond.setText(targetParam.getPidCond());
+			}
+			chkRegExp.setSelection(targetParam.isRegexpPid());
+			break;
+		case HOST:
+			if(targetParam.getHostCond()!=null) {
+				txtCond.setText(targetParam.getHostCond());
+			}
+			chkRegExp.setSelection(targetParam.isRegexpHost());
 			break;
 		case MESSAGE:
 			if(targetParam.getMessageCond()!=null) {
@@ -134,6 +152,14 @@ public class StringDialog extends Dialog {
 		case IDENTIFIER:
 			targetParam.setIdentifierCond(txtCond.getText());
 			targetParam.setRegexpIdentifier(chkRegExp.getSelection());
+			break;
+		case PID:
+			targetParam.setPidCond(txtCond.getText());
+			targetParam.setRegexpPid(chkRegExp.getSelection());
+			break;
+		case HOST:
+			targetParam.setHostCond(txtCond.getText());
+			targetParam.setRegexpHost(chkRegExp.getSelection());
 			break;
 		case MESSAGE:
 			targetParam.setMessageCond(txtCond.getText());

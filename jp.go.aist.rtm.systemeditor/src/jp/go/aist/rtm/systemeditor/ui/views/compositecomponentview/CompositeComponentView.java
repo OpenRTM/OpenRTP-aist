@@ -60,6 +60,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 public class CompositeComponentView extends ViewPart {
 
 	private static final int EXEC_BUTTON_WIDTH = 70;
+	private static final int EXEC_WIDE_BUTTON_WIDTH = 100;
 
 	private static final String COLOR_WHITE = "COLOR_WHITE";
 
@@ -228,7 +229,7 @@ public class CompositeComponentView extends ViewPart {
 		applyButton = new Button(execButtonComposite, SWT.TOP);
 		applyButton.setText(BUTTON_APPLY_LABEL);
 		gd = new GridData();
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		applyButton.setLayoutData(gd);
 		applyButton.setEnabled(false);
 		applyButton.addSelectionListener(new SelectionAdapter() {
@@ -241,7 +242,7 @@ public class CompositeComponentView extends ViewPart {
 		cancelButton = new Button(execButtonComposite, SWT.TOP);
 		cancelButton.setText(BUTTON_CANCEL_LABEL);
 		gd = new GridData();
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		cancelButton.setLayoutData(gd);
 		cancelButton.setEnabled(false);
 		cancelButton.addSelectionListener(new SelectionAdapter() {

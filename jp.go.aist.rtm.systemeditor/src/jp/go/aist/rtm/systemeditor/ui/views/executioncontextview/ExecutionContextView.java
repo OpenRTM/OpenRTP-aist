@@ -65,6 +65,7 @@ public class ExecutionContextView extends ViewPart {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionContextView.class);
 
 	static final int EXEC_BUTTON_WIDTH = 80;
+	static final int EXEC_WIDE_BUTTON_WIDTH = 120;
 
 	static final String PROPERTY_EXECUTOIN_CONTEXT = "PROPERTY_EXECUTOIN_CONTEXT";
 	static final String PROPERTY_NAME = "PROPERTY_NAME";
@@ -303,7 +304,7 @@ public class ExecutionContextView extends ViewPart {
 		applyButton.setText(LABEL_BUTTON_APPLY);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		applyButton.setLayoutData(gd);
 		applyButton.setEnabled(false);
 		applyButton.addSelectionListener(new SelectionAdapter() {
@@ -322,7 +323,7 @@ public class ExecutionContextView extends ViewPart {
 		startButton.setText(LABEL_BUTTON_START);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		startButton.setLayoutData(gd);
 		startButton.setEnabled(false);
 		startButton.addSelectionListener(new SelectionAdapter() {
@@ -349,7 +350,7 @@ public class ExecutionContextView extends ViewPart {
 		stopButton.setText(LABEL_BUTTON_STOP);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		stopButton.setLayoutData(gd);
 		stopButton.setEnabled(false);
 		stopButton.addSelectionListener(new SelectionAdapter() {
@@ -376,7 +377,7 @@ public class ExecutionContextView extends ViewPart {
 		activateButton.setText(LABEL_BUTTON_ACTIVATE);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		activateButton.setLayoutData(gd);
 		activateButton.setEnabled(false);
 		activateButton.addSelectionListener(new SelectionAdapter() {
@@ -408,7 +409,7 @@ public class ExecutionContextView extends ViewPart {
 		deactivateButton.setText(LABEL_BUTTON_DEACTIVATE);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		deactivateButton.setLayoutData(gd);
 		deactivateButton.setEnabled(false);
 		deactivateButton.addSelectionListener(new SelectionAdapter() {
@@ -440,7 +441,7 @@ public class ExecutionContextView extends ViewPart {
 		resetButton.setText(LABEL_BUTTON_RESET);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		resetButton.setLayoutData(gd);
 		resetButton.setEnabled(false);
 		resetButton.addSelectionListener(new SelectionAdapter() {
@@ -472,7 +473,7 @@ public class ExecutionContextView extends ViewPart {
 		detachButton.setText(LABEL_BUTTON_DETACH);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		detachButton.setLayoutData(gd);
 		detachButton.setEnabled(false);
 		detachButton.addSelectionListener(new SelectionAdapter() {
@@ -503,7 +504,7 @@ public class ExecutionContextView extends ViewPart {
 		attachButton.setText(LABEL_BUTTON_ATTACH);
 		gd = new GridData();
 		gd.horizontalAlignment = SWT.END;
-		gd.widthHint = EXEC_BUTTON_WIDTH;
+		gd.widthHint = EXEC_WIDE_BUTTON_WIDTH;
 		attachButton.setLayoutData(gd);
 		attachButton.setEnabled(false);
 		attachButton.addSelectionListener(new SelectionAdapter() {

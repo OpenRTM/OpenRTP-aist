@@ -15,6 +15,8 @@ public class FilteringParam {
 		TIME,
 		MANAGER,
 		IDENTIFIER,
+		PID,
+		HOST,
 		MESSAGE
 	}
 	protected FilteringKind kind;
@@ -34,6 +36,12 @@ public class FilteringParam {
 	private String identifierCond;
 	private boolean regexpIdentifier;
 	
+	private String pidCond;
+	private boolean regexpPid;
+
+	private String hostCond;
+	private boolean regexpHost;
+
 	private String messageCond;
 	private boolean regexpMessage;	
 	
@@ -119,6 +127,32 @@ public class FilteringParam {
 		this.regexpIdentifier = regexpIdentifier;
 	}
 
+	public String getPidCond() {
+		return pidCond;
+	}
+	public void setPidCond(String pidCond) {
+		this.pidCond = pidCond;
+	}
+	public boolean isRegexpPid() {
+		return regexpPid;
+	}
+	public void setRegexpPid(boolean regexpPid) {
+		this.regexpPid = regexpPid;
+	}
+
+	public String getHostCond() {
+		return hostCond;
+	}
+	public void setHostCond(String hostCond) {
+		this.hostCond = hostCond;
+	}
+	public boolean isRegexpHost() {
+		return regexpHost;
+	}
+	public void setRegexpHost(boolean regexpHost) {
+		this.regexpHost = regexpHost;
+	}
+
 	public String getMessageCond() {
 		return messageCond;
 	}
@@ -196,6 +230,30 @@ public class FilteringParam {
 			builder.append("=");
 			builder.append(identifierCond);
 			if(regexpIdentifier) {
+				builder.append(" (");
+				builder.append(Messages.getString("LogView.regexp"));
+				builder.append(")");
+			}
+			return builder.toString();
+		}
+		case PID: {
+			StringBuilder builder = new StringBuilder();
+			builder.append(Messages.getString("LogView.columnPid"));
+			builder.append("=");
+			builder.append(pidCond);
+			if(regexpPid) {
+				builder.append(" (");
+				builder.append(Messages.getString("LogView.regexp"));
+				builder.append(")");
+			}
+			return builder.toString();
+		}
+		case HOST: {
+			StringBuilder builder = new StringBuilder();
+			builder.append(Messages.getString("LogView.columnHost"));
+			builder.append("=");
+			builder.append(hostCond);
+			if(regexpHost) {
 				builder.append(" (");
 				builder.append(Messages.getString("LogView.regexp"));
 				builder.append(")");
