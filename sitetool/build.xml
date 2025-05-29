@@ -35,6 +35,7 @@
 		,jp.go.aist.rtm.rtcbuilder.java
 		,jp.go.aist.rtm.rtcbuilder.python
 		,jp.go.aist.rtm.rtcbuilder.lua
+		,jp.go.aist.rtm.rtcbuilder.processing
 		,jp.go.aist.rtm.toolscommon.profiles
 	" />
 
