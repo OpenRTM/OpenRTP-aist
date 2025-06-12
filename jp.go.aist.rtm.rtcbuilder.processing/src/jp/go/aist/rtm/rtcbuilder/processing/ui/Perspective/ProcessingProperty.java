@@ -6,9 +6,9 @@ import java.util.List;
 import jp.go.aist.rtm.rtcbuilder.ui.Perspective.LanguageProperty;
 
 public class ProcessingProperty extends LanguageProperty {
-	private String PerspectiveId = "org.eclipse.jdt.ui.JavaPerspective";
+	private String PerspectiveId = "xxx.xxxxx.xxx.xx.xxxxx";
 	private String PerspectiveName = "Java";
-	private String PluginId = "org.eclipse.jdt";
+	private String PluginId = "xxx.xxxxx.xxx";
 
 	public String getPerspectiveId() {
 		return PerspectiveId;
