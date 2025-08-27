@@ -101,7 +101,7 @@ public class CodeGeneratePortPreferencePage extends AbstarctFieldEditorPreferenc
 				Messages.getString("IPreferenceMessageConstants.PORT_TITLE_DATA_PORT"));
 		DigitAlphabetStringFieldEditor dataPortNameEditor = 
 			new DigitAlphabetStringFieldEditor(ComponentPreferenceManager.Generate_DataPort_Name,
-					Messages.getString("IMC.DATAPORT_LBL_DESCRIPTION"), dataportGroup);
+					Messages.getString("IMC.DATAPORT_LBL_PORTNAME"), dataportGroup);
 		addField(dataPortNameEditor);
 		StringFieldEditor dataPortTypeEditor = 
 			new StringFieldEditor(ComponentPreferenceManager.Generate_DataPort_Type,

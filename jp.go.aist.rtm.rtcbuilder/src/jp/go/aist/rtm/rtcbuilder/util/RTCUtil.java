@@ -82,7 +82,7 @@ public class RTCUtil {
 				IFolder path = project.getFolder("idl");
 				if(path!=null && path.exists()) {
 					if(added.contains("idl")==false) {
-						target.getIdlSearchPathList().add(new IdlPathParam("idl", "idl", false));
+						target.getIdlSearchPathList().add(new IdlPathParam(path.getLocation().toOSString(), "idl", false));
 						added.add("idl");
 					}
 				}
