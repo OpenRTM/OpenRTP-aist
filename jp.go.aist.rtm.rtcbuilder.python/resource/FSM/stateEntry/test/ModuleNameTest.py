@@ -94,13 +94,13 @@ class ModuleNameTest(OpenRTM_aist.DataFlowComponentBase):
     ## The finalize action (on ALIVE->END transition)
     ## 
     ## @return RTC::ReturnCode_t
-    #
+    ##
     ## 
     #def onFinalize(self):
     #
     #    return RTC.RTC_OK
     
-    #    ##
+    ###
     ##
     ## The startup action when ExecutionContext startup
     ## 
@@ -139,7 +139,7 @@ class ModuleNameTest(OpenRTM_aist.DataFlowComponentBase):
     #
     #    return RTC.RTC_OK
     
-    #    ##
+    ###
     ##
     ## The deactivated action (Active state exit action)
     ##
@@ -172,7 +172,7 @@ class ModuleNameTest(OpenRTM_aist.DataFlowComponentBase):
     ## @param ec_id target ExecutionContext Id
     ##
     ## @return RTC::ReturnCode_t
-    #    #
+    ##
     ##
     #def onAborting(self, ec_id):
     #
