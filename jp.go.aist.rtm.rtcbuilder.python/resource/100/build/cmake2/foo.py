@@ -111,7 +111,7 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
     ## The finalize action (on ALIVE->END transition)
     ## 
     ## @return RTC::ReturnCode_t
-    #
+    ##
     ## 
     #def onFinalize(self):
     #

@@ -240,7 +240,7 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
     ## The finalize action (on ALIVE->END transition)
     ## 
     ## @return RTC::ReturnCode_t
-    #
+    ##
     ## @pre on_finalize事前条件
     ## @post on_finalize事後条件
     ## 
@@ -337,7 +337,7 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
     ##
     ## @return RTC::ReturnCode_t
     ##
- ## @pre on_aborting事前条件
+    ## @pre on_aborting事前条件
     ## @post on_aborting事後条件
     ##
     #def onAborting(self, ec_id):
