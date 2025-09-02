@@ -76,10 +76,10 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
         self._d_InP1 = OpenRTM_aist.instantiateDataType(RTC.TimedShort)
         """
         InPort1の概要
-	        - Type: InPort1のデータの型
+         - Type: InPort1のデータの型
          - Number: InPort1のデータの数
          - Semantics: InPort1のデータの意味
-	        - Unit: InPort1のデータの単位
+         - Unit: InPort1のデータの単位
          - Frequency: InPort1のデータの発生頻度
          - Operation Cycle: InPort1のデータの処理周期
         """
@@ -87,10 +87,10 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
         self._d_InP2 = OpenRTM_aist.instantiateDataType(RTC.TimedLong)
         """
         InPort2の概要
-	        - Type: InPort2のデータの型
+         - Type: InPort2のデータの型
          - Number: InPort2のデータの数
          - Semantics: InPort2のデータの意味
-	        - Unit: InPort2のデータの単位
+         - Unit: InPort2のデータの単位
          - Frequency: InPort2のデータの発生頻度
          - Operation Cycle: InPort2のデータの処理周期
         """
