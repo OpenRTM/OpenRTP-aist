@@ -133,13 +133,13 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
         """
 #if(${port.docDescription.length()}>0)        ${tmpltHelperPy.convertDescDocPy(${port.docDescription})}
 #end
-#if(${port.docType.length()}>0)	        - Type: ${tmpltHelperPy.convertTypeDocPy(${port.docType})}
+#if(${port.docType.length()}>0)         - Type: ${tmpltHelperPy.convertTypeDocPy(${port.docType})}
 #end
 #if(${port.docNum.length()}>0)         - Number: ${tmpltHelperPy.convertNumberDocPy(${port.docNum})}
 #end
 #if(${port.docSemantics.length()}>0)         - Semantics: ${tmpltHelperPy.convertSemanticsDocPy(${port.docSemantics})}
 #end
-#if(${port.docUnit.length()}>0)	        - Unit: ${tmpltHelperPy.convertTypeDocPy(${port.docUnit})}
+#if(${port.docUnit.length()}>0)         - Unit: ${tmpltHelperPy.convertTypeDocPy(${port.docUnit})}
 #end
 #if(${port.docOccurrence.length()}>0)         - Frequency: ${tmpltHelperPy.convertFrequencyDocPy(${port.docOccurrence})}
 #end
