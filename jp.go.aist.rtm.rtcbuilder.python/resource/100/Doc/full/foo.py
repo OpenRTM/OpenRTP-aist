@@ -119,12 +119,12 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
         self._OutP2Out = OpenRTM_aist.OutPort("OutP2", self._d_OutP2)
         """
         ServicePort1の概要
-         Interface: ServicePort1のインターフェースの概要
+        Interface: ServicePort1のインターフェースの概要
         """
         self._svPortPort = OpenRTM_aist.CorbaPort("svPort")
         """
         ServicePort2の概要
-         Interface: ServicePort2のインターフェースの概要
+        Interface: ServicePort2のインターフェースの概要
         """
         self._cmPortPort = OpenRTM_aist.CorbaPort("cmPort")
         """
