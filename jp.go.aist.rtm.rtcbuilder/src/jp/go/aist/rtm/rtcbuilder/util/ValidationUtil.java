@@ -89,7 +89,7 @@ public class ValidationUtil {
 			if(0<ifparam.getIdlDispFile().length()) {
 				String dispFile = ifparam.getIdlDispFile();
 				if(dispFile.startsWith("<RTM_ROOT>")) {
-					String idlFile = dispFile.replace("<RTM_ROOT>", System.getenv("RTM_ROOT"));
+					String idlFile = dispFile.replace("<RTM_ROOT>\\", System.getenv("RTM_ROOT"));
 					ifparam.setIdlFile(idlFile);
 				} else {
 					if(outputProject!=null && 0<outputProject.length()) {

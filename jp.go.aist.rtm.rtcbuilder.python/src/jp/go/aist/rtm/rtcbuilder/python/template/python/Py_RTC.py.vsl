@@ -175,7 +175,7 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
         """
 #if(${servicePort.docDescription.length()}>0)        ${tmpltHelperPy.convertDescDocPy(${servicePort.docDescription})}
 #end
-#if(${servicePort.docIfDescription.length()}>0)         Interface: ${tmpltHelperPy.convertInterfacePy(${servicePort.docIfDescription})}
+#if(${servicePort.docIfDescription.length()}>0)        Interface: ${tmpltHelperPy.convertInterfacePy(${servicePort.docIfDescription})}
 #end
         """
         self._${servicePort.name}Port = OpenRTM_aist.CorbaPort("${servicePort.name}")
