@@ -125,6 +125,7 @@ public class ${rtcParam.name}TestImpl extends DataFlowComponentBase {
 #end
 #foreach($port in ${rtcParam.inports})  
         m_${port.tmplVarName}_val = new ${javaConv.getDataTypeName(${port.type})}();
+        initializeParam(m_${port.tmplVarName}_val);
         m_${port.tmplVarName} = new DataRef<${javaConv.getDataTypeName(${port.type})}>(m_${port.tmplVarName}_val);
         m_${port.name}Out = new OutPort<${javaConv.getDataTypeName(${port.type})}>("${port.name}", m_${port.tmplVarName});
 #end

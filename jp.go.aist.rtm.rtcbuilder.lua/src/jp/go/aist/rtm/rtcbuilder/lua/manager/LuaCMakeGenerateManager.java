@@ -103,8 +103,52 @@ public class LuaCMakeGenerateManager extends CMakeGenerateManager {
 
 	@Override
 	public GeneratedResult generateSrcCMakeLists(Map<String, Object> contextMap) {
-		GeneratedResult result = new GeneratedResult();
-		return result;
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateDocCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateDocConfPy(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateDoxyfile(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateIncludeCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateIncModuleCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateTestCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateTestIncludeCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateTestIncModuleCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
+	}
+
+	@Override
+	public GeneratedResult generateTestSrcCMakeLists(Map<String, Object> contextMap) {
+		return new GeneratedResult();
 	}
 	/////
 	public GeneratedResult generateLua(String infile, String outfile,
