@@ -12,13 +12,11 @@
  * $Id$
  */
 // </rtc-template>
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import RTC.TimedDoubleSeq;
 import Sample.SampleDataType;
 import RTC.TimedPoint3D;
@@ -30,7 +28,6 @@ import jp.go.aist.rtm.RTC.util.DataRef;
 import jp.go.aist.rtm.RTC.util.DoubleHolder;
 import jp.go.aist.rtm.RTC.util.IntegerHolder;
 import RTC.ReturnCode_t;
-
 // <rtc-template block="component_description">
 /**
  * @class ProcessingExampleTestImpl
@@ -47,7 +44,6 @@ import RTC.ReturnCode_t;
  */
 // </rtc-template>
 public class ProcessingExampleTestImpl extends DataFlowComponentBase {
-
   /*!
    * @brief constructor
    * @param manager Maneger Object
@@ -64,15 +60,15 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
         m_out2 = new DataRef<TimedPoint3D>(m_out2_val);
         m_out2In = new InPort<TimedPoint3D>("out2", m_out2);
         m_in1_val = new TimedDoubleSeq();
+        initializeParam(m_in1_val);
         m_in1 = new DataRef<TimedDoubleSeq>(m_in1_val);
         m_in1Out = new OutPort<TimedDoubleSeq>("in1", m_in1);
         m_in2_val = new SampleDataType();
+        initializeParam(m_in2_val);
         m_in2 = new DataRef<SampleDataType>(m_in2_val);
         m_in2Out = new OutPort<SampleDataType>("in2", m_in2);
         // </rtc-template>
-
     }
-
     /*!
      *
      * The initialize action (on CREATED->ALIVE transition)
@@ -99,7 +95,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
         bindParameter("conf2", m_conf2, "5");
         return super.onInitialize();
     }
-
     /***
      *
      * The finalize action (on ALIVE->END transition)
@@ -112,7 +107,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    protected ReturnCode_t onFinalize() {
 //        return super.onFinalize();
 //    }
-
     /***
      *
      * The startup action when ExecutionContext startup
@@ -127,7 +121,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    protected ReturnCode_t onStartup(int ec_id) {
 //        return super.onStartup(ec_id);
 //    }
-
     /***
      *
      * The shutdown action when ExecutionContext stop
@@ -142,7 +135,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    protected ReturnCode_t onShutdown(int ec_id) {
 //        return super.onShutdown(ec_id);
 //    }
-
     /***
      * onActivatedの動作概要
      *
@@ -158,7 +150,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
     protected ReturnCode_t onActivated(int ec_id) {
         return super.onActivated(ec_id);
     }
-
     /***
      * onDeactivatedの動作概要
      *
@@ -174,7 +165,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
     protected ReturnCode_t onDeactivated(int ec_id) {
         return super.onDeactivated(ec_id);
     }
-
     /***
      * onExecuteの動作概要
      *
@@ -190,7 +180,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    protected ReturnCode_t onExecute(int ec_id) {
 //        return super.onExecute(ec_id);
 //    }
-
     /***
      *
      * The aborting action when main logic error occurred.
@@ -201,11 +190,10 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
      * 
      * 
      */
-//  @Override
-//  public ReturnCode_t onAborting(int ec_id) {
-//      return super.onAborting(ec_id);
-//  }
-
+//    @Override
+//    public ReturnCode_t onAborting(int ec_id) {
+//        return super.onAborting(ec_id);
+//    }
     /***
      *
      * The error action in ERROR state
@@ -220,7 +208,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    public ReturnCode_t onError(int ec_id) {
 //        return super.onError(ec_id);
 //    }
-
     /***
      *
      * The reset action that is invoked resetting
@@ -235,7 +222,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    protected ReturnCode_t onReset(int ec_id) {
 //        return super.onReset(ec_id);
 //    }
-
     /***
      *
      * The state update action that is invoked after onExecute() action
@@ -250,7 +236,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
 //    protected ReturnCode_t onStateUpdate(int ec_id) {
 //        return super.onStateUpdate(ec_id);
 //    }
-
     /***
      *
      * The action that is invoked when execution context's rate is changed
@@ -284,7 +269,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
      */
     protected IntegerHolder m_conf2 = new IntegerHolder();
 	// </rtc-template>
-
     // DataInPort declaration
     // <rtc-template block="inport_declare">
     protected SampleDataType m_out1_val;
@@ -299,16 +283,13 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
      * - Operation Cycle: 処理頻度、周期
      */
     protected InPort<SampleDataType> m_out1In;
-
     protected TimedPoint3D m_out2_val;
     protected DataRef<TimedPoint3D> m_out2;
     /*!
      */
     protected InPort<TimedPoint3D> m_out2In;
-
     
     // </rtc-template>
-
     // DataOutPort declaration
     // <rtc-template block="outport_declare">
     protected TimedDoubleSeq m_in1_val;
@@ -323,32 +304,25 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
      * - Operation Cycle: 処理頻度、周期
      */
     protected OutPort<TimedDoubleSeq> m_in1Out;
-
     protected SampleDataType m_in2_val;
     protected DataRef<SampleDataType> m_in2;
     /*!
      */
     protected OutPort<SampleDataType> m_in2Out;
-
     
     // </rtc-template>
-
     // CORBA Port declaration
     // <rtc-template block="corbaport_declare">
     
     // </rtc-template>
-
     // Service declaration
     // <rtc-template block="service_declare">
     
     // </rtc-template>
-
     // Consumer declaration
     // <rtc-template block="consumer_declare">
     
     // </rtc-template>
-
-
     private void initializeParam(Object target) {
         Class<?> targetClass = target.getClass();
         ClassLoader loader = target.getClass().getClassLoader();
@@ -356,7 +330,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
         Field[] fields = targetClass.getFields();
         for(Field field : fields) {
             if(field.getType().isPrimitive()) continue;
-
             try {
                 if(field.getType().isArray()) {
                     Object arrayValue = null;
@@ -368,7 +341,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
                     }
                     arrayValue = Array.newInstance(clazz, 0);
                     field.set(target, arrayValue);
-
                 } else {
                     Constructor<?>[] constList = field.getType().getConstructors();
                     if(constList.length==0) {
@@ -379,7 +351,6 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
                             field.set(target, objFld);
                             break;
                         }
-
                     } else {
                         Class<?> classFld = Class.forName(field.getType().getName(), true, loader);
                         Object objFld = classFld.newInstance();

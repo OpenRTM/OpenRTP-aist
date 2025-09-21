@@ -89,7 +89,6 @@ else()
     set(SCRIPT_FILE ""
                     ${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.sh)
 endif()
-#end
 
 set(OTHER_SRCS RTC.xml ProcessingExample.conf rtc.conf)
 

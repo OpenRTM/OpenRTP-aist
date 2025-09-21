@@ -64,9 +64,11 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
         m_out2 = new DataRef<TimedPoint3D>(m_out2_val);
         m_out2In = new InPort<TimedPoint3D>("out2", m_out2);
         m_in1_val = new TimedDoubleSeq();
+        initializeParam(m_in1_val);
         m_in1 = new DataRef<TimedDoubleSeq>(m_in1_val);
         m_in1Out = new OutPort<TimedDoubleSeq>("in1", m_in1);
         m_in2_val = new TimedPose2D();
+        initializeParam(m_in2_val);
         m_in2 = new DataRef<TimedPose2D>(m_in2_val);
         m_in2Out = new OutPort<TimedPose2D>("in2", m_in2);
         m_MyServicePort = new CorbaPort("MyService");
@@ -197,10 +199,10 @@ public class ProcessingExampleTestImpl extends DataFlowComponentBase {
      * 
      * 
      */
-//  @Override
-//  public ReturnCode_t onAborting(int ec_id) {
-//      return super.onAborting(ec_id);
-//  }
+//    @Override
+//    public ReturnCode_t onAborting(int ec_id) {
+//        return super.onAborting(ec_id);
+//    }
     /***
      *
      * The error action in ERROR state
