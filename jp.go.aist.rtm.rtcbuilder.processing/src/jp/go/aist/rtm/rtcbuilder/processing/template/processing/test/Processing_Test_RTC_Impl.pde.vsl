@@ -125,6 +125,7 @@ public class ${rtcParam.name}TestImpl extends DataFlowComponentBase {
 #end
 #foreach($port in ${rtcParam.inports})  
         m_${port.tmplVarName}_val = new ${javaConv.getDataTypeName(${port.type})}();
+        initializeParam(m_${port.tmplVarName}_val);
         m_${port.tmplVarName} = new DataRef<${javaConv.getDataTypeName(${port.type})}>(m_${port.tmplVarName}_val);
         m_${port.name}Out = new OutPort<${javaConv.getDataTypeName(${port.type})}>("${port.name}", m_${port.tmplVarName});
 #end
@@ -430,12 +431,12 @@ public class ${rtcParam.name}TestImpl extends DataFlowComponentBase {
 #end
      * 
      */
-#if(${rtcParam.IsNotImplemented(6)})//#end  @Override
-#if(${rtcParam.IsNotImplemented(6)})//#end  public ReturnCode_t onAborting(int ec_id) {
+#if(${rtcParam.IsNotImplemented(6)})//#end    @Override
+#if(${rtcParam.IsNotImplemented(6)})//#end    public ReturnCode_t onAborting(int ec_id) {
 #if(${tmpltHelper.checkDetailContent(6,${rtcParam})})${rtcParam.getDetailContent(6)}
 #end
-#if(${rtcParam.IsNotImplemented(6)})//#end      return super.onAborting(ec_id);
-#if(${rtcParam.IsNotImplemented(6)})//#end  }
+#if(${rtcParam.IsNotImplemented(6)})//#end        return super.onAborting(ec_id);
+#if(${rtcParam.IsNotImplemented(6)})//#end    }
 
     /***
 #if(${rtcParam.getDocActionOverView(7).length()}>0)     * ${tmpltHelperJava.convertDescDocJava(${rtcParam.getDocActionOverView(7)})}
