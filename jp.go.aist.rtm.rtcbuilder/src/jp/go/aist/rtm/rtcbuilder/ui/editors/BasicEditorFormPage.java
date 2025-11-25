@@ -689,9 +689,9 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 		param.setConfigurationSuffix(store.getString(ComponentPreferenceManager.Generate_Configuration_Suffix));
 		//
 		param.setDataPortPrefix(store.getString(ComponentPreferenceManager.Generate_DataPort_Prefix));
-		param.setDataPortSuffix(store.getString(ComponentPreferenceManager.Generate_DataPort_Type));
-		param.setServicePortPrefix(store.getString(ComponentPreferenceManager.Generate_ServicePort_Suffix));
-		param.setServicePortSuffix(store.getString(ComponentPreferenceManager.Generate_ServicePort_Prefix));
+		param.setDataPortSuffix(store.getString(ComponentPreferenceManager.Generate_DataPort_Suffix));
+		param.setServicePortPrefix(store.getString(ComponentPreferenceManager.Generate_ServicePort_Prefix));
+		param.setServicePortSuffix(store.getString(ComponentPreferenceManager.Generate_ServicePort_Suffix));
 		param.setServiceIFPrefix(store.getString(ComponentPreferenceManager.Generate_ServiceIF_Prefix));
 		param.setServiceIFSuffix(store.getString(ComponentPreferenceManager.Generate_ServiceIF_Suffix));
 		param.setEventPortPrefix(store.getString(ComponentPreferenceManager.Generate_EventPort_Prefix));
