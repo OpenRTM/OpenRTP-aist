@@ -95,7 +95,6 @@ else()
     set(SCRIPT_FILE ""
                     ${dol}{CMAKE_CURRENT_SOURCE_DIR}/${dol}{PROJECT_NAME}.sh)
 endif()
-${sharp}end
 
 set(OTHER_SRCS RTC.xml ${rtcParam.name}.conf rtc.conf)
 
