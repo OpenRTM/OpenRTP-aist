@@ -7,7 +7,7 @@
  */
 // </rtc-template>
 
-${sharp}ifndef ${rtcParam.name.toUpperCase()}_TEST__H
+${sharp}ifndef ${rtcParam.name.toUpperCase()}_TEST_H
 ${sharp}define ${rtcParam.name.toUpperCase()}_TEST_H
 
 ${sharp}include <rtm/idl/BasicDataTypeSkel.h>

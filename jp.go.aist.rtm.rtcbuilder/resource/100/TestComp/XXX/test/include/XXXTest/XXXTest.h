@@ -6,7 +6,7 @@
  *
  */
 // </rtc-template>
-#ifndef XXX_TEST__H
+#ifndef XXX_TEST_H
 #define XXX_TEST_H
 #include <rtm/idl/BasicDataTypeSkel.h>
 #include <rtm/idl/ExtendedDataTypesSkel.h>

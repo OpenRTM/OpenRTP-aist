@@ -6,7 +6,7 @@
  *
  */
 // </rtc-template>
-#ifndef MODULENAME_TEST__H
+#ifndef MODULENAME_TEST_H
 #define MODULENAME_TEST_H
 #include <rtm/idl/BasicDataTypeSkel.h>
 #include <rtm/idl/ExtendedDataTypesSkel.h>
