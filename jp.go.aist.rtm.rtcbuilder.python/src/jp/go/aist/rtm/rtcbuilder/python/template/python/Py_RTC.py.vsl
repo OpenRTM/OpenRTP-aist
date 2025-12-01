@@ -133,13 +133,13 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
         """
 #if(${port.docDescription.length()}>0)        ${tmpltHelperPy.convertDescDocPy(${port.docDescription})}
 #end
-#if(${port.docType.length()}>0)	        - Type: ${tmpltHelperPy.convertTypeDocPy(${port.docType})}
+#if(${port.docType.length()}>0)         - Type: ${tmpltHelperPy.convertTypeDocPy(${port.docType})}
 #end
 #if(${port.docNum.length()}>0)         - Number: ${tmpltHelperPy.convertNumberDocPy(${port.docNum})}
 #end
 #if(${port.docSemantics.length()}>0)         - Semantics: ${tmpltHelperPy.convertSemanticsDocPy(${port.docSemantics})}
 #end
-#if(${port.docUnit.length()}>0)	        - Unit: ${tmpltHelperPy.convertTypeDocPy(${port.docUnit})}
+#if(${port.docUnit.length()}>0)         - Unit: ${tmpltHelperPy.convertTypeDocPy(${port.docUnit})}
 #end
 #if(${port.docOccurrence.length()}>0)         - Frequency: ${tmpltHelperPy.convertFrequencyDocPy(${port.docOccurrence})}
 #end
@@ -175,7 +175,7 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
         """
 #if(${servicePort.docDescription.length()}>0)        ${tmpltHelperPy.convertDescDocPy(${servicePort.docDescription})}
 #end
-#if(${servicePort.docIfDescription.length()}>0)         Interface: ${tmpltHelperPy.convertInterfacePy(${servicePort.docIfDescription})}
+#if(${servicePort.docIfDescription.length()}>0)        Interface: ${tmpltHelperPy.convertInterfacePy(${servicePort.docIfDescription})}
 #end
         """
         self._${servicePort.name}Port = OpenRTM_aist.CorbaPort("${servicePort.name}")
@@ -327,8 +327,7 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
     #if(${rtcParam.IsNotImplemented(1)})${sharp}#end${sharp} The finalize action (on ALIVE->END transition)
     #if(${rtcParam.IsNotImplemented(1)})${sharp}#end${sharp} 
     #if(${rtcParam.IsNotImplemented(1)})${sharp}#end${sharp} @return RTC::ReturnCode_t
-    #if(${rtcParam.IsNotImplemented(1)})${sharp}#end
-
+    #if(${rtcParam.IsNotImplemented(1)})${sharp}#end${sharp}
 #if(${rtcParam.getDocActionPreCondition(1).length()}>0)    #if(${rtcParam.IsNotImplemented(1)})${sharp}#end${sharp} @pre ${tmpltHelperPy.convertPreShDocPy(${rtcParam.getDocActionPreCondition(1)})}
 #end
 #if(${rtcParam.getDocActionPostCondition(1).length()}>0)    #if(${rtcParam.IsNotImplemented(1)})${sharp}#end${sharp} @post ${tmpltHelperPy.convertPostShDocPy(${rtcParam.getDocActionPostCondition(1)})}
@@ -466,7 +465,7 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
     #if(${rtcParam.IsNotImplemented(6)})${sharp}#end${sharp}
     #if(${rtcParam.IsNotImplemented(6)})${sharp}#end${sharp} @return RTC::ReturnCode_t
     #if(${rtcParam.IsNotImplemented(6)})${sharp}#end${sharp}
-#if(${rtcParam.getDocActionPreCondition(6).length()}>0) #if(${rtcParam.IsNotImplemented(6)})${sharp}#end${sharp} @pre ${tmpltHelperPy.convertPreShDocPy(${rtcParam.getDocActionPreCondition(6)})}
+#if(${rtcParam.getDocActionPreCondition(6).length()}>0)    #if(${rtcParam.IsNotImplemented(6)})${sharp}#end${sharp} @pre ${tmpltHelperPy.convertPreShDocPy(${rtcParam.getDocActionPreCondition(6)})}
 #end
 #if(${rtcParam.getDocActionPostCondition(6).length()}>0)    #if(${rtcParam.IsNotImplemented(6)})${sharp}#end${sharp} @post ${tmpltHelperPy.convertPostShDocPy(${rtcParam.getDocActionPostCondition(6)})}
 #end
@@ -532,7 +531,6 @@ class ${rtcParam.name}(OpenRTM_aist.DataFlowComponentBase):
     #if(${rtcParam.IsNotImplemented(10)})${sharp}#end${sharp}
     #if(${rtcParam.IsNotImplemented(10)})${sharp}#end${sharp} @return RTC::ReturnCode_t
     #if(${rtcParam.IsNotImplemented(10)})${sharp}#end${sharp}
-
 #if(${rtcParam.getDocActionPreCondition(10).length()}>0)    #if(${rtcParam.IsNotImplemented(10)})${sharp}#end${sharp} @pre ${tmpltHelperPy.convertPreShDocPy(${rtcParam.getDocActionPreCondition(10)})}
 #end
 #if(${rtcParam.getDocActionPostCondition(10).length()}>0)    #if(${rtcParam.IsNotImplemented(10)})${sharp}#end${sharp} @post ${tmpltHelperPy.convertPostShDocPy(${rtcParam.getDocActionPostCondition(10)})}

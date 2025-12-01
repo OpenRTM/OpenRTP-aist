@@ -94,7 +94,9 @@ public class RTCUtil {
 	public static boolean checkDefault(String target, List<DataTypeParam> typeList) {
 		for(DataTypeParam type : typeList) {
 			if(type.isDefault()) {
-				if(target.trim().equals(type.getFullPath().trim())) return true;
+				if(target.trim().equals(type.getFullPath().trim())) {
+					return true;
+				}
 			}
 		}
 		return false;

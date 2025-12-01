@@ -76,10 +76,10 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
         self._d_InP1 = OpenRTM_aist.instantiateDataType(RTC.TimedShort)
         """
         InPort1の概要
-	        - Type: InPort1のデータの型
+         - Type: InPort1のデータの型
          - Number: InPort1のデータの数
          - Semantics: InPort1のデータの意味
-	        - Unit: InPort1のデータの単位
+         - Unit: InPort1のデータの単位
          - Frequency: InPort1のデータの発生頻度
          - Operation Cycle: InPort1のデータの処理周期
         """
@@ -87,10 +87,10 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
         self._d_InP2 = OpenRTM_aist.instantiateDataType(RTC.TimedLong)
         """
         InPort2の概要
-	        - Type: InPort2のデータの型
+         - Type: InPort2のデータの型
          - Number: InPort2のデータの数
          - Semantics: InPort2のデータの意味
-	        - Unit: InPort2のデータの単位
+         - Unit: InPort2のデータの単位
          - Frequency: InPort2のデータの発生頻度
          - Operation Cycle: InPort2のデータの処理周期
         """
@@ -119,12 +119,12 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
         self._OutP2Out = OpenRTM_aist.OutPort("OutP2", self._d_OutP2)
         """
         ServicePort1の概要
-         Interface: ServicePort1のインターフェースの概要
+        Interface: ServicePort1のインターフェースの概要
         """
         self._svPortPort = OpenRTM_aist.CorbaPort("svPort")
         """
         ServicePort2の概要
-         Interface: ServicePort2のインターフェースの概要
+        Interface: ServicePort2のインターフェースの概要
         """
         self._cmPortPort = OpenRTM_aist.CorbaPort("cmPort")
         """
@@ -240,7 +240,7 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
     ## The finalize action (on ALIVE->END transition)
     ## 
     ## @return RTC::ReturnCode_t
-    #
+    ##
     ## @pre on_finalize事前条件
     ## @post on_finalize事後条件
     ## 
@@ -337,7 +337,7 @@ class foo(OpenRTM_aist.DataFlowComponentBase):
     ##
     ## @return RTC::ReturnCode_t
     ##
- ## @pre on_aborting事前条件
+    ## @pre on_aborting事前条件
     ## @post on_aborting事後条件
     ##
     #def onAborting(self, ec_id):
