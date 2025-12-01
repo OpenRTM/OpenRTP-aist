@@ -203,10 +203,10 @@ public class ProcessingExampleImpl extends DataFlowComponentBase {
      * 
      * 
      */
-//  @Override
-//  public ReturnCode_t onAborting(int ec_id) {
-//      return super.onAborting(ec_id);
-//  }
+//    @Override
+//    public ReturnCode_t onAborting(int ec_id) {
+//        return super.onAborting(ec_id);
+//    }
 
     /**
      *

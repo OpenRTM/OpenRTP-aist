@@ -41,7 +41,7 @@ public static String ${rtcParam.name.toLowerCase()}test_conf[] = {
 #if( ${rtcParam.configParams.size()} > 0 )
         // Configuration variables
 #foreach($configParam in ${rtcParam.configParams})  
-            "conf.default.${configParam.name}", "${configParam.defaultVal}",
+        "conf.default.${configParam.name}", "${configParam.defaultVal}",
 #end
 
         // Widget
