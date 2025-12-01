@@ -294,7 +294,11 @@ public class JavaConverter {
 	public String convCORBA2JavaforArg(ServiceArgumentParam typeDef, String strDirection, ServiceClassParam scp) {
 		String result = "";
 		String strType = getTypeDefs(typeDef.getType(), scp);
+		if(strType.endsWith("[]")) {
+			typeDef.setSequence(true);
+		}
 		strType = strType.replaceAll("::", ".");
+		
 
 		if( mapType.get(strType) != null){
 			if( strDirection.equals(dirIn) ) {
