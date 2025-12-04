@@ -224,9 +224,9 @@ ${rtcParam.name}.new = function(manager)
 	--
 	-- @return RTC::ReturnCode_t
 	--
-#if(${rtcParam.getDocActionPreCondition(0).length()}>0)	-- @pre ${tmpltHelperLua.convertPreDocLua(${rtcParam.getDocActionPreCondition(0)})}
+#if(${rtcParam.getDocActionPreCondition(0).length()}>0)    -- @pre ${tmpltHelperLua.convertPreDocLua(${rtcParam.getDocActionPreCondition(0)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(0).length()}>0)	-- @post ${tmpltHelperLua.convertPostDocLua(${rtcParam.getDocActionPostCondition(0)})}
+#if(${rtcParam.getDocActionPostCondition(0).length()}>0)    -- @post ${tmpltHelperLua.convertPostDocLua(${rtcParam.getDocActionPostCondition(0)})}
 #end
 	--
 	function obj:onInitialize()
@@ -288,9 +288,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(1)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(1)})--	#end
 
-#if(${rtcParam.getDocActionPreCondition(1).length()}>0)	#if(${rtcParam.IsNotImplemented(1)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(1)})}
+#if(${rtcParam.getDocActionPreCondition(1).length()}>0)#if(${rtcParam.IsNotImplemented(1)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(1)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(1).length()}>0)	#if(${rtcParam.IsNotImplemented(1)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(1)})}
+#if(${rtcParam.getDocActionPostCondition(1).length()}>0)#if(${rtcParam.IsNotImplemented(1)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(1)})}
 #end
 	#if(${rtcParam.IsNotImplemented(1)})--	#end--
 	#if(${rtcParam.IsNotImplemented(1)})--	#end${function} obj:onFinalize()
@@ -311,9 +311,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(2)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(2)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(2)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(2).length()}>0)	#if(${rtcParam.IsNotImplemented(2)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(2)})}
+#if(${rtcParam.getDocActionPreCondition(2).length()}>0)#if(${rtcParam.IsNotImplemented(2)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(2)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(2).length()}>0)	#if(${rtcParam.IsNotImplemented(2)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(2)})}
+#if(${rtcParam.getDocActionPostCondition(2).length()}>0)#if(${rtcParam.IsNotImplemented(2)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(2)})}
 #end
 	#if(${rtcParam.IsNotImplemented(2)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(2)})--	#end${function} obj:onStartup(ec_id)
@@ -334,9 +334,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(3)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(3)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(3)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(3).length()}>0)	#if(${rtcParam.IsNotImplemented(3)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(3)})}
+#if(${rtcParam.getDocActionPreCondition(3).length()}>0)#if(${rtcParam.IsNotImplemented(3)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(3)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(3).length()}>0)	#if(${rtcParam.IsNotImplemented(3)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(3)})}
+#if(${rtcParam.getDocActionPostCondition(3).length()}>0)#if(${rtcParam.IsNotImplemented(3)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(3)})}
 #end
 	#if(${rtcParam.IsNotImplemented(3)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(3)})--	#end${function} obj:onShutdown(ec_id)
@@ -357,9 +357,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(4)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(4)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(4)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(4).length()}>0)	#if(${rtcParam.IsNotImplemented(4)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(4)})}
+#if(${rtcParam.getDocActionPreCondition(4).length()}>0)#if(${rtcParam.IsNotImplemented(4)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(4)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(4).length()}>0)	#if(${rtcParam.IsNotImplemented(4)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(4)})}
+#if(${rtcParam.getDocActionPostCondition(4).length()}>0)#if(${rtcParam.IsNotImplemented(4)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(4)})}
 #end
 	#if(${rtcParam.IsNotImplemented(4)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(4)})--	#end${function} obj:onActivated(ec_id)
@@ -380,9 +380,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(5)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(5)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(5)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(5).length()}>0)	#if(${rtcParam.IsNotImplemented(5)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(5)})}
+#if(${rtcParam.getDocActionPreCondition(5).length()}>0)#if(${rtcParam.IsNotImplemented(5)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(5)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(5).length()}>0)	#if(${rtcParam.IsNotImplemented(5)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(5)})}
+#if(${rtcParam.getDocActionPostCondition(5).length()}>0)#if(${rtcParam.IsNotImplemented(5)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(5)})}
 #end
 	#if(${rtcParam.IsNotImplemented(5)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(5)})--	#end${function} obj:onDeactivated(ec_id)
@@ -403,9 +403,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(9)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(9)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(9)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(9).length()}>0)	#if(${rtcParam.IsNotImplemented(9)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(9)})}
+#if(${rtcParam.getDocActionPreCondition(9).length()}>0)#if(${rtcParam.IsNotImplemented(9)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(9)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(9).length()}>0)	#if(${rtcParam.IsNotImplemented(9)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(9)})}
+#if(${rtcParam.getDocActionPostCondition(9).length()}>0)#if(${rtcParam.IsNotImplemented(9)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(9)})}
 #end
 	#if(${rtcParam.IsNotImplemented(9)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(9)})--	#end${function} obj:onExecute(ec_id)
@@ -426,9 +426,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(6)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(6)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(6)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(6).length()}>0)	#if(${rtcParam.IsNotImplemented(6)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(6)})}
+#if(${rtcParam.getDocActionPreCondition(6).length()}>0)#if(${rtcParam.IsNotImplemented(6)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(6)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(6).length()}>0)	#if(${rtcParam.IsNotImplemented(6)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(6)})}
+#if(${rtcParam.getDocActionPostCondition(6).length()}>0)#if(${rtcParam.IsNotImplemented(6)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(6)})}
 #end
 	#if(${rtcParam.IsNotImplemented(6)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(6)})--	#end${function} obj:onAborting(ec_id)
@@ -449,9 +449,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(7)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(7)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(7)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(7).length()}>0)	#if(${rtcParam.IsNotImplemented(7)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(7)})}
+#if(${rtcParam.getDocActionPreCondition(7).length()}>0)#if(${rtcParam.IsNotImplemented(7)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(7)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(7).length()}>0)	#if(${rtcParam.IsNotImplemented(7)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(7)})}
+#if(${rtcParam.getDocActionPostCondition(7).length()}>0)#if(${rtcParam.IsNotImplemented(7)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(7)})}
 #end
 	#if(${rtcParam.IsNotImplemented(7)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(7)})--	#end${function} obj:onError(ec_id)
@@ -472,9 +472,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(8)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(8)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(8)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(8).length()}>0)	#if(${rtcParam.IsNotImplemented(8)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(8)})}
+#if(${rtcParam.getDocActionPreCondition(8).length()}>0)#if(${rtcParam.IsNotImplemented(8)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(8)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(8).length()}>0)	#if(${rtcParam.IsNotImplemented(8)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(8)})}
+#if(${rtcParam.getDocActionPostCondition(8).length()}>0)#if(${rtcParam.IsNotImplemented(8)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(8)})}
 #end
 	#if(${rtcParam.IsNotImplemented(8)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(8)})--	#end${function} obj:onReset(ec_id)
@@ -496,9 +496,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(10)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(10)})--	#end${minusminus}
 
-#if(${rtcParam.getDocActionPreCondition(10).length()}>0)	#if(${rtcParam.IsNotImplemented(10)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(10)})}
+#if(${rtcParam.getDocActionPreCondition(10).length()}>0)#if(${rtcParam.IsNotImplemented(10)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(10)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(10).length()}>0)	#if(${rtcParam.IsNotImplemented(10)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(10)})}
+#if(${rtcParam.getDocActionPostCondition(10).length()}>0)#if(${rtcParam.IsNotImplemented(10)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(10)})}
 #end
 	#if(${rtcParam.IsNotImplemented(10)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(10)})--	#end${function} obj:onStateUpdate(ec_id)
@@ -519,9 +519,9 @@ ${rtcParam.name}.new = function(manager)
 	#if(${rtcParam.IsNotImplemented(11)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(11)})--	#end${minusminus} @return RTC::ReturnCode_t
 	#if(${rtcParam.IsNotImplemented(11)})--	#end${minusminus}
-#if(${rtcParam.getDocActionPreCondition(11).length()}>0)	#if(${rtcParam.IsNotImplemented(11)})--#end	-- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(11)})}
+#if(${rtcParam.getDocActionPreCondition(11).length()}>0)#if(${rtcParam.IsNotImplemented(11)})--#end    -- @pre ${tmpltHelperLua.convertPreShDocLua(${rtcParam.getDocActionPreCondition(11)})}
 #end
-#if(${rtcParam.getDocActionPostCondition(11).length()}>0)	#if(${rtcParam.IsNotImplemented(11)})--#end	-- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(11)})}
+#if(${rtcParam.getDocActionPostCondition(11).length()}>0)#if(${rtcParam.IsNotImplemented(11)})--#end    -- @post ${tmpltHelperLua.convertPostShDocLua(${rtcParam.getDocActionPostCondition(11)})}
 #end
 	#if(${rtcParam.IsNotImplemented(11)})--	#end${minusminus}
 	#if(${rtcParam.IsNotImplemented(11)})--	#end${function} obj:onRateChanged(ec_id)
