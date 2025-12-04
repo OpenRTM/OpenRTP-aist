@@ -718,7 +718,7 @@ public class Generator {
 			if (StringUtil.removeNewLine(originalFileContents).equals(
 					StringUtil.removeNewLine(generatedResult.getCode())) == false) {
 				int selectedProcess = handler.getSelectedProcess(generatedResult, originalFileContents);
-				if (selectedProcess == MergeHandler.PROCESS_GENERATE_ID) {
+				if (selectedProcess == MergeHandler.PROCESS_GENERATE_ID || selectedProcess == MergeHandler.PROCESS_MERGE_ID) {
 					if(ComponentPreferenceManager.getInstance().getNot_Generated_Caution() == false) {
 						GeneratedCautionDialog confirmDialog = new GeneratedCautionDialog();
 						confirmDialog.setTargetFile(generatedResult.getName() + genTime);
