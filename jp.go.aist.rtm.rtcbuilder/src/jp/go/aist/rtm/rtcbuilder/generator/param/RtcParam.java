@@ -830,7 +830,7 @@ public class RtcParam extends AbstractRecordedParam implements Serializable {
 			}
 		}
 		for(IdlFileParam param : providerIdlParams) {
-			if(param.getIdlPath().equals(target.getIdlFile())) {
+			if(param.getIdlFile().equals(target.getIdlFile())) {
 				isExist = true;
 				break;
 			}
