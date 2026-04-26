@@ -336,7 +336,7 @@ public class ISO2RTCProfileHandler {
 			dataPort.setComment(getTargetNVValue("comment", nvs));
 			dataPort.setVariableName(getTargetNVValue("variableName", nvs));
 			try {
-				dataPort.setPosition(Position.valueOf(getTargetNVValue("position", nvs)));
+				dataPort.setPosition(Position.fromValue(getTargetNVValue("position", nvs)));
 			} catch (Exception e) {
 			}
 
@@ -391,7 +391,7 @@ public class ISO2RTCProfileHandler {
 				
 				servicePort.setComment(getTargetNVValue("comment", nvs));
 				try {
-					servicePort.setPosition(Position.valueOf(getTargetNVValue("position", nvs)));
+					servicePort.setPosition(Position.fromValue(getTargetNVValue("position", nvs)));
 				} catch (Exception e) {
 				}
 

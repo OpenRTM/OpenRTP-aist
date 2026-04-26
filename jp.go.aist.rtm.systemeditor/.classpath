@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/jakarta.transaction-api-2.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/openjdk-orb-10.1.1.Final.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-csv-1.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-annotations-2.10.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.10.2.jar"/>

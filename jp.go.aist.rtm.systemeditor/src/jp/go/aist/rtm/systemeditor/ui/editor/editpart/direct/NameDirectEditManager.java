@@ -13,7 +13,7 @@ public class NameDirectEditManager extends DirectEditManager {
 
 	public NameDirectEditManager(GraphicalEditPart source, Class<?> editorType,
 			CellEditorLocator locator) {
-		super(source, editorType, locator);
+		super(source, (Class)editorType, locator);
 		this.model = source.getModel();
 	}
 

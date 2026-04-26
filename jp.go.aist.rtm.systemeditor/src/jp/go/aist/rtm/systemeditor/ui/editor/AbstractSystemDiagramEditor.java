@@ -22,7 +22,9 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
@@ -83,8 +85,6 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.openrtp.namespaces.rts.version02.RtsProfileExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import jp.go.aist.rtm.systemeditor.RTSystemEditorPlugin;
 import jp.go.aist.rtm.systemeditor.extension.SaveProfileExtension;
@@ -384,9 +384,13 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 		boolean isReplace = dialog.isReplace();
 
 		getSystemDiagram().setSystemId(dialog.getSystemId());
-		XMLGregorianCalendar calendar = new XMLGregorianCalendarImpl(new GregorianCalendar());
-		calendar.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
-		getSystemDiagram().setUpdateDate(calendar.toString());
+		try {
+			XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+			calendar.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
+			getSystemDiagram().setUpdateDate(calendar.toString());
+		} catch (DatatypeConfigurationException e1) {
+			e1.printStackTrace();
+		}
 
 		// TODO バージョンアップログへの対応
 
@@ -432,10 +436,14 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 		boolean isReplace = dialog.isReplace();
 
 		getSystemDiagram().setSystemId(dialog.getSystemId());
-		XMLGregorianCalendar calendar = new XMLGregorianCalendarImpl(new GregorianCalendar());
-		calendar.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
-		getSystemDiagram().setCreationDate(calendar.toString());
-		getSystemDiagram().setUpdateDate(calendar.toString());
+		try {
+			XMLGregorianCalendar calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+			calendar.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
+			getSystemDiagram().setCreationDate(calendar.toString());
+			getSystemDiagram().setUpdateDate(calendar.toString());
+		} catch (DatatypeConfigurationException e1) {
+			e1.printStackTrace();
+		}
 
 		// TODO バージョンアップログへの対応
 

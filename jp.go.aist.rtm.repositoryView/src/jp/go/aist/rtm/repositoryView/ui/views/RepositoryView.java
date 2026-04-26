@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.DrillDownAdapter;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public class RepositoryView extends org.eclipse.ui.part.ViewPart {
 		hookContextMenu();
 
 		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
-				new Transfer[] { LocalSelectionTransfer.getInstance() },
+				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new DragSourceAdapter() {
 					@Override
 					public void dragStart(DragSourceEvent event) {
@@ -97,7 +97,7 @@ public class RepositoryView extends org.eclipse.ui.part.ViewPart {
 								.getSelection());
 
 						event.data = structuredSelection;
-						LocalSelectionTransfer.getInstance().setSelection(
+						LocalSelectionTransfer.getTransfer().setSelection(
 								structuredSelection);
 
 						super.dragSetData(event);

@@ -29,7 +29,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 
 import jp.go.aist.rtm.nameserviceview.NameServiceViewPlugin;
@@ -69,7 +69,7 @@ public class NameServiceView extends ViewPart {
 		getViewSite().setSelectionProvider(viewer);
 
 		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
-				new Transfer[] { LocalSelectionTransfer.getInstance() },
+				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new DragSourceAdapter() {
 					@Override
 					public void dragStart(DragSourceEvent event) {
@@ -84,7 +84,7 @@ public class NameServiceView extends ViewPart {
 								.getSelection());
 
 						event.data = structuredSelection;
-						LocalSelectionTransfer.getInstance().setSelection(
+						LocalSelectionTransfer.getTransfer().setSelection(
 								structuredSelection);
 
 						super.dragSetData(event);
