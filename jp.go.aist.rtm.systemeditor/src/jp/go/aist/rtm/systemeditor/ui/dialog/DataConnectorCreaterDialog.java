@@ -1315,9 +1315,11 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 		}
 		
 		String interfaceType = targetPort.getInterfaceType();
-		String[] ifTypes = interfaceType.split(",");
-		for(String each : ifTypes) {
-			propertyList.put(each.trim(), new ArrayList<DataConnectorCreaterDialog.PropertyElem>());
+		if(interfaceType != null) {
+			String[] ifTypes = interfaceType.split(",");
+			for(String each : ifTypes) {
+				propertyList.put(each.trim(), new ArrayList<DataConnectorCreaterDialog.PropertyElem>());
+			}
 		}
 		
 		List<String> portType = new ArrayList<String>();
@@ -1686,12 +1688,14 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 	protected void okPressed() {
 		String ifType = interfaceTypeCombo.getText();
 		List<PropertyElem> propList = propertyList.get(ifType);
-		for(PropertyElem each : propList) {
-			String selected = each.getSelectedValue();
-			if(selected != null && 0 < selected.length()) {
-				for(String portTypeStr : each.portType) {
-					String propName = "dataport." + portTypeStr + "." + each.name; 
-					connectorProfile.setProperty(propName, each.getSelectedValue());
+		if(propList != null) {
+			for(PropertyElem each : propList) {
+				String selected = each.getSelectedValue();
+				if(selected != null && 0 < selected.length()) {
+					for(String portTypeStr : each.portType) {
+						String propName = "dataport." + portTypeStr + "." + each.name; 
+						connectorProfile.setProperty(propName, each.getSelectedValue());
+					}
 				}
 			}
 		}

@@ -116,6 +116,7 @@ public class OfflineSystemDiagramEditor extends AbstractSystemDiagramEditor {
 						// STEP3: RTSプロファイルオブジェクトからダイアグラムを作成
 						monitor.internalWorked(20);
 
+						handler.setBasePath(strPath);
 						SystemDiagram diagram = handler.load(profile,
 								SystemDiagramKind.OFFLINE_LITERAL);
 						handler.restoreConfigSet(diagram);

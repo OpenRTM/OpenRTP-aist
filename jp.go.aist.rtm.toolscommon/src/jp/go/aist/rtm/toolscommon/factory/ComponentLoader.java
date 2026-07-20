@@ -20,6 +20,7 @@ public class ComponentLoader {
 
 	SystemDiagram diagram;
 	SystemDiagramKind kind;
+	private String baseFile;
 
 	public ComponentLoader() {
 	}
@@ -30,6 +31,10 @@ public class ComponentLoader {
 
 	public void setKind(SystemDiagramKind kind) {
 		this.kind = kind;
+	}
+
+	public void setBasePath(String baseFile) {
+		this.baseFile = baseFile;
 	}
 
 	/**
@@ -53,6 +58,7 @@ public class ComponentLoader {
 			ext.setDiagram(diagram);
 			ext.setTarget(target);
 			ext.setProfile(profile);
+			ext.setBasePath(baseFile);
 			if (!ext.canCreate()) {
 				continue;
 			}

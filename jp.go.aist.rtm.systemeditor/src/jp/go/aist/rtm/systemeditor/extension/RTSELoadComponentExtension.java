@@ -5,6 +5,8 @@ import static jp.go.aist.rtm.toolscommon.model.component.Component.COMPOSITETYPE
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import jp.go.aist.rtm.repositoryView.RepositoryAccessor;
@@ -24,7 +26,7 @@ public class RTSELoadComponentExtension extends LoadComponentExtension {
 
 	public RTSELoadComponentExtension() {
 	}
-
+	
 	@Override
 	public boolean canCreate() {
 		return true;
@@ -49,8 +51,11 @@ public class RTSELoadComponentExtension extends LoadComponentExtension {
 			    	RtcProfileHandler handler = new RtcProfileHandler();
 			    	String targetFileName = null;
 					try {
+						Path path = Paths.get(this.baseFile);
+				        Path directory = path.getParent();
+				        
 				    	URI uri = new URI(target.getPathUri());
-				    	targetFileName = uri.getPath();
+				    	targetFileName = directory + File.separator + uri.getPath();
 						module = handler.createComponent(targetFileName);
 					} catch (URISyntaxException e) {
 						throw new IllegalStateException("Target Component["
