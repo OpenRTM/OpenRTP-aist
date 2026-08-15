@@ -32,6 +32,9 @@ public class ComponentLoader {
 	public void setKind(SystemDiagramKind kind) {
 		this.kind = kind;
 	}
+	public SystemDiagramKind getKind() {
+		return this.kind;
+	}
 
 	public void setBasePath(String baseFile) {
 		this.baseFile = baseFile;

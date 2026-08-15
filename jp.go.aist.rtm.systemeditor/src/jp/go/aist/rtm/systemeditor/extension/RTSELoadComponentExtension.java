@@ -43,10 +43,6 @@ public class RTSELoadComponentExtension extends LoadComponentExtension {
 				Component spec = RepositoryAccessor.eINSTANCE.findComponent(
 						componentid, pathId);
 				if (spec == null) {
-					//リポジトリビューに登録されていない場合には，Profileを読み込み
-//					throw new IllegalStateException("Target Component["
-//							+ componentid + "](" + pathId
-//							+ ") does not exist in RepositoryView.");
 					ComponentSpecification module = null;
 			    	RtcProfileHandler handler = new RtcProfileHandler();
 			    	String targetFileName = null;
@@ -57,6 +53,14 @@ public class RTSELoadComponentExtension extends LoadComponentExtension {
 				    	URI uri = new URI(target.getPathUri());
 				    	targetFileName = directory + File.separator + uri.getPath();
 						module = handler.createComponent(targetFileName);
+
+						String fileName = targetFileName.substring(targetFileName.lastIndexOf(File.separator) + 1);
+						module.setAliasName(module.getInstanceNameL() + "(" + fileName + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+						
+						File rtcFile = new File(targetFileName);
+						URI pathUri = new URI("file", "localhost", rtcFile.toURI().getPath(), null );
+						pathId = pathUri.toString();
+						module.setPathId(pathId);
 					} catch (URISyntaxException e) {
 						throw new IllegalStateException("Target Component["
 						+ componentid + "](" + pathId
@@ -66,22 +70,26 @@ public class RTSELoadComponentExtension extends LoadComponentExtension {
 								+ componentid + "](" + pathId
 								+ ") does not exist in RepositoryView.");
 					}
-					String fileName = targetFileName.substring(targetFileName.lastIndexOf(File.separator) + 1);
-					module.setAliasName(module.getInstanceNameL() + "(" + fileName + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-					module.setPathId(target.getPathUri());
 					//
 					RepositoryView viewer = RepositoryAccessor.eINSTANCE.getView();
 			    	RepositoryViewItem rootItem = new RepositoryViewItem("root", 0); //$NON-NLS-1$
 			    	rootItem.setChildren((List<RepositoryViewItem>)viewer.getViewer().getInput());
-
-			 		RepositoryViewItem itemFirst = rootItem.getChild(module.getPathId());
-			 		if( itemFirst==null ) {
-			    		itemFirst = new LocalRVRootItem(module.getPathId());
-						rootItem.addChild(itemFirst);
-			 		}
-					RepositoryViewFactory.buildTree(itemFirst, module, RepositoryViewLeafItem.RTC_LEAF);
-					viewer.getViewer().refresh();
-					spec = RepositoryAccessor.eINSTANCE.findComponent(componentid, pathId);
+			    	
+					try {
+						URI uri = new URI(module.getPathId());
+				        String result = uri.getPath().substring(1);
+				        File pathUri = new File(result);
+				 		RepositoryViewItem itemFirst = rootItem.getChild(pathUri.getParent());
+				 		if( itemFirst==null ) {
+				    		itemFirst = new LocalRVRootItem(pathUri.getParent());
+							rootItem.addChild(itemFirst);
+				 		}
+						RepositoryViewFactory.buildTree(itemFirst, module, RepositoryViewLeafItem.RTC_LEAF);
+						viewer.getViewer().refresh();
+						spec = RepositoryAccessor.eINSTANCE.findComponent(componentid, pathId);
+					} catch (URISyntaxException e) {
+						e.printStackTrace();
+					}
 				}
 				return spec.copy();
 			}

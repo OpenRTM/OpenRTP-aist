@@ -922,7 +922,9 @@ public class RtsProfileHandler {
 				continue;
 			}
 			eComp.setComponentId(component.getId());
-			eComp.setPathId(component.getPathUri());
+			if(loader.getKind() == SystemDiagramKind.ONLINE_LITERAL) {
+				eComp.setPathId(component.getPathUri());
+			}
 			eComp.setInstanceNameL(component.getInstanceName());
 			populateCompositeType(eComp, component.getCompositeType());
 			eComp.setRequired(component.isIsRequired());
