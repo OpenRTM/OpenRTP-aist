@@ -74,7 +74,7 @@ public class NameServiceProcessHandler {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			result = reader.readLine();
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return result;
 	}

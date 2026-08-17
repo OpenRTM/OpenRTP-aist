@@ -26,6 +26,36 @@ public class CorbaUtil {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CorbaUtil.class);
 
+	private static ORB orb = null;
+	
+	private static Properties createProps() {
+	    Properties props = new Properties();
+	    
+	    props.put("org.omg.CORBA.ORBClass", "com.sun.corba.se.impl.orb.ORBImpl");
+	    props.put("org.omg.CORBA.ORBSingletonClass", "com.sun.corba.se.impl.orb.ORBSingleton");
+	    
+	    return props;
+	}
+
+	public static synchronized ORB getOrb() {
+        if (orb == null) {
+            try {
+                LOGGER.info("Initializing ORB with openjdk-orb...");
+                orb = ORB.init(new String[] {}, createProps());
+                if (orb != null) {
+                    try {
+                        Method m = orb.getClass().getMethod("getLogger", String.class);
+                        java.util.logging.Logger l = (java.util.logging.Logger) m.invoke(orb, "");
+                        l.setLevel(java.util.logging.Level.SEVERE);
+                    } catch (Exception e) {
+                        LOGGER.trace("ORB getLogger not supported, skipping.");
+                    }
+                }
+            } catch(Exception ex) {
+            }
+        }
+        return orb;
+    }
 	/**
 	 * 対象のNamingContextExtから子供のBindingをListとして返す
 	 * 
@@ -54,50 +84,6 @@ public class CorbaUtil {
 		return result;
 	}
 
-	/**
-	 * ORBオブジェクト
-	 */
-//	private static ORB orb = ORB.init(new String[] {
-//			"-ORBTCPReadTimeouts",	"1:60000:300:1" }
-//		, null);
-	
-	// omniORBのオプションだろう. JDKのCORBA実装にはない
-//	"-ORBclientCallTimeOutPeriod", 
-//	String.valueOf(ToolsCommonPreferenceManager.getInstance().getDefaultTimeout(
-//		ToolsCommonPreferenceManager.DEFAULT_TIMEOUT_PERIOD)
-	private static ORB orb = ORB.init(new String[] {}, createProps());
-	static {
-		try {
-			Method declaredMethod = orb.getClass().getMethod("getLogger",
-					String.class);
-			java.util.logging.Logger logger = (java.util.logging.Logger) declaredMethod
-					.invoke(orb, "");
-			logger.setLevel(java.util.logging.Level.SEVERE);
-		} catch (Exception e) {
-			LOGGER.error("Fail to get logger", e);
-		}
-	}
-
-	/**
-	 * ORBオブジェクトを取得する
-	 * 
-	 * @return ORB
-	 */
-	public static ORB getOrb() {
-		return orb;
-	}
-
-	private static Properties createProps() {
-		setConnectionTimeout();
-		
-		ToolsCommonPreferenceManager.getInstance().addPropertyChangeListener(createListner());
-		
-		Properties props = new Properties();
-		props.put("com.sun.CORBA.transport.ORBSocketFactoryClass"
-				, "jp.go.aist.rtm.toolscommon.corba.TimeoutCorbaORBSocketFactory");
-		return props;
-	}
-
 	private static void setConnectionTimeout() {
 		int defaultTimeout = ToolsCommonPreferenceManager.getInstance().getDefaultTimeout(
 				ToolsCommonPreferenceManager.DEFAULT_TIMEOUT_PERIOD);
@@ -121,7 +107,7 @@ public class CorbaUtil {
 	 * @return CORBAオブジェクト
 	 */
 	public static org.omg.CORBA.Object stringToObject(String str) {
-		return orb.string_to_object(str);
+		return getOrb().string_to_object(str);
 	}
 
 	/**
