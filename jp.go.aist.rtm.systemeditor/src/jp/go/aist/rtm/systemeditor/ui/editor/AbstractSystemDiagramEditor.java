@@ -26,7 +26,6 @@ import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -103,6 +102,7 @@ import jp.go.aist.rtm.toolscommon.model.component.Component;
 import jp.go.aist.rtm.toolscommon.model.component.ComponentFactory;
 import jp.go.aist.rtm.toolscommon.model.component.CorbaComponent;
 import jp.go.aist.rtm.toolscommon.model.component.SystemDiagram;
+import jp.go.aist.rtm.toolscommon.model.component.SystemDiagramKind;
 import jp.go.aist.rtm.toolscommon.profiles.util.XmlHandler;
 import jp.go.aist.rtm.toolscommon.synchronizationframework.SynchronizationSupport;
 import jp.go.aist.rtm.toolscommon.ui.views.propertysheetview.RtcPropertySheetPage;
@@ -670,7 +670,9 @@ public abstract class AbstractSystemDiagramEditor extends GraphicalEditor {
 				editor.changeFile(file);
 			}
 			
-			saveScript(file, profile, systemName, isReplace);
+			if(diagram.getKind() == SystemDiagramKind.ONLINE_LITERAL) {
+				saveScript(file, profile, systemName, isReplace);
+			}
 
 			// STEP5: 拡張ポイント (RTSプロファイル保存後)
 			progressMonitor.worked(5);

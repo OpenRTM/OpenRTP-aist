@@ -555,6 +555,8 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 		directionCombo.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				if(directionLabel == null && directionLabel2 == null) return;
+				
 				int selected = directionCombo.getSelectionIndex();
 				if(selected == 0) {
 					if(connectorProfile.isIsReverse()) {
@@ -598,48 +600,49 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 		String outportIPPort = getPortInfo(outport, false, true);
 		String inportIPPort = getPortInfo(inport, false, true);
 		
-		outport2inPort = Messages.getString("DataConnectorCreaterDialog.label.direction2_1")
-				+ " "
-				+ outportIP
-				+ " "
-				+ Messages.getString("DataConnectorCreaterDialog.label.direction2_2")
-				+ inportIPPort
-				+ " "
-				+ Messages.getString("DataConnectorCreaterDialog.label.direction2_3");
-		inport2outPort = Messages.getString("DataConnectorCreaterDialog.label.direction1_1")
-				+ " "
-				+ inportIP
-				+ " "
-				+ Messages.getString("DataConnectorCreaterDialog.label.direction1_2")
-				+ outportIPPort
-				+ " "
-				+ Messages.getString("DataConnectorCreaterDialog.label.direction1_3"); 
-		
-		createLabel(portProfileEditComposite, "");
-		directionLabel = new Label(portProfileEditComposite, SWT.WRAP);
-		if(connectorProfile.isIsReverse()) {
-			directionLabel.setText(inport2outPort);
-		} else {
-			directionLabel.setText(outport2inPort);
+		if(0 < outportIP.trim().length() && 0 < outportIPPort.trim().length()
+				&& 0 < inportIP.trim().length() && 0 < inportIPPort.trim().length()) {
+			outport2inPort = Messages.getString("DataConnectorCreaterDialog.label.direction2_1")
+					+ " "
+					+ outportIP
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction2_2")
+					+ inportIPPort
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction2_3");
+			inport2outPort = Messages.getString("DataConnectorCreaterDialog.label.direction1_1")
+					+ " "
+					+ inportIP
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction1_2")
+					+ outportIPPort
+					+ " "
+					+ Messages.getString("DataConnectorCreaterDialog.label.direction1_3"); 
+			
+			createLabel(portProfileEditComposite, "");
+			directionLabel = new Label(portProfileEditComposite, SWT.WRAP);
+			if(connectorProfile.isIsReverse()) {
+				directionLabel.setText(inport2outPort);
+			} else {
+				directionLabel.setText(outport2inPort);
+			}
+			gd = new GridData();
+			gd.horizontalAlignment = GridData.FILL;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalSpan = 2;
+			directionLabel.setLayoutData(gd);
+			
+			createLabel(portProfileEditComposite, "");
+			directionLabel2 = new Label(portProfileEditComposite, SWT.WRAP);
+			if(connectorProfile.isIsReverse()) {
+				directionLabel2.setText(outport2inPort);
+			}
+			gd = new GridData();
+			gd.horizontalAlignment = GridData.FILL;
+			gd.grabExcessHorizontalSpace = true;
+			gd.horizontalSpan = 2;
+			directionLabel2.setLayoutData(gd);
 		}
-		gd = new GridData();
-		gd.horizontalAlignment = GridData.FILL;
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalSpan = 2;
-		directionLabel.setLayoutData(gd);
-		
-		createLabel(portProfileEditComposite, "");
-		directionLabel2 = new Label(portProfileEditComposite, SWT.WRAP);
-		if(connectorProfile.isIsReverse()) {
-			directionLabel2.setText(outport2inPort);
-		}
-		gd = new GridData();
-		gd.horizontalAlignment = GridData.FILL;
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalSpan = 2;
-		directionLabel2.setLayoutData(gd);
-
-		
 		return portProfileEditComposite;
 	}
 
@@ -1315,9 +1318,11 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 		}
 		
 		String interfaceType = targetPort.getInterfaceType();
-		String[] ifTypes = interfaceType.split(",");
-		for(String each : ifTypes) {
-			propertyList.put(each.trim(), new ArrayList<DataConnectorCreaterDialog.PropertyElem>());
+		if(interfaceType != null) {
+			String[] ifTypes = interfaceType.split(",");
+			for(String each : ifTypes) {
+				propertyList.put(each.trim(), new ArrayList<DataConnectorCreaterDialog.PropertyElem>());
+			}
 		}
 		
 		List<String> portType = new ArrayList<String>();
@@ -1686,12 +1691,14 @@ public class DataConnectorCreaterDialog extends ConnectorDialogBase {
 	protected void okPressed() {
 		String ifType = interfaceTypeCombo.getText();
 		List<PropertyElem> propList = propertyList.get(ifType);
-		for(PropertyElem each : propList) {
-			String selected = each.getSelectedValue();
-			if(selected != null && 0 < selected.length()) {
-				for(String portTypeStr : each.portType) {
-					String propName = "dataport." + portTypeStr + "." + each.name; 
-					connectorProfile.setProperty(propName, each.getSelectedValue());
+		if(propList != null) {
+			for(PropertyElem each : propList) {
+				String selected = each.getSelectedValue();
+				if(selected != null && 0 < selected.length()) {
+					for(String portTypeStr : each.portType) {
+						String propName = "dataport." + portTypeStr + "." + each.name; 
+						connectorProfile.setProperty(propName, each.getSelectedValue());
+					}
 				}
 			}
 		}

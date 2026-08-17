@@ -63,11 +63,15 @@ public class RtsProfileHandler {
 	private org.openrtp.namespaces.rts.version02.ObjectFactory factory;
 	private SystemDiagram diagram;
 	private ComponentLoader loader = new ComponentLoader();
+	private String baseFile;
 
 	static final String KEY_COMPONENT_PATH_ID = "COMPONENT_PATH_ID";
 	static final String KEY_BEND_POINT = "BEND_POINT";
 	static final String KEY_IOR = "IOR";
 
+	public void setBasePath(String baseFile) {
+		this.baseFile = baseFile;
+	}
 	/**
 	 * RTSプロファイルをロードする
 	 * @param targetFile	ロード対象のファイル
@@ -97,6 +101,7 @@ public class RtsProfileHandler {
 		setOnline(kind == SystemDiagramKind.ONLINE_LITERAL);
 		loader.setKind(kind);
 		loader.setDiagram(diagram);
+		loader.setBasePath(baseFile);
 		populate(diagram, profile);
 		return diagram;
 	}
@@ -917,7 +922,9 @@ public class RtsProfileHandler {
 				continue;
 			}
 			eComp.setComponentId(component.getId());
-			eComp.setPathId(component.getPathUri());
+			if(loader.getKind() == SystemDiagramKind.ONLINE_LITERAL) {
+				eComp.setPathId(component.getPathUri());
+			}
 			eComp.setInstanceNameL(component.getInstanceName());
 			populateCompositeType(eComp, component.getCompositeType());
 			eComp.setRequired(component.isIsRequired());
@@ -1550,7 +1557,11 @@ public class RtsProfileHandler {
 			if (eComp.getComponentId().equals(tc.getComponentId())
 					&& eComp.getInstanceNameL().equals(tc.getInstanceName())) {
 				// pathIdもチェックする
-				if (equalsPathId(eComp, tc)) {
+				if(this.online) {
+					if (equalsPathId(eComp, tc)) {
+						return eComp;
+					}
+				} else {
 					return eComp;
 				}
 			}

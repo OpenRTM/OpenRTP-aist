@@ -33,6 +33,7 @@ public abstract class LoadComponentExtension {
 
 	protected SystemDiagram diagram;
 	protected SystemDiagramKind kind;
+	protected String baseFile;
 
 	protected org.openrtp.namespaces.rts.version02.Component target;
 	protected org.openrtp.namespaces.rts.version02.RtsProfile profile;
@@ -56,6 +57,10 @@ public abstract class LoadComponentExtension {
 	public void setProfile(
 			org.openrtp.namespaces.rts.version02.RtsProfile profile) {
 		this.profile = profile;
+	}
+
+	public void setBasePath(String baseFile) {
+		this.baseFile = baseFile;
 	}
 
 	public boolean isOnline() {
