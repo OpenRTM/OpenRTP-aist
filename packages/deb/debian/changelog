@@ -8,7 +8,7 @@ openrtp2 (2.0.2-1) experimental; urgency=low
 
   * Fixed the openrtp2 script to set RTM_ROOT. 
 
- -- Noriaki Ando <n-ando@aist.go.jp>   Mon, 17 Jun 2024 16:27:14 +0900
+ -- Noriaki Ando <n-ando@aist.go.jp>  Mon, 17 Jun 2024 16:27:14 +0900
 
 openrtp2 (2.0.2-0) experimental; urgency=low
 
