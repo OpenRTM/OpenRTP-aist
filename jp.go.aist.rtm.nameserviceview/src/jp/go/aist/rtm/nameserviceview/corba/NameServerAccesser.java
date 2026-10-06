@@ -3,9 +3,6 @@ package jp.go.aist.rtm.nameserviceview.corba;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.go.aist.rtm.nameserviceview.manager.NameServiceViewPreferenceManager;
-import jp.go.aist.rtm.toolscommon.corba.CorbaUtil;
-
 import org.omg.CosNaming.Binding;
 import org.omg.CosNaming.NameComponent;
 import org.omg.CosNaming.NamingContext;
@@ -13,6 +10,8 @@ import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 
 import RTM.ManagerHelper;
+import jp.go.aist.rtm.nameserviceview.manager.NameServiceViewPreferenceManager;
+import jp.go.aist.rtm.toolscommon.corba.CorbaUtil;
 
 /**
  * ネームサーバにアクセスするユーティリティ CORBA専用のクラスである

@@ -22,7 +22,9 @@ Bundle-ClassPath: .,
  lib/jackson-annotations-2.10.2.jar,
  lib/jackson-core-2.10.2.jar,
  lib/jackson-databind-2.10.2.jar,
- lib/commons-csv-1.8.jar
+ lib/commons-csv-1.8.jar,
+ lib/jakarta.transaction-api-2.0.1.jar,
+ lib/openjdk-orb-10.1.1.Final.jar
 Export-Package: influent,
  jp.go.aist.rtm.systemeditor,
  jp.go.aist.rtm.systemeditor._debug,

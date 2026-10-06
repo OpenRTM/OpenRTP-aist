@@ -1,5 +1,6 @@
 package jp.go.aist.rtm.nameserviceview.ui.dialog;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -43,7 +44,12 @@ public class ShowIORDialog extends TitleAreaDialog {
 		createComposite(mainComposite);
 		return mainComposite;
 	}
-
+	
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+	    createButton(parent, IDialogConstants.OK_ID, "Close", true);
+	}
+	
 	private void createComposite(Composite mainComposite) {
 		Composite composite = new Composite(mainComposite, SWT.NONE);
 		GridLayout gl = new GridLayout(2, false);

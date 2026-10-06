@@ -5,8 +5,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: jp.go.aist.rtm.toolscommon;singleton:=true
 Bundle-Version: 2.0.0
-Bundle-ClassPath: .,
- lib/commons-lang-2.2.jar
+Bundle-ClassPath: lib/commons-lang-2.2.jar,
+ lib/jakarta.transaction-api-2.0.1.jar,
+ lib/openjdk-orb-10.1.1.Final.jar,
+ .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -45,7 +47,13 @@ Export-Package: OpenRTM,
  org.apache.commons.lang.math,
  org.apache.commons.lang.mutable,
  org.apache.commons.lang.text,
- org.apache.commons.lang.time
+ org.apache.commons.lang.time,
+ org.omg.CORBA,
+ org.omg.CORBA.portable,
+ org.omg.CosNaming,
+ org.omg.CosNaming.NamingContextExtPackage,
+ org.omg.CosNaming.NamingContextPackage,
+ org.omg.PortableServer
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
