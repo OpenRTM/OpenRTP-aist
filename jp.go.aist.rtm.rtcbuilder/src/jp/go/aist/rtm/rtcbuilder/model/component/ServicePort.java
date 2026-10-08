@@ -76,4 +76,7 @@ public interface ServicePort extends PortBase {
 	 */
 	void addServiceInterface(ServiceInterface serviceinterface);
 
+	int getPort_Type();
+	void setPort_Type(int port_Type) ;
+
 } // ServicePort

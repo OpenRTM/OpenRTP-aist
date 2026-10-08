@@ -1,20 +1,6 @@
 package jp.go.aist.rtm.rtcbuilder.container.param.setting;
 
 public class Version {
-	private String id;
-    private String os;
-
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getOs() {
-        return os;
-    }
-    public void setOs(String os) {
-        this.os = os;
-    }
+    public String id;
+    public String os;
 }

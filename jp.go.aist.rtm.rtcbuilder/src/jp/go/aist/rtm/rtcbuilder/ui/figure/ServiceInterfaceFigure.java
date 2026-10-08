@@ -42,7 +42,7 @@ public class ServiceInterfaceFigure extends PortFigureBase {
 				addArcPoint(offsetX, 0, 10, 10, -90, -180);
 			}
 			portLabel.setLabelAlignment(PositionConstants.LEFT);
-			constraint = new Rectangle(SIZE+LABELMARGIN, 0, LABELWIDTH, -1);
+			constraint = new Rectangle(SIZE+LABELMARGIN, -3, LABELWIDTH, -1);
 			sizeX = SIZE+LABELWIDTH+LABELMARGIN;
 			sizeY = SIZE;
 		} else if( portDirection == PortDirection.TOP ) {
@@ -80,7 +80,7 @@ public class ServiceInterfaceFigure extends PortFigureBase {
 				addArcPoint(offsetX, 0, 10, 10, -90, 180);
 			}
 			portLabel.setLabelAlignment(PositionConstants.RIGHT);
-			constraint = new Rectangle(0, 0, LABELWIDTH, -1);
+			constraint = new Rectangle(0, -3, LABELWIDTH, -1);
 			sizeX = SIZE+LABELWIDTH+LABELMARGIN;
 			sizeY = SIZE;
 		}

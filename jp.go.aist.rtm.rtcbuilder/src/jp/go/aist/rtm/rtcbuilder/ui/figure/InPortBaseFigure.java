@@ -22,7 +22,7 @@ public class InPortBaseFigure extends PortFigureBase {
 		}
 		
 		inPortFig = new InPortFigure(inPort, direction,
-				new Color(PlatformUI.getWorkbench().getDisplay(), color));
+							new Color(PlatformUI.getWorkbench().getDisplay(), color));
 		setLayoutManager(new XYLayout());
 		add(inPortFig);
 	}

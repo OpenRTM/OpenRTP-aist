@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -29,7 +31,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
@@ -55,7 +56,7 @@ import jp.go.aist.rtm.rtcbuilder.container.param.ContainerParam;
 import jp.go.aist.rtm.rtcbuilder.container.param.LibraryParam;
 import jp.go.aist.rtm.rtcbuilder.container.param.RepositoryParam;
 import jp.go.aist.rtm.rtcbuilder.container.param.setting.ContainerConfig;
-import jp.go.aist.rtm.rtcbuilder.container.param.setting.Middleware;
+import jp.go.aist.rtm.rtcbuilder.container.param.setting.MiddlewareDetail;
 import jp.go.aist.rtm.rtcbuilder.container.param.setting.Version;
 import jp.go.aist.rtm.rtcbuilder.generator.param.RecordedList;
 import jp.go.aist.rtm.rtcbuilder.generator.param.RtcParam;
@@ -69,6 +70,10 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 			"C++", "Python" };
 	private static final String[] CONFIGURATION_ITEMS = new String[] {
 			"Min", "Full" };
+	private static final List<String> INSTALLER_ITEMS = Arrays.asList(
+			"apt", "pip" );
+	static final int LIBRARY_NAME = 0;
+	static final int LIBRARY_INSTALLER = 1;
 
 	private String configText;
 
@@ -79,13 +84,10 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 	private Button addTargetButton;	
 	private Button deleteTargetButton;
 	
-	private Combo middlewareCombo;
-	private Combo midVersionCombo;
-	private Combo osVersionCombo;
 	private Text workspaceText;
 	private Combo languageCombo;
-	private Combo configCombo;
 
+	private TableViewer defaultListViewer;
 	private TableViewer librariesListViewer;
 	private Button addLibraryButton;	
 	private Button deleteLibraryButton;
@@ -98,7 +100,7 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 
 	private ContainerParam selectedParam;
 	private ContainerConfig containerSettings;
-	private Middleware selectedMiddleware;
+	private MiddlewareDetail selectedMiddleware;
 	private Version selectedVersion;
 	
 	private Composite presetComposite;
@@ -107,11 +109,9 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 	private Image smallInfo = null;
 
 	private RecordedList<ContainerParam> paramList = new RecordedList<ContainerParam>();
+	private List<String> defaultList = new ArrayList<String>();
 	private List<LibraryParam> librariesList = new ArrayList<LibraryParam>();
 	private List<RepositoryParam> repositoriesList = new ArrayList<RepositoryParam>();
-	
-	private Font cautionFont;
-	private Label cautionLabel;
 
 	/**
 	 * コンストラクタ
@@ -126,12 +126,14 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			containerSettings = mapper.readValue(configText, ContainerConfig.class);
-			selectedMiddleware = containerSettings.getMiddlewares().get(0);
-			selectedVersion = selectedMiddleware.getVersions().get(0);
+    		containerSettings =  mapper.readValue(configText, ContainerConfig.class);
+    		selectedMiddleware = getMiddleware();
+    		if(selectedMiddleware != null) {
+				selectedVersion = selectedMiddleware.versions.get(0);
+    		}
 		} catch (Exception e) {
 			containerSettings = new ContainerConfig();
-			selectedMiddleware = new Middleware();
+			selectedMiddleware = new MiddlewareDetail();
 			selectedVersion = new Version();
 		}
 		
@@ -172,7 +174,7 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 			@Override
 			public void mouseScrolled(MouseEvent e) {
 				int delta = e.count * 5;
-				Point point =managedForm.getForm().getContent().getLocation();
+				Point point = managedForm.getForm().getContent().getLocation();
 				int margin = managedForm.getForm().getClientArea().height - managedForm.getForm().getContent().getSize().y;
 				int newLocation = point.y + delta;
 				if( 0<newLocation ) {
@@ -228,40 +230,26 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 				try {
 					byte[] bytes = Files.readAllBytes(Paths.get(selectedFileName));
 					String content = new String(bytes, StandardCharsets.UTF_8);
-//					ContainerPreferenceManager.getInstance().setSettings(content);
 					
 					containerSettings = mapper.readValue(content, ContainerConfig.class);
-					selectedMiddleware = containerSettings.getMiddlewares().get(0);
-					selectedVersion = selectedMiddleware.getVersions().get(0);
+		    		selectedMiddleware = getMiddleware();
+		    		if(selectedMiddleware == null) {
+						MessageDialog.openWarning(getSite().getShell(),
+								"Error",
+								Messages.getString("IMC.CONTAINER_CAUTION_SETTING_RTC"));
+						return;
+		    		}
+					selectedVersion = selectedMiddleware.versions.get(0);
 					
 					ContainerPreferenceManager.getInstance().setSettings(content);
 
-					cautionLabel.setVisible(false);
-				    GridData gd = (GridData) cautionLabel.getLayoutData();
-				    gd.exclude = true;
-				    cautionLabel.getParent().layout(true, true);
 				    updateEnable(true);
 				    
-					List<String> midList = new ArrayList<String>();
-					for(Middleware each : containerSettings.getMiddlewares()) {
-						midList.add(each.getName());
-					}
-					middlewareCombo.setItems(midList.toArray(new String[0]));
-					middlewareCombo.select(0);
-					if(0 < paramList.size()) {
-						targetListViewer.setSelection(new StructuredSelection(targetListViewer.getElementAt(0)));
-					    presetComposite.layout();
-					}
-					
 					MessageDialog.openInformation(getSite().getShell(),
 							"Information",
 							Messages.getString("IMC.CONTAINER_INFO_SETTING"));
 				    
 				} catch (Exception ex) {
-				    GridData gd = (GridData) cautionLabel.getLayoutData();
-				    gd.exclude = false;
-				    cautionLabel.setVisible(true);
-				    cautionLabel.getParent().layout(true, true);
 				    updateEnable(false);
 				    
 					MessageDialog.openWarning(getSite().getShell(),
@@ -271,38 +259,19 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		    }
 		});
 		//
-		cautionFont = new Font(form.getDisplay(), IMessageConstants.TITLE_FONT, 12, SWT.BOLD);
-		cautionLabel = managedForm.getToolkit().createLabel(form.getBody(), Messages.getString("IMC.CONTAINER_SETTING_CAUTION"));
-		cautionLabel.setFont(cautionFont);
-		cautionLabel.setForeground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
-		GridData gridData = new GridData();
-		gridData.horizontalSpan = 2;
-		cautionLabel.setLayoutData(gridData);
-		////////////
 		createBasicModelInformationSection(toolkit, form);
 		createHintSection(toolkit, form);
 		createTargetListSection(toolkit, form);
 		createEnvironmentSection(toolkit, form);
+		createDefaultLibrarySection(toolkit, form);
 		createLibrarySection(toolkit, form);
 		createRepositorySection(toolkit, form);
 		
-		if(0 < paramList.size()) {
-			targetListViewer.setSelection(new StructuredSelection(targetListViewer.getElementAt(0)));
-		}
-		
-		if(configText == null || configText.length() == 0) {
-			updateEnable(false);
-		} else {
-			cautionLabel.setVisible(false);
-		    gd = (GridData) cautionLabel.getLayoutData();
-		    gd.exclude = true;
-		    cautionLabel.getParent().layout(true, true);
-			middlewareComboSelected(toolkit, false);
-		}
-
 		if(paramList.size() == 0) {
 			updateEnable(false);
 			addTargetButton.setEnabled(true);
+		} else {
+			targetListViewer.setSelection(new StructuredSelection(targetListViewer.getElementAt(0)));
 		}
 
 		load();
@@ -313,13 +282,10 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		addTargetButton.setEnabled(enable);
 		deleteTargetButton.setEnabled(enable);
 		
-		middlewareCombo.setEnabled(enable);
-		midVersionCombo.setEnabled(enable);
-		osVersionCombo.setEnabled(enable);
 		workspaceText.setEnabled(enable);
 		languageCombo.setEnabled(enable);
-		configCombo.setEnabled(enable);
 		
+		defaultListViewer.getTable().setEnabled(enable);
 		librariesListViewer.getTable().setEnabled(enable);
 		addLibraryButton.setEnabled(enable);
 		deleteLibraryButton.setEnabled(enable);
@@ -352,24 +318,24 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		
 		createHintSpace(toolkit, composite);
 		
-		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE"),
-				Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE_DESC"),
-				toolkit, composite);
-		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE_VERSION"),
-				Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE_VERSION_DESC"),
-				toolkit, composite);
-		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_OS_VERSION"),
-				Messages.getString("IMC.CONTAINER_HINT_OS_VERSION_DESC"),
-				toolkit, composite);
+//		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE"),
+//				Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE_DESC"),
+//				toolkit, composite);
+//		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE_VERSION"),
+//				Messages.getString("IMC.CONTAINER_HINT_MIDDLEWARE_VERSION_DESC"),
+//				toolkit, composite);
+//		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_OS_VERSION"),
+//				Messages.getString("IMC.CONTAINER_HINT_OS_VERSION_DESC"),
+//				toolkit, composite);
 		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_WORKSPACE"),
 				IMessageConstants.CONTAINERC_HINT_WORKSPACE_DESC,
 				toolkit, composite);
 		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_LANGUAGE"),
 				Messages.getString("IMC.CONTAINER_HINT_LANGUAGE_DESC"),
 				toolkit, composite);
-		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_CONFIGURATION"),
-				IMessageConstants.CONTAINERC_HINT_CONFIGURATION_DESC,
-				toolkit, composite);
+//		createHintLabel(Messages.getString("IMC.CONTAINER_HINT_CONFIGURATION"),
+//				IMessageConstants.CONTAINERC_HINT_CONFIGURATION_DESC,
+//				toolkit, composite);
 
 		createHintSpace(toolkit, composite);
 		
@@ -457,9 +423,11 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		gd.heightHint = 80;
 		targetListTable.setLayoutData(gd);
 
-		createColumn(targetListViewer, "Middleware", 150);
-		createColumn(targetListViewer, "Version", 120);
+		createColumn(targetListViewer, "Middleware", 100);
+		createColumn(targetListViewer, "Version", 80);
 		createColumn(targetListViewer, "OS Version", 180);
+		createColumn(targetListViewer, "Workspace", 150);
+		createColumn(targetListViewer, "Language", 80);
 
 		targetListViewer.setLabelProvider(new TargetLabelProvider());
 		targetListViewer.setInput(paramList);
@@ -470,40 +438,24 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 				if(selectionIndex < 0) return;
 				
 				selectedParam = paramList.get(selectionIndex);
-				Optional<Middleware> result = containerSettings.getMiddlewares().stream()
-											    .filter(item -> item.getName().equals(selectedParam.getMiddleware()))
-											    .findFirst();
-				if(result.isPresent() == false) {
-					return;
-				}
-				selectedMiddleware = result.get();
+				if( containerSettings.getMiddlewares().keySet().contains(selectedParam.getMiddleware()) == false) return;
+				selectedMiddleware = containerSettings.getMiddlewares().get(selectedParam.getMiddleware());
 				
-				Optional<Version> resultVer = selectedMiddleware.getVersions().stream()
-											    .filter(item -> item.getId().equals(selectedParam.getMdlVersion()))
+				Optional<Version> resultVer = selectedMiddleware.versions.stream()
+											    .filter(item -> item.id.equals(selectedParam.getMdlVersion()))
 											    .findFirst();
 				if(resultVer.isPresent() == false) {
 					return;
 				}
 				selectedVersion = resultVer.get();
-				
-				middlewareCombo.setText(selectedMiddleware.getName());
-				middlewareComboSelected(toolkit, false);
-				midVersionCombo.setText(selectedVersion.getId());
-				midVersionComboSelected();
+				middlewareComboSelected(toolkit);
 				
 				workspaceText.setText(selectedParam.getWorkspace());
 				languageCombo.setText(selectedParam.getLanguage());
-				configCombo.setText(selectedParam.getConfiguration());
 				/////
+				defaultList = selectedParam.getDefaultLibs();
+				defaultListViewer.setInput(defaultList);
 				librariesList = selectedParam.getLibraries();
-				for(String each : selectedMiddleware.getDefault_libs()) {
-					boolean exists = librariesList.stream()
-										.anyMatch(item -> each.equals(item.getName()));
-					if(exists) continue;
-					LibraryParam elem = new LibraryParam();
-					elem.setName(each);
-					librariesList.add(elem);
-				}
 				librariesListViewer.setInput(librariesList);
 				/////
 				urlText.setText("");
@@ -528,13 +480,16 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		addTargetButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Middleware newMid = containerSettings.getMiddlewares().get(0);
-				Version newVersion = newMid.getVersions().get(0);
+				MiddlewareDetail newMid = getMiddleware();
+				if(newMid == null) return;
+				Version newVersion = newMid.versions.get(0);
 				
 				ContainerParam elem = new ContainerParam();
-				elem.setMiddleware(newMid.getName());
-				elem.setMdlVersion(newVersion.getId());
-				elem.setOsVersion(newVersion.getOs());
+				elem.setMiddleware(getMiddlewareName());
+				elem.setMdlVersion(newVersion.id);
+				elem.setOsVersion(newVersion.os);
+				elem.setConfiguration("Std");
+				elem.updateDefaultLibs(containerSettings);
 				paramList.add(elem);
 				updateEnable(true);
 				targetListViewer.refresh();
@@ -561,8 +516,10 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 					} else {
 						workspaceText.setText("");
 						selectedParam = null;
+						defaultList.clear();
 						librariesList.clear();
 						repositoriesList.clear();
+						defaultListViewer.refresh();;
 						librariesListViewer.refresh();;
 						repositoryListViewer.refresh();;
 						updateEnable(false);
@@ -592,115 +549,17 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		composite.setLayoutData(gd);
 		sctEnv.setClient(composite);
 
-		List<String> midList = new ArrayList<String>();
-		for(Middleware each : containerSettings.getMiddlewares()) {
-			midList.add(each.getName());
-		}
-		middlewareCombo = createLabelAndCombo(toolkit, composite,
-				Messages.getString("IMC.CONTAINER_MIDDLEWARE_NAME"),
-				midList.toArray(new String[0]),
-				SWT.COLOR_BLACK, 3);
-		middlewareCombo.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				middlewareComboSelected(toolkit, true);
-				update();
-			}
-		});
-		
-		List<String> versionList = new ArrayList<String>();
-		for(Version each : selectedMiddleware.getVersions()) {
-			versionList.add(each.getId());
-		}
-		
-		midVersionCombo = createLabelAndCombo(toolkit, composite,
-				Messages.getString("IMC.CONTAINER_MIDDLEWARE_Version"),
-				versionList.toArray(new String[0]),
-				SWT.COLOR_BLACK, 1);
-		midVersionCombo.addSelectionListener(new SelectionListener() {
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				midVersionComboSelected();
-				update();
-			}
-		});
-		osVersionCombo = createLabelAndCombo(toolkit, composite,
-				Messages.getString("IMC.CONTAINER_OS_Version"),
-				versionList.toArray(new String[0]),
-				SWT.COLOR_BLACK, 1);
-
 		workspaceText = createLabelAndText(toolkit, composite,
-				Messages.getString("IMC.CONTAINER_WORKSPACE"), SWT.NONE, SWT.COLOR_BLACK, 3);
+				Messages.getString("IMC.CONTAINER_WORKSPACE"), SWT.NONE, SWT.COLOR_BLACK, 1);
 		
 		languageCombo = createLabelAndCombo(toolkit, composite,
 				Messages.getString("IMC.CONTAINER_LANGUAGE"),
 				LANGUAGE_ITEMS,
 				SWT.COLOR_BLACK, 1);
-		configCombo = createLabelAndCombo(toolkit, composite,
-				Messages.getString("IMC.CONTAINER_CONFIGURATION"),
-				CONFIGURATION_ITEMS,
-				SWT.COLOR_BLACK, 1);
-
 	}
 	
-	private void middlewareComboSelected(FormToolkit toolkit, boolean updateLibs ) {
-		int selected = middlewareCombo.getSelectionIndex();
-		if(selected < 0) return;
-		
-		selectedMiddleware = containerSettings.getMiddlewares().get(selected);
-		
-		midVersionCombo.removeAll();
-		List<String> versionList = new ArrayList<String>();
-		for(Version each : selectedMiddleware.getVersions()) {
-			versionList.add(each.getId());
-		}
-		midVersionCombo.setItems(versionList.toArray(new String[0]));
-		midVersionCombo.select(0);
-		midVersionComboSelected();
-		
-		if(selectedMiddleware.getType().equals("free")) {
-			osVersionCombo.removeAll();
-			osVersionCombo.setItems(selectedMiddleware.getSupported_os().toArray(new String[0]));
-			osVersionCombo.setEnabled(true);
-			osVersionCombo.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-			osVersionCombo.select(0);
-		} else {
-			List<String> osList = new ArrayList<String>();
-			for(Version each : selectedMiddleware.getVersions()) {
-				osList.add(each.getOs());
-			}
-			osVersionCombo.setItems(osList.toArray(new String[0]));
-			osVersionCombo.setEnabled(false);
-			osVersionCombo.setBackground(getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-			osVersionCombo.select(0);
-			midVersionComboSelected();
-		}
-		
-		languageCombo.setEnabled(selectedMiddleware.isHas_language_selection());
-		languageCombo.removeAll();
-		if(selectedMiddleware.isHas_language_selection()) {
-			languageCombo.setItems(LANGUAGE_ITEMS);
-		} else {
-			languageCombo.add("C++");
-		}
-		languageCombo.select(0);
-		
-		configCombo.setEnabled(selectedMiddleware.getType().equals("link"));
-		configCombo.removeAll();
-		if(selectedMiddleware.getType().equals("link")) {
-			configCombo.setItems(CONFIGURATION_ITEMS);
-		} else {
-			configCombo.add("Std");
-		}
-		configCombo.select(0);
-		/////
-		Map<String, List<String>> selectedPreset = selectedMiddleware.getFunctional_presets();
+	private void middlewareComboSelected(FormToolkit toolkit) {
+		Map<String, List<String>> selectedPreset = selectedMiddleware.functionalPresets;
 		for(Button each : presetButtons) {
 			each.dispose();
 		}
@@ -728,19 +587,18 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 							selectedParam.getPreSets().remove(key);
 						}
 					}
-					for(String each : elems) {
-						boolean exists = librariesList.stream()
-								.anyMatch(item -> each.equals(item.getName()));
-						if(chkPreset.getSelection()) {
+					librariesList.removeIf(item -> item.canUpdate() == false);
+					for(String preset : selectedParam.getPreSets()) {
+						if(selectedMiddleware.functionalPresets.keySet().contains(preset) == false) continue;
+						List<String> libs = selectedMiddleware.functionalPresets.get(preset);
+						for(String each : libs) {
+							boolean exists = librariesList.stream()
+									.anyMatch(item -> each.equals(item.getName()));
 							if(exists) continue;
 							LibraryParam elem = new LibraryParam();
 							elem.resetUpdated();
 							elem.setName(each);
 							librariesList.add(elem);
-							
-						} else {
-							if(exists==false) continue;
-							librariesList.removeIf(item -> each.equals(item.getName()));
 						}
 					}
 					librariesListViewer.refresh();
@@ -764,30 +622,48 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 
 		}
 		presetComposite.layout();
-		
-		if(updateLibs) {
-			librariesList.clear();
-			for(String each : selectedMiddleware.getDefault_libs()) {
-				boolean exists = librariesList.stream()
-						.anyMatch(item -> each.equals(item.getName()));
-				if(exists) continue;
-				LibraryParam elem = new LibraryParam();
-				elem.setName(each);
-				librariesList.add(elem);
-			}
-			librariesListViewer.refresh();
-			/////
-			repositoriesList.clear();
-			repositoryListViewer.refresh();
-		}
 	}
 	
-	private void midVersionComboSelected() {
-		int selected = midVersionCombo.getSelectionIndex();
-		selectedVersion = selectedMiddleware.getVersions().get(selected);
-		osVersionCombo.setText(selectedVersion.getOs());
-	}
+	private void createDefaultLibrarySection(FormToolkit toolkit, ScrolledForm form) {
+//		Section sctDefaultLibs = toolkit.createSection(form.getBody(),
+//				Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE);
+		Section sctDefaultLibs = toolkit.createSection(form.getBody(),
+				Section.TITLE_BAR | Section.TWISTIE);
+		sctDefaultLibs.setExpanded(false);
+		sctDefaultLibs.setText(Messages.getString("IMC.CONTAINER_TITLE_DEFAULT_LIBRARY"));
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.verticalAlignment = GridData.BEGINNING;
+		sctDefaultLibs.setLayoutData(gridData);
+		//
+		Composite composite = toolkit.createComposite(sctDefaultLibs, SWT.NULL);
+		composite.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+		toolkit.paintBordersFor(composite);
+		GridLayout gl = new GridLayout(4, false);
+		composite.setLayout(gl);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		composite.setLayoutData(gd);
+		sctDefaultLibs.setClient(composite);
 
+		defaultListViewer = new TableViewer(composite, SWT.FULL_SELECTION
+				| SWT.SINGLE | SWT.BORDER);
+		defaultListViewer.setContentProvider(new ArrayContentProvider());
+		Table librariesListTable = defaultListViewer.getTable();
+		librariesListTable.setLinesVisible(true);
+		librariesListTable.setHeaderVisible(true);
+		gd = new GridData();
+		gd.heightHint = 100;
+		gd.verticalAlignment = SWT.FILL;
+		gd.horizontalAlignment = SWT.FILL;
+		gd.grabExcessVerticalSpace = true;
+		gd.grabExcessHorizontalSpace = true;
+		librariesListTable.setLayoutData(gd);
+
+		createColumn(defaultListViewer, "Library Name", 400);
+		defaultListViewer.setLabelProvider(new DefultLiLabelProvider());
+		defaultListViewer.setInput(defaultList);
+	}
+	
 	private void createLibrarySection(FormToolkit toolkit, ScrolledForm form) {
 		Composite composite = createSectionBaseWithLabel(toolkit, form,
 				Messages.getString("IMC.CONTAINER_TITLE_LIBRARY"),
@@ -808,7 +684,9 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		librariesListTable.setLayoutData(gd);
 		
 		TableViewerColumn nameColumn = createColumn(librariesListViewer, "Library Name", 200);
-		nameColumn.setEditingSupport(new LibraryNameCellModifier(librariesListViewer));
+		nameColumn.setEditingSupport(new LibraryCellModifier(librariesListViewer, LIBRARY_NAME));
+		TableViewerColumn installerColumn = createColumn(librariesListViewer, "Installer", 100);
+		installerColumn.setEditingSupport(new LibraryCellModifier(librariesListViewer, LIBRARY_INSTALLER));
 
 		librariesListViewer.setLabelProvider(new LibraryLabelProvider());
 		librariesListViewer.setInput(librariesList);
@@ -829,6 +707,7 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 			public void widgetSelected(SelectionEvent e) {
 				LibraryParam elem = new LibraryParam();
 				elem.setName("new_lib");
+				elem.setCanUpdate(true);
 				librariesList.add(elem);
 				librariesListViewer.refresh();
 				update();
@@ -989,6 +868,26 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 				return elem.getMdlVersion();
 			} else if (columnIndex == 2) {
 				return elem.getOsVersion();
+			} else if (columnIndex == 3) {
+				return elem.getWorkspace();
+			} else if (columnIndex == 4) {
+				return elem.getLanguage();
+			} else {
+				return "";
+			}
+		}
+	}
+	//////////
+	public class DefultLiLabelProvider extends LabelProvider implements ITableLabelProvider {
+		public Image getColumnImage(Object element, int columnIndex) {
+			return null;
+		}
+
+		public String getColumnText(Object element, int columnIndex) {
+			if (element instanceof String == false) return null;
+			String elem = (String) element;
+			if (columnIndex == 0) {
+				return elem;
 			} else {
 				return "";
 			}
@@ -1005,21 +904,42 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 			LibraryParam elem = (LibraryParam) element;
 			if (columnIndex == 0) {
 				return elem.getName();
+			} else if (columnIndex == 1) {
+				if(elem.canUpdate()) {
+					return elem.getInstaller();
+				} else {
+					return "";
+				}
 			} else {
 				return "";
 			}
 		}
 	}
-	private class LibraryNameCellModifier extends EditingSupport {
+	private class LibraryCellModifier extends EditingSupport {
 		private CellEditor editor;
+		int column;
 
-		public LibraryNameCellModifier(ColumnViewer viewer) {
+		public LibraryCellModifier(ColumnViewer viewer, int column) {
 			super(viewer);
-			editor = new TextCellEditor(((TableViewer) viewer).getTable());
+			
+			this.column = column;
+			switch (this.column) {
+			case LIBRARY_NAME:
+				editor = new TextCellEditor(((TableViewer) viewer).getTable());
+				break;
+			case LIBRARY_INSTALLER:
+				editor = new ComboBoxCellEditor(((TableViewer) viewer).getTable(),
+												INSTALLER_ITEMS.toArray(new String[0]),
+												SWT.READ_ONLY);
+				break;
+			default:
+				break;
+			}
 		}
 		@Override
 		protected boolean canEdit(Object element) {
-			return true;
+			LibraryParam elem = (LibraryParam) element;
+			return elem.canUpdate();
 		}
 		@Override
 		protected CellEditor getCellEditor(Object element) {
@@ -1029,20 +949,46 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		protected Object getValue(Object element) {
 			if (element instanceof LibraryParam == false) return null;
 			LibraryParam elem = (LibraryParam) element;
-			return elem.getName();
+			
+			String label = null;
+			switch (this.column) {
+				case LIBRARY_NAME:
+					label = elem.getName();
+					break;
+				case LIBRARY_INSTALLER:
+					int index = INSTALLER_ITEMS.indexOf(elem.getInstaller());
+					return new Integer(index);
+				default:
+					break;
+			}
+			if (label == null) {
+				return null;
+			}
+			return label;
 		}
 		@Override
 		protected void setValue(Object element, Object value) {
 			if (element instanceof LibraryParam == false) return;
 			
-			String modified = (String) value;
-			boolean exists = librariesList.stream()
-					.anyMatch(item -> modified.equals(item.getName()));
-			if(exists) return;
-
 			LibraryParam elem = (LibraryParam) element;
-			elem.setName((String) value);
-			getViewer().update(element, null);
+			switch (this.column) {
+				case LIBRARY_NAME:
+					String modified = (String) value;
+					boolean exists = librariesList.stream()
+							.anyMatch(item -> modified.equals(item.getName()));
+					if(exists) return;
+
+					elem.setName((String) value);
+					getViewer().update(element, null);
+					break;
+				case LIBRARY_INSTALLER:
+					elem.setInstaller(INSTALLER_ITEMS.get(((Integer) value).intValue()));
+					getViewer().update(element, null);
+					break;
+				default:
+					break;
+			}
+
 			update();
 		}
 	}
@@ -1066,13 +1012,9 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 	}
 	//////////		
 	public void update() {
-		if( middlewareCombo != null && selectedParam != null ) {
-			selectedParam.setMiddleware(middlewareCombo.getText());
-			selectedParam.setMdlVersion(midVersionCombo.getText());
-			selectedParam.setOsVersion(osVersionCombo.getText());
+		if( workspaceText != null && selectedParam != null ) {
 			selectedParam.setWorkspace(workspaceText.getText());
 			selectedParam.setLanguage(languageCombo.getText());
-			selectedParam.setConfiguration(configCombo.getText());
 			
 			targetListViewer.refresh();
 		}
@@ -1083,7 +1025,7 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 	 * データをロードする
 	 */
 	public void load() {
-		if( middlewareCombo == null ) return;
+		if( workspaceText == null ) return;
 		
 		RtcParam rtcParam = editor.getRtcParam();
 		paramList = rtcParam.getContainerSettings();
@@ -1107,9 +1049,21 @@ public class ContainerEditorFormPage extends AbstractEditorFormPage {
 		return null;
 	}
 	
-	@Override
-	public void dispose() {
-		if( cautionFont!=null ) cautionFont.dispose();
-		super.dispose();
+	public MiddlewareDetail getMiddleware() {
+		for(String key : containerSettings.getMiddlewares().keySet() ) {
+			if(key.toLowerCase().startsWith("openrtm")) {
+				return containerSettings.getMiddlewares().get(key);
+			}
+		}
+		return null;
+	}
+	
+	public String getMiddlewareName() {
+		for(String key : containerSettings.getMiddlewares().keySet() ) {
+			if(key.toLowerCase().startsWith("openrtm")) {
+				return key;
+			}
+		}
+		return "";
 	}
 }

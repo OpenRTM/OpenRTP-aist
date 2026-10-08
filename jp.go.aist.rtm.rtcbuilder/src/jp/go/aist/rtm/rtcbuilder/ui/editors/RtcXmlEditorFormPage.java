@@ -116,7 +116,6 @@ public class RtcXmlEditorFormPage extends AbstractEditorFormPage {
 		ruler.addDecorator(0, lineCol);
 		
 		RTCXmlViewer = new SourceViewer(composite, ruler , SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		// RTCXmlViewer.addTextListener(new SourceTextListener());
 		RTCXmlViewer.getTextWidget().addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if( (e.stateMask & SWT.CTRL)!=0 && e.keyCode == KEYCODE_A ) {

@@ -221,4 +221,14 @@ public class ServicePortImpl extends PortBaseImpl implements ServicePort {
 		return result.toString();
 	}
 
+	protected int port_Type = 0;
+
+	public int getPort_Type() {
+		return port_Type;
+	}
+
+	public void setPort_Type(int port_Type) {
+		this.port_Type = port_Type;
+	}
+
 } //ServicePortImpl

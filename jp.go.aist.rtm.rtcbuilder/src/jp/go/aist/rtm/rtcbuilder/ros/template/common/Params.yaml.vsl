@@ -1,0 +1,19 @@
+${rosParam.nodeName}:
+#if( ${rosParam.parameters.size()}==0 )
+  # No ROS parameters defined in UI
+  ros__parameters: {}
+#else
+  ros__parameters:
+#foreach($param in ${rosParam.parameters})
+    ${sharp} Parameter: ${param.name}
+    ${sharp} Type: ${param.type}
+    ${sharp} Description: ${param.docDescription}
+#if(${param.min})    ${sharp} Min: ${param.min}
+#end
+#if(${param.max})    ${sharp} Max: ${param.max}
+#end
+#if(${param.step})    ${sharp} Step: ${param.step}
+#end
+    ${param.name}: ${tmpltHelper.quoteDefault(${param})}
+#end
+#end

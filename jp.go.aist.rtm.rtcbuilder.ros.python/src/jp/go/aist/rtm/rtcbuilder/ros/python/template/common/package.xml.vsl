@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>${rosParam.packageName}</name>
+  <version>${rosParam.version}</version>
+  <description>${rosParam.description}</description>
+  <maintainer email="${rosParam.contactAddress}">${rosParam.maintainer}</maintainer>
+  <license>${rosParam.license}</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  <!-- Core dependencies -->
+  <exec_depend>ament_index_python</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>lifecycle_msgs</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+
+#if( ${rosParam.parameters.size()}>0 )
+  <!-- Parameter / descriptor dependencies -->
+  <exec_depend>rcl_interfaces</exec_depend>
+#end
+
+#if( ${tmpltHelper.getTopicTypes(${rosParam}).size()} > 0 )
+  <!-- Topic message dependencies -->
+#foreach($topic in ${tmpltHelper.getTopicTypes(${rosParam})})
+  <exec_depend>${tmpltHelper.getMessageBasename(${topic})}</exec_depend>
+#end
+#end
+#if( ${tmpltHelper.getServiceTypes(${rosParam}).size()} > 0 )
+  <!-- Service dependencies -->
+#foreach($service in ${tmpltHelper.getServiceTypes(${rosParam})})
+  <exec_depend>${tmpltHelper.getMessageBasename(${service})}</exec_depend>
+#end
+#end
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+  <!-- Action dependencies -->
+  <exec_depend>action_msgs</exec_depend>
+#foreach($action in ${tmpltHelper.getActionTypes(${rosParam})})
+  <exec_depend>${tmpltHelper.getMessageBasename(${action})}</exec_depend>
+#end
+#end
+#if( ${rosParam.targetEnv.getLibraries().size()}>0 )
+  <!-- Extra dependencies -->
+#foreach($ext in ${rosParam.targetEnv.getLibraries()})
+  <exec_depend>${ext.name}</exec_depend>
+#end
+#end
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

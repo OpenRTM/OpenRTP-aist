@@ -4,7 +4,7 @@ Created-By: 20.0-b12 (Sun Microsystems Inc.)
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: jp.go.aist.rtm.rtcbuilder.python;singleton:=true
-Bundle-Version: 2.0.0
+Bundle-Version: 2.1.0
 Bundle-Activator: jp.go.aist.rtm.rtcbuilder.python.RtcBuilderPythonPlu
  gin
 Bundle-Localization: plugin

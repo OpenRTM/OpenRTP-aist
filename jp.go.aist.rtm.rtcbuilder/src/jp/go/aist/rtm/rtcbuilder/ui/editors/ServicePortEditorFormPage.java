@@ -168,7 +168,6 @@ public class ServicePortEditorFormPage extends AbstractEditorFormPage {
 
 		createHintSectionPort(toolkit, compositeHint);
 		createHintSectionInterface(toolkit, compositeHint);
-		createHintSectionROS(toolkit, compositeHint);
 
 		// 言語・環境ページより先にこのページが表示された場合、ここで言語を判断する
 		editor.setEnabledInfoByLang();
@@ -223,17 +222,6 @@ public class ServicePortEditorFormPage extends AbstractEditorFormPage {
 		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_EXCEPTION"), IMessageConstants.SERVICEPORT_HINT_EXCEPTION_DESC, toolkit, composite);
 		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_PRE_CONDITION"), IMessageConstants.SERVICEPORT_HINT_PRE_CONDITION_DESC, toolkit, composite);
 		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_POST_CONDITION"), IMessageConstants.SERVICEPORT_HINT_POST_CONDITION_DESC, toolkit, composite);
-	}
-
-	private void createHintSectionROS(FormToolkit toolkit, Composite parent) {
-		Composite composite = createHintSectionComp(toolkit, parent, Messages.getString("IMC.HINT_ROS_TITLE"));
-		//
-		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL"), IMessageConstants.SERVICEPORT_HINT_ROS_PORT_DESC, toolkit, composite);
-		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_PORTNAME"), IMessageConstants.SERVICEPORT_HINT_ROS_PORT_NAME_DESC, toolkit, composite);
-		createHintSpace(toolkit, composite);
-		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_IFNAME"), IMessageConstants.SERVICEPORT_HINT_IF_ROS_NAME_DESC, toolkit, composite);
-		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_IFDIRECTION"), IMessageConstants.SERVICEPORT_HINT_IF_ROS_DIRECTION_DESC, toolkit, composite);
-		createHintLabel(Messages.getString("IMC.SERVICEPORT_LBL_IFTYPE"), IMessageConstants.SERVICEPORT_HINT_ROS_IFTYPE_DESC, toolkit, composite);
 	}
 
 	private Composite createHintSectionComp(FormToolkit toolkit, Composite form, String title) {

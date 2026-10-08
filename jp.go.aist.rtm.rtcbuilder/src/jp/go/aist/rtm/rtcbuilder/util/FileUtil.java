@@ -193,6 +193,22 @@ public class FileUtil {
         }
         return result;
     }
+    
+	public static List<File> listAllFiles(File dir) {
+	    List<File> result = new ArrayList<>();
+	    File[] files = dir.listFiles();
+	    if (files != null) {
+	        for (File each : files) {
+	        	if(each.isFile()) {
+	        		result.add(each);
+	        	}
+	            if (each.isDirectory()) {
+	                result.addAll(listAllFiles(each));
+	            }
+	        }
+	    }
+	    return result;
+	}
 
 
 }

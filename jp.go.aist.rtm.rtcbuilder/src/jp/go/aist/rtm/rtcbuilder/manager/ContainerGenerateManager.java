@@ -10,6 +10,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jp.go.aist.rtm.rtcbuilder.IRtcBuilderConstants;
+import jp.go.aist.rtm.rtcbuilder.ParamBase;
 import jp.go.aist.rtm.rtcbuilder.container.param.ContainerParam;
 import jp.go.aist.rtm.rtcbuilder.container.param.setting.ContainerConfig;
 import jp.go.aist.rtm.rtcbuilder.generator.GeneratedResult;
@@ -37,13 +39,20 @@ public class ContainerGenerateManager extends GenerateManager {
 		return null;
 	}
 
+	@Override
+	public String getTargetMiddleware() {
+		return IRtcBuilderConstants.MIDDLEWARE_ALL;
+	}
+
 	/**
 	 * ファイルを出力する
 	 *
 	 * @param generatorParam
 	 * @return 出力結果のリスト
 	 */
-	public List<GeneratedResult> generateTemplateCode(RtcParam rtcParam) {
+	public List<GeneratedResult> generateTemplateCode(ParamBase baseParam) {
+		RtcParam rtcParam = (RtcParam)baseParam;
+		
 		if(rtcParam.getContainerSettings() == null || rtcParam.getContainerSettings().size() == 0) {
 			return new ArrayList<GeneratedResult>();
 		}
@@ -68,6 +77,7 @@ public class ContainerGenerateManager extends GenerateManager {
 		List<GeneratedResult> result = new ArrayList<GeneratedResult>();
 		
 		for(ContainerParam param : rtcParam.getContainerSettings()) {
+			param.prepareLibraries(rtcParam.getContainerConfig());
 			contextMap.put("containerParam", param);
 			
 			StringBuilder builder = new StringBuilder();
@@ -92,15 +102,7 @@ public class ContainerGenerateManager extends GenerateManager {
 			builder.append(param.getConfiguration());
 			builder.append(".Dockerfile");
 			
-			if(param.getMiddleware().contains("ROS")) {
-				result.add(generateROSContainer(contextMap, builder.toString()));
-			} else {
-				if(param.getLanguage().contains("Python")) {
-					result.add(generateOpenRTMPythonContainer(contextMap, builder.toString()));
-				} else {
-					result.add(generateOpenRTMCppContainer(contextMap, builder.toString()));
-				}
-			}
+			result.add(generateOpenRTMContainer(contextMap, builder.toString()));
 		}
 
 		return result;
@@ -110,18 +112,8 @@ public class ContainerGenerateManager extends GenerateManager {
 		return source.replace("+", "p").toLowerCase();
 	}
 
-	public GeneratedResult generateROSContainer(Map<String, Object> contextMap, String outfile) {
-		String infile = "container/ROS_Container.vsl";
-		return generate(infile, outfile, contextMap);
-	}
-
-	public GeneratedResult generateOpenRTMPythonContainer(Map<String, Object> contextMap, String outfile) {
-		String infile = "container/OpenRTM_Python_Container.vsl";
-		return generate(infile, outfile, contextMap);
-	}
-
-	public GeneratedResult generateOpenRTMCppContainer(Map<String, Object> contextMap, String outfile) {
-		String infile = "container/OpenRTM_Cpp_Container.vsl";
+	public GeneratedResult generateOpenRTMContainer(Map<String, Object> contextMap, String outfile) {
+		String infile = "container/OpenRTM_Container.vsl";
 		return generate(infile, outfile, contextMap);
 	}
 

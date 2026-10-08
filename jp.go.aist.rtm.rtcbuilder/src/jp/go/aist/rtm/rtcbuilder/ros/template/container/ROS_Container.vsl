@@ -1,0 +1,91 @@
+${sharp} ==============================================================================
+${sharp} ROS Dockerfile
+${sharp} ==============================================================================
+${sharp} 1. Base Image
+#if( ${tmpltHelper.convConfiguration(${containerParam.configuration})} == 1 )
+FROM docker.io/library/ros:${containerParam.mdlVersion.toLowerCase()}-ros-base
+#elseif( ${tmpltHelper.convConfiguration(${containerParam.configuration})} == 2 )
+FROM docker.io/osrf/ros:${containerParam.mdlVersion.toLowerCase()}-desktop-full
+#end
+
+${sharp} 2. Multi-Architecture and Metadata
+ARG TARGETARCH
+LABEL org.opencontainers.image.architecture="${dol}{TARGETARCH:-amd64}"
+${sharp} Metadata
+LABEL org.opencontainers.image.authors="${rosParam.maintainer}"
+LABEL org.opencontainers.image.description="${rosParam.description}"
+
+${sharp} 3. Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO=${containerParam.mdlVersion.toLowerCase()}
+
+${sharp} 4. Install System Dependencies
+RUN apt-get update && apt-get install -y \
+    sudo \
+#foreach($aptLib in ${containerParam.aptList})
+    ${aptLib} \
+#end
+    && rm -rf /var/lib/apt/lists/*
+
+#if( ${containerParam.pipList.size()} > 0 )
+${sharp} 5. Install Python Dependencies
+RUN pip3 install --break-system-packages --no-cache-dir #foreach($pipLib in ${containerParam.pipList})${pipLib}#end
+#end
+
+${sharp} 6. Create Non-root User
+ARG USERNAME=container_user
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+ARG USER_PASSWORD=container_user
+
+RUN (userdel -r ubuntu || true) \
+    && groupadd --gid ${dol}USER_GID ${dol}USERNAME \
+    && useradd --uid ${dol}USER_UID --gid ${dol}USER_GID -m -s /bin/bash ${dol}USERNAME \
+    && echo "${dol}USERNAME:${dol}USER_PASSWORD" | chpasswd \
+    && usermod -aG sudo ${dol}USERNAME \
+    && echo "${dol}USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${dol}USERNAME \
+    && chmod 0440 /etc/sudoers.d/${dol}USERNAME
+
+USER ${dol}USERNAME
+
+RUN echo "source /opt/ros/${dol}{ROS_DISTRO}/setup.bash" >> /home/${dol}USERNAME/.bashrc && \
+    echo "if [ -f /workspace/${containerParam.workspace}/install/setup.bash ]; then source /workspace/${containerParam.workspace}/install/setup.bash; fi" >> /home/${dol}USERNAME/.bashrc
+
+${sharp} 7. Setup Workspace
+RUN sudo mkdir -p /workspace/${containerParam.workspace}/src \
+    && sudo chown -R ${dol}USERNAME:${dol}USERNAME /workspace
+WORKDIR /workspace/${containerParam.workspace}/src
+
+${sharp} 8. Clone and Build Source Code
+#foreach($repParam in ${containerParam.repositories})
+RUN git clone -b ${repParam.branch} ${repParam.uRL}
+#end
+
+WORKDIR /workspace/${containerParam.workspace}
+RUN sudo apt-get update && rosdep update && rosdep install -r -y -i --from-paths src
+RUN bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && MAKEFLAGS='-j2' colcon build --symlink-install --executor sequential" 
+
+${sharp} 9. Setup Entrypoint
+RUN echo '${sharp}!/bin/bash' > /workspace/entrypoint.sh && \
+    echo 'set -e' >> /workspace/entrypoint.sh && \
+    echo 'source /opt/ros/${ROS_DISTRO}/setup.bash' >> /workspace/entrypoint.sh && \
+    echo 'if [ -f /workspace/${containerParam.workspace}/install/setup.bash ]; then source /workspace/${containerParam.workspace}/install/setup.bash; fi' >> /workspace/entrypoint.sh && \
+    echo 'exec "${dol}@"' >> /workspace/entrypoint.sh && \
+    sudo chmod +x /workspace/entrypoint.sh
+
+WORKDIR /workspace/${containerParam.workspace}
+
+${sharp} 10. Setup Volume for Logs
+RUN mkdir -p /home/${dol}USERNAME/.ros/log \
+    && sudo chown -R ${dol}USERNAME:${dol}USERNAME /home/${dol}USERNAME/.ros
+VOLUME ["/home/${dol}USERNAME/.ros/log"]
+
+${sharp} 11. Security: Revoke Sudo Privileges
+RUN sudo rm -f /etc/sudoers.d/${dol}USERNAME \
+    && test ! -f /etc/sudoers.d/${dol}USERNAME
+
+${sharp} 12. Execution Command
+STOPSIGNAL SIGINT
+ENTRYPOINT ["/workspace/entrypoint.sh"]
+CMD ["bash"]
+

@@ -1,29 +1,23 @@
 package jp.go.aist.rtm.rtcbuilder.container.param.setting;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ContainerConfig {
-    private List<Middleware> middlewares;
-    private MappingDb mapping_db;
-    
-    public ContainerConfig() {
-    	this.middlewares = new ArrayList<Middleware>();
-    	this.mapping_db = new MappingDb();
+	private Map<String, MiddlewareDetail> middlewares = new LinkedHashMap<>();
+
+    @JsonProperty("mapping_db")
+    public MappingDb mappingDb;
+
+    @JsonAnySetter
+    public void setMiddleware(String key, MiddlewareDetail value) {
+        this.middlewares.put(key, value);
     }
 
-    public List<Middleware> getMiddlewares() {
-        return middlewares;
-    }
-
-    public void setMiddlewares(List<Middleware> middlewares) {
-        this.middlewares = middlewares;
-    }
-
-    public MappingDb getMapping_db() {
-        return mapping_db;
-    }
-    public void setMapping_db(MappingDb mapping_db) {
-        this.mapping_db = mapping_db;
+    public Map<String, MiddlewareDetail> getMiddlewares() {
+        return this.middlewares;
     }
 }

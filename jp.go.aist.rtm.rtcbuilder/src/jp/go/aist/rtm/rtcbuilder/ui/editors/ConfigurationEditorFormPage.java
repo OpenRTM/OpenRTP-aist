@@ -16,12 +16,14 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -29,6 +31,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
@@ -196,9 +199,15 @@ public class ConfigurationEditorFormPage extends AbstractEditorFormPage {
 		Composite composite = createSectionBaseWithLabel(toolkit, form,
 				Messages.getString("IMC.CONFIGURATION_SET_TITLE"), Messages.getString("IMC.CONFIGURATION_SET_EXPL"), 3);
 		//
-		final TableViewer configSetTableViewer = createTableViewer(toolkit,	composite);
-		final TableViewerColumn col = super.createColumn(configSetTableViewer,
+		createLabel(toolkit, composite,
 				IMessageConstants.REQUIRED + Messages.getString("IMC.CONFIGURATION_TBLLBL_NAME"),
+				3,
+				getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_RED));
+		//
+		final TableViewer configSetTableViewer = createTableViewer(toolkit,	composite);
+		configSetTableViewer.getTable().setHeaderVisible(false);
+
+		final TableViewerColumn col = super.createColumn(configSetTableViewer, "",
 				IRtcBuilderConstants.SINGLE_COLUMN_WIDTH);
 		col.setEditingSupport(new ConfigSetCellModifier(configSetTableViewer));
 //		col.getColumn().setResizable(false);
@@ -217,7 +226,7 @@ public class ConfigurationEditorFormPage extends AbstractEditorFormPage {
 		gl.marginWidth = 1;
 		GridData gd = new GridData();
 		gd.verticalAlignment = SWT.BEGINNING;
-		gd.widthHint = 50;
+		gd.widthHint = 80;
 		buttonComposite.setLayoutData(gd);
 
 		configurationSetAddButton = createConfigAddButton(toolkit,
@@ -475,11 +484,11 @@ public class ConfigurationEditorFormPage extends AbstractEditorFormPage {
 	}
 
 	private class ConfigSetCellModifier extends EditingSupport {
-		private CellEditor editor;
+		private ColumnViewer viewer;
 
 		public ConfigSetCellModifier(ColumnViewer viewer) {
 			super(viewer);
-			editor = new TextCellEditor(((TableViewer) viewer).getTable());
+			this.viewer = viewer;
 		}
 
 		@Override
@@ -489,7 +498,21 @@ public class ConfigurationEditorFormPage extends AbstractEditorFormPage {
 
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return editor;
+			return new TextCellEditor((Composite) viewer.getControl()) {
+	            @Override
+	            public LayoutData getLayoutData() {
+	                LayoutData data = super.getLayoutData();
+	                Control control = getControl();
+	                if (control != null && !control.isDisposed()) {
+	                    GC gc = new GC(control);
+	                    int fontHeight = gc.getFontMetrics().getHeight();
+	                    gc.dispose();
+	                    
+	                    data.minimumHeight = fontHeight + 4;
+	                }
+	                return data;
+	            }
+	        };
 		}
 
 		@Override

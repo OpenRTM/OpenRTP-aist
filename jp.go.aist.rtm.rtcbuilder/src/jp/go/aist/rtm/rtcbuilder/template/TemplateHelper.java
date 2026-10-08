@@ -31,14 +31,8 @@ import static jp.go.aist.rtm.rtcbuilder.util.StringUtil.splitString;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import jp.go.aist.rtm.rtcbuilder.IRtcBuilderConstants;
-import jp.go.aist.rtm.rtcbuilder.container.param.ContainerParam;
-import jp.go.aist.rtm.rtcbuilder.container.param.setting.ContainerConfig;
-import jp.go.aist.rtm.rtcbuilder.container.param.setting.InstallDefinition;
-import jp.go.aist.rtm.rtcbuilder.container.param.setting.LibraryMapping;
-import jp.go.aist.rtm.rtcbuilder.container.param.setting.MappingDb;
 import jp.go.aist.rtm.rtcbuilder.fsm.EventParam;
 import jp.go.aist.rtm.rtcbuilder.fsm.StateParam;
 import jp.go.aist.rtm.rtcbuilder.fsm.TransitionParam;
@@ -565,72 +559,10 @@ public class TemplateHelper {
 		return result;
 	}
 	
-	public String getContainerLibName(ContainerConfig containerConfig, ContainerParam param, String source) {
-		MappingDb mdb = containerConfig.getMapping_db();
-		Map<String, LibraryMapping> libDb = mdb.getLibraries();
-		
-		String strKey = "";
-		if(param.getLanguage().toLowerCase().equals("python")) {
-			strKey = "pip";
-		} else {
-			strKey = "apt";
-		}
-		
-		if(libDb.keySet().contains(source)) {
-			LibraryMapping mapping = libDb.get(source);
-			Map<String, InstallDefinition> detailMap = mapping.getPlatforms();
-			
-			InstallDefinition def = getDefinition(detailMap, param);
-			if(def != null) {
-				String targtValue = def.getInstallInfo().get(strKey);
-				if(targtValue != null) {
-					if(targtValue.contains("${ROS_DISTRO}")) {
-						String middleware = param.getMdlVersion().toLowerCase();
-						targtValue = targtValue.replace("${ROS_DISTRO}", middleware);
-					}
-					return targtValue;
-				}
-			}
-			return source;
-		} else {
-			return source;
-		}
-	}
-	private InstallDefinition getDefinition(Map<String, InstallDefinition> detailMap, ContainerParam param) {
-		InstallDefinition def = null;
-		String middleware = param.getMiddleware().replace(" ", "").toLowerCase();
-		if(detailMap.keySet().contains(middleware)) {
-			def = detailMap.get(middleware);
-			return def;
-		}
-
-		String lang = param.getLanguage().toLowerCase();
-		if(detailMap.keySet().contains(lang)) {
-			def = detailMap.get(lang);
-			return def;
-		}
-
-		String osInfo = param.getOsVersion();
-		String[] elems = osInfo.split(" ");
-		if(0<elems.length) {
-			String osName = elems[0].toLowerCase();
-			if(detailMap.keySet().contains(osName)) {
-				def = detailMap.get(osName);
-				return def;
-			} 
-		}
-		if(detailMap.keySet().contains("default")) {
-			def = detailMap.get("default");
-			return def;
-		}
-		return null;
-	}
-	
-	public int convMiddleware(String source) {
-		String middleware = source.replace(" ", "").toLowerCase();
-		if(middleware.equals("ros1")) {
+	public int convLanguage(String source) {
+		if(source.toLowerCase().equals("c++")) {
 			return 1;
-		} else if(middleware.equals("ros2")) {
+		} else if(source.toLowerCase().equals("python")) {
 			return 2;
 		}
 		return 0;
@@ -645,46 +577,25 @@ public class TemplateHelper {
 		return 0;
 	}
 	
-	public String convOSName(String source) {
-		StringBuilder builder = new StringBuilder();
-		String[] elems = source.split(" ");
-		if(0<elems.length) {
-			builder.append(elems[0].toLowerCase());
-			builder.append(" ");
-		}
-		if(2<elems.length) {
-			builder.append(elems[2].replace("(", "").replace(")", "").toLowerCase());
-		}
-		return builder.toString();
-	}
-
 	public String convOSVersion(String source) {
-		String[] elems = source.split(" ");
-		if(1<elems.length) {
-			return elems[1];
+		String result = source;
+		if(result.contains("(")) {
+			result = result.substring(0, result.indexOf("(") - 1);
 		}
-		return "";
+		result = result.replace(" ", "");
+		return result.toLowerCase();
 	}
 	
-	public double convOSVersionNum(String source) {
-		String[] elems = source.split(" ");
-		if(2<elems.length) {
-			String ver = elems[1];
-			try {
-				double numVer = Double.parseDouble(ver);
-				return numVer;
-			} catch(Exception ex) {
-			}
-		}
-		return 0;
-	}
-	
-	public String getBranchName(String source) {
-		double osVersion = convOSVersionNum(source);
+	public String getRepositoryName(String source) {
+		String result = "";
 		
-		if(osVersion < 18.05) {
-			return "v3.1.5";
-		}
-		return "main";
+		int lastSlashIdx = source.lastIndexOf("/");
+        int gitIdx = source.lastIndexOf(".git");
+        
+        if (lastSlashIdx != -1 && gitIdx != -1) {
+        	result = source.substring(lastSlashIdx + 1, gitIdx);
+        }		
+        
+        return result;
 	}
 }

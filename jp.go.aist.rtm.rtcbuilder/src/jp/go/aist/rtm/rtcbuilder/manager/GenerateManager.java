@@ -3,6 +3,7 @@ package jp.go.aist.rtm.rtcbuilder.manager;
 import java.util.List;
 
 import jp.go.aist.rtm.rtcbuilder.IRtcBuilderConstants;
+import jp.go.aist.rtm.rtcbuilder.ParamBase;
 import jp.go.aist.rtm.rtcbuilder.generator.GeneratedResult;
 import jp.go.aist.rtm.rtcbuilder.generator.param.RtcParam;
 import jp.go.aist.rtm.rtcbuilder.generator.param.idl.IdlFileParam;
@@ -19,10 +20,12 @@ public abstract class GenerateManager {
 	public abstract String getLangArgList();
 
 	// スケルトンコードの生成
-	public abstract List<GeneratedResult> generateTemplateCode(RtcParam rtcParam);
+	public abstract List<GeneratedResult> generateTemplateCode(ParamBase rtcParam);
+
+	public abstract String getTargetMiddleware();
 
 	// 生成対象言語用開発プラグイン情報の取得
-	public LanguageProperty getLanguageProperty(RtcParam rtcParam) {
+	public LanguageProperty getLanguageProperty(ParamBase rtcParam) {
 		return null;
 	}
 

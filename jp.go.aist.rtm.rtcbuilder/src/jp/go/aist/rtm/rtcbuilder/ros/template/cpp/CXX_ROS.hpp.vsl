@@ -1,0 +1,300 @@
+#if( ${rosParam.isDocExist()} )
+// -*- C++ -*-
+/*!
+ * @file  ${rosParam.nodeName}.hpp
+ * @brief ${rosParam.description}
+ *
+ * @author ${rosParam.maintainer} <${rosParam.contactAddress}>
+ * ${rosParam.docCreator}
+ *
+ */
+
+#end
+${sharp}ifndef ${rosParam.packageName.toUpperCase()}__${rosParam.nodeName.toUpperCase()}_HPP_
+${sharp}define ${rosParam.packageName.toUpperCase()}__${rosParam.nodeName.toUpperCase()}_HPP_
+
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+#foreach($action in ${rosParam.actionClients})
+${sharp}include "${tmpltHelper.convActionType4Headder(${action.type}, ${rosParam})}.hpp"
+#end
+#foreach($action in ${rosParam.actionServers})
+${sharp}include "${tmpltHelper.convActionType4Headder(${action.type}, ${rosParam})}.hpp"
+#end
+#end
+${sharp}include "rclcpp/rclcpp.hpp"
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+${sharp}include "rclcpp_action/rclcpp_action.hpp"
+#end
+${sharp}include "rclcpp_lifecycle/lifecycle_node.hpp"
+#if( ${rosParam.topicPublishes.size()}>0 )
+${sharp}include "rclcpp_lifecycle/lifecycle_publisher.hpp"
+#end
+#if( ${rosParam.topicPublishes.size()}>0 )
+#foreach($topic in ${rosParam.topicPublishes})
+${sharp}include "${tmpltHelper.convTopicType4Headder(${topic.messageType}, ${rosParam})}.hpp"
+#end
+#end
+#if( ${tmpltHelper.getTopicTypesSubscribe(${rosParam}).size()}>0 )
+#foreach($topic in ${tmpltHelper.getTopicTypesSubscribe(${rosParam})})
+${sharp}include "${tmpltHelper.convTopicType4Headder(${topic}, ${rosParam})}.hpp"
+#end
+#end
+#if( ${rosParam.parameters.size()}>0 )
+${sharp}include "rcl_interfaces/msg/floating_point_range.hpp"
+${sharp}include "rcl_interfaces/msg/integer_range.hpp"
+${sharp}include "rcl_interfaces/msg/parameter_descriptor.hpp"
+${sharp}include "rcl_interfaces/msg/set_parameters_result.hpp"
+#end
+#if( ${rosParam.serviceClients.size()}>0 || ${rosParam.serviceServers.size()}>0 )
+#foreach($service in ${rosParam.serviceClients})
+${sharp}include "${tmpltHelper.convServiceType4Headder(${service.type}, ${rosParam})}.hpp"
+#end
+#foreach($service in ${rosParam.serviceServers})
+${sharp}include "${tmpltHelper.convServiceType4Headder(${service.type}, ${rosParam})}.hpp"
+#end
+#end
+${sharp}include <future>
+${sharp}include <memory>
+${sharp}include <string>
+${sharp}include <vector>
+
+namespace ${rosParam.packageName}
+{
+#if( ${rosParam.isDocExist()} )
+/*!
+ * @class ${rosParam.className}
+ * @brief ${rosParam.description}
+ *
+ * ${rosParam.docInOut}
+ *
+ * ${rosParam.docAlgorithm}
+ *
+ * ${rosParam.docReference}
+ *
+ */
+#end
+
+class ${rosParam.className} : public rclcpp_lifecycle::LifecycleNode
+{
+public:
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+#foreach($action in ${rosParam.actionClients})
+  using ${tmpltHelper.capitalize(${action.name})} = ${tmpltHelper.slash2Cc(${tmpltHelper.convActionType(${action.type}, ${rosParam})})};
+#end
+#foreach($action in ${rosParam.actionServers})
+  using ${tmpltHelper.capitalize(${action.name})} = ${tmpltHelper.slash2Cc(${tmpltHelper.convActionType(${action.type}, ${rosParam})})};
+  using GoalHandle${tmpltHelper.capitalize(${action.name})} = rclcpp_action::ServerGoalHandle<${tmpltHelper.capitalize(${action.name})}>;
+#end
+#end
+
+  explicit ${rosParam.className}(const rclcpp::NodeOptions & options = rclcpp::NodeOptions());
+  ~${rosParam.className}() override = default;
+
+  // ============================================================
+  // Lifecycle callbacks
+  // ============================================================
+
+#if( ${rosParam.isCallbackDocExist(0)} )
+  /***
+   * ${rosParam.getDocActionOverView(0)}
+   *
+   * @pre ${rosParam.getDocActionPreCondition(0)}
+   * @post ${rosParam.getDocActionPostCondition(0)}
+   *
+   */
+#end
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_configure(const rclcpp_lifecycle::State & state) override;
+
+#if( ${rosParam.isCallbackDocExist(1)} )
+  /***
+   * ${rosParam.getDocActionOverView(1)}
+   *
+   * @pre ${rosParam.getDocActionPreCondition(1)}
+   * @post ${rosParam.getDocActionPostCondition(1)}
+   *
+   */
+#end
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_activate(const rclcpp_lifecycle::State & state) override;
+
+#if( ${rosParam.isCallbackDocExist(2)} )
+  /***
+   * ${rosParam.getDocActionOverView(2)}
+   *
+   * @pre ${rosParam.getDocActionPreCondition(2)}
+   * @post ${rosParam.getDocActionPostCondition(2)}
+   *
+   */
+#end
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+  on_deactivate(const rclcpp_lifecycle::State & state) override;
+
+#if( ${rosParam.isCallbackDocExist(3)} )
+  /***
+   * ${rosParam.getDocActionOverView(3)}
+   *
+   * @pre ${rosParam.getDocActionPreCondition(3)}
+   * @post ${rosParam.getDocActionPostCondition(3)}
+   *
+   */
+#end
+ #if(${rosParam.IsNotImplemented(3)}) // Optional: on_cleanup. Uncomment this declaration and the matching definition to use it.
+#end
+#if(${rosParam.IsNotImplemented(3)})  //  #end rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+#if(${rosParam.IsNotImplemented(3)})  // #end  on_cleanup(const rclcpp_lifecycle::State & state) override;
+
+#if( ${rosParam.isCallbackDocExist(4)} )
+  /***
+   * ${rosParam.getDocActionOverView(4)}
+   *
+   * @pre ${rosParam.getDocActionPreCondition(4)}
+   * @post ${rosParam.getDocActionPostCondition(4)}
+   *
+   */
+#end
+ #if(${rosParam.IsNotImplemented(4)}) // Optional: on_shutdown. Uncomment this declaration and the matching definition to use it.
+#end
+#if(${rosParam.IsNotImplemented(4)})  //  #end rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+#if(${rosParam.IsNotImplemented(4)})  // #end  on_shutdown(const rclcpp_lifecycle::State & state) override;
+
+#if( ${rosParam.isCallbackDocExist(5)} )
+  /***
+   * ${rosParam.getDocActionOverView(5)}
+   *
+   * @pre ${rosParam.getDocActionPreCondition(5)}
+   * @post ${rosParam.getDocActionPostCondition(5)}
+   *
+   */
+#end
+ #if(${rosParam.IsNotImplemented(5)}) // Optional: on_error. Uncomment this declaration and the matching definition to use it.
+#end
+#if(${rosParam.IsNotImplemented(5)})  //  #end rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
+#if(${rosParam.IsNotImplemented(5)})  // #end  on_error(const rclcpp_lifecycle::State & state) override;
+
+private:
+#if( ${rosParam.parameters.size()}>0 )
+  // ============================================================
+  // Parameter handling
+  // ============================================================
+
+  void declare_parameters();
+  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr param_cb_handle_;
+  rcl_interfaces::msg::SetParametersResult on_set_parameters(const std::vector<rclcpp::Parameter> & params);
+#end
+#if( ${rosParam.topicSubscribes.size()}>0 || ${rosParam.topicPublishes.size()}>0 )
+  // ============================================================
+  // Topic handles and callbacks
+  // ============================================================
+
+#foreach($topic in ${rosParam.topicPublishes})
+#if( ${topic.isDocExist()} )
+  /*!
+   * ${topic.docDescription}
+   * - Type: ${topic.docType}
+   * - Semantics: ${topic.docSemantics}
+   * - Unit: ${topic.docUnit}
+   * - Occurrence: ${topic.docOccurrence}
+   */
+#end
+  rclcpp_lifecycle::LifecyclePublisher<${tmpltHelper.slash2Cc(${tmpltHelper.convTopicType(${topic.messageType}, ${rosParam})})}>::SharedPtr ${topic.varCallbackName}_;
+#end
+#foreach($topic in ${rosParam.topicSubscribes})
+#if( ${topic.isDocExist()} )
+  /*!
+   * ${topic.docDescription}
+   * - Type: ${topic.docType}
+   * - Semantics: ${topic.docSemantics}
+   * - Unit: ${topic.docUnit}
+   * - Occurrence: ${topic.docOccurrence}
+   */
+#end
+  rclcpp::Subscription<${tmpltHelper.slash2Cc(${topic.messageType})}>::SharedPtr ${topic.name}_sub_;
+  void ${topic.varCallbackName}(const ${tmpltHelper.slash2Cc(${topic.messageType})}::SharedPtr msg);
+#end
+
+#end
+#if( ${rosParam.serviceClients.size()}>0 || ${rosParam.serviceServers.size()}>0 )
+  // ============================================================
+  // Service handles and callbacks
+  // ============================================================
+
+#foreach($service in ${rosParam.serviceClients})
+#if( ${service.isDocExist()} )
+  /*!
+   * ${service.docDescription}
+   * - Argument: ${service.docArgument}
+   * - Return: ${service.docReturn}
+   */
+#end
+  rclcpp::Client<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}>::SharedPtr ${service.varCallbackName}_;
+  void call_${service.name}_service();
+#end
+#foreach($service in ${rosParam.serviceServers})
+#if( ${service.isDocExist()} )
+  /*!
+   * ${service.docDescription}
+   * - Argument: ${service.docArgument}
+   * - Return: ${service.docReturn}
+   */
+#end
+  rclcpp::Service<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}>::SharedPtr ${service.name}_srv_;
+  void handle_${service.name}(const std::shared_ptr<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}::Request> request, std::shared_ptr<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}::Response> response);
+#end
+
+#end
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+  // ============================================================
+  // Action handles and callbacks
+  // ============================================================
+
+#foreach($action in ${rosParam.actionClients})
+#if( ${action.isDocExist()} )
+  /*!
+   * ${action.docDescription}
+   * - Goal: ${action.docGoal}
+   * - Feedback: ${action.docFeedback}
+   * - Result: ${action.docResult}
+   */
+#end
+  rclcpp_action::Client<${tmpltHelper.capitalize(${action.name})}>::SharedPtr ${action.name}_client_;
+  void send_${action.name}_goal();
+  void ${action.name}_action_response(rclcpp_action::ClientGoalHandle<${tmpltHelper.capitalize(${action.name})}>::SharedPtr goal_handle);
+  void ${action.name}_action_feedback(rclcpp_action::ClientGoalHandle<${tmpltHelper.capitalize(${action.name})}>::SharedPtr, const std::shared_ptr<const ${tmpltHelper.capitalize(${action.name})}::Feedback> feedback);
+  void ${action.name}_action_result(const rclcpp_action::ClientGoalHandle<${tmpltHelper.capitalize(${action.name})}>::WrappedResult & result);
+#end
+#foreach($action in ${rosParam.actionServers})
+#if( ${action.isDocExist()} )
+  /*!
+   * ${action.docDescription}
+   * - Goal: ${action.docGoal}
+   * - Feedback: ${action.docFeedback}
+   * - Result: ${action.docResult}
+   */
+#end
+  rclcpp_action::Server<${tmpltHelper.capitalize(${action.name})}>::SharedPtr ${action.name}_server_;
+  rclcpp_action::GoalResponse handle_goal_${action.name}(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const ${tmpltHelper.capitalize(${action.name})}::Goal> goal);
+  rclcpp_action::CancelResponse handle_cancel_${action.name}(const std::shared_ptr<GoalHandle${tmpltHelper.capitalize(${action.name})}> goal_handle);
+  void handle_accepted_${action.name}(const std::shared_ptr<GoalHandle${tmpltHelper.capitalize(${action.name})}> goal_handle);
+  void execute_${action.name}(const std::shared_ptr<GoalHandle${tmpltHelper.capitalize(${action.name})}> goal_handle);
+#end
+
+#end
+#if( ${rosParam.timers.size()}>0 )
+  // ============================================================
+  // Timer handles and callbacks
+  // ============================================================
+
+#foreach($timer in ${rosParam.timers})
+  /*!
+   * ${timer.description}
+   */
+  rclcpp::TimerBase::SharedPtr ${timer.name}_;
+  void ${timer.callBack}();
+#end
+#end
+};
+
+}  // namespace ${rosParam.packageName}
+
+${sharp}endif  // ${rosParam.packageName.toUpperCase()}__${rosParam.nodeName.toUpperCase()}_HPP_

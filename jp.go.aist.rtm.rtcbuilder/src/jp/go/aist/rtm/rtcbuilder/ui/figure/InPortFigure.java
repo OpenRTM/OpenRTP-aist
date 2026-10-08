@@ -31,7 +31,7 @@ public class InPortFigure extends PortFigureBase {
 			addPolyPoint(offsetX + 5, 5);
 			addPolyPoint(offsetX + 10, 0);
 			portLabel.setLabelAlignment(PositionConstants.RIGHT);
-			constraint = new Rectangle(0, 0, LABELWIDTH, -1);
+			constraint = new Rectangle(0, -3, LABELWIDTH, -1);
 			sizeX = SIZE+LABELWIDTH+LABELMARGIN;
 			sizeY = SIZE + 3;
 		} else if( direction == PortDirection.TOP ) {
@@ -64,7 +64,7 @@ public class InPortFigure extends PortFigureBase {
 			addPolyPoint(offsetX + 0, 10);
 			addPolyPoint(offsetX + 10, 10);
 			addPolyPoint(offsetX + 10, 0);
-			constraint = new Rectangle(SIZE+LABELMARGIN, 0, -1, -1);
+			constraint = new Rectangle(SIZE+LABELMARGIN, -3, -1, -1);
 			sizeX = SIZE+LABELWIDTH+LABELMARGIN;
 			sizeY = SIZE + 3;
 		}

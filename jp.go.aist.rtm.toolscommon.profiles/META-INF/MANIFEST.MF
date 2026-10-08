@@ -5,7 +5,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: jp.go.aist.rtm.toolscommon.profiles;singleton:=tr
  ue
-Bundle-Version: 2.0.0
+Bundle-Version: 2.1.0
 Bundle-ClassPath: .,
  lib/slf4j-api-1.7.13.jar,
  lib/logback-classic-1.1.3.jar,
@@ -61,6 +61,7 @@ Export-Package: com.sun.xml.bind;
  com.sun.xml.bind.v2.schemagen.xmlschema,
  com.sun.xml.bind.v2.util,
  jp.go.aist.rtm.toolscommon.profiles.util;uses:="junit.framework",
+ org.openrtp.namespaces.ros.version01,
  org.openrtp.namespaces.rtc.version02;uses:="javax.xml.bind,javax.xml.datatype",
  org.openrtp.namespaces.rtc.version03;uses:="javax.xml.bind,javax.xml.datatype",
  org.openrtp.namespaces.rts.version02;uses:="javax.xml.bind,javax.xml.datatype",

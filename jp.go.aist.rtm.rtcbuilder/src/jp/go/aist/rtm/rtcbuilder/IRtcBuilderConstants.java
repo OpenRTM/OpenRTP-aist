@@ -10,6 +10,10 @@ public interface IRtcBuilderConstants {
 
 	public static final String RTM_VERSION_100 = "1.0.0";
 	public static final String DEFAULT_RTM_VERSION = "2.0.0";
+	
+	public static final String MIDDLEWARE_ALL = "ALL";
+	public static final String MIDDLEWARE_RTM = "OpenRTM";
+	public static final String MIDDLEWARE_ROS = "ROS";
 
 	/**
 	 * サービス実装のデフォルトサフィックス

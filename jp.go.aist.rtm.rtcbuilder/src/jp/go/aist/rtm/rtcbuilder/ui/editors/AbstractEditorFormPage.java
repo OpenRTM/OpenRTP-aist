@@ -10,14 +10,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import jp.go.aist.rtm.rtcbuilder.RtcBuilderPlugin;
-import jp.go.aist.rtm.rtcbuilder.generator.IDLParamConverter;
-import jp.go.aist.rtm.rtcbuilder.generator.param.DataTypeParam;
-import jp.go.aist.rtm.rtcbuilder.generator.param.idl.IdlPathParam;
-import jp.go.aist.rtm.rtcbuilder.model.component.BuildView;
-import jp.go.aist.rtm.rtcbuilder.util.FileUtil;
-import jp.go.aist.rtm.rtcbuilder.util.RTCUtil;
-
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -36,6 +35,7 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -54,6 +54,14 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jp.go.aist.rtm.rtcbuilder.RtcBuilderPlugin;
+import jp.go.aist.rtm.rtcbuilder.generator.IDLParamConverter;
+import jp.go.aist.rtm.rtcbuilder.generator.param.DataTypeParam;
+import jp.go.aist.rtm.rtcbuilder.generator.param.idl.IdlPathParam;
+import jp.go.aist.rtm.rtcbuilder.model.component.BuildView;
+import jp.go.aist.rtm.rtcbuilder.util.FileUtil;
+import jp.go.aist.rtm.rtcbuilder.util.RTCUtil;
+
 public abstract class AbstractEditorFormPage extends FormPage {
 
 	protected static final Logger LOGGER = LoggerFactory
@@ -63,6 +71,8 @@ public abstract class AbstractEditorFormPage extends FormPage {
 	protected RtcBuilderEditor editor;
 	protected BuildView buildview;
 	protected Font titleFont;
+
+	protected static final int EXEC_BUTTON_WIDTH = 70;
 
 	/**
 	 * コンストラクタ
@@ -202,6 +212,13 @@ public abstract class AbstractEditorFormPage extends FormPage {
 		gd.horizontalSpan = 2;
 		sep.setLayoutData(gd);
 	}
+	protected void createSpace(FormToolkit toolkit, Composite composite, int horizontalSpan) {
+		Label sep = toolkit.createLabel(composite, "");
+		GridData gd = new GridData();
+		gd.verticalAlignment = GridData.BEGINNING;
+		gd.horizontalSpan = horizontalSpan;
+		sep.setLayoutData(gd);
+	}
 
 	protected TableViewer createTableViewer(FormToolkit toolkit, Composite composite) {
 		return createTableViewer(toolkit, composite, 120);
@@ -222,6 +239,20 @@ public abstract class AbstractEditorFormPage extends FormPage {
 		return portParamTableViewer;
 	}
 
+	protected Label createLabel(FormToolkit toolkit, Composite composite,
+			String labelString, int hspan, Color color) {
+		Label label = toolkit.createLabel(composite, labelString);
+		if(color != null) {
+			label.setForeground(color);
+		}
+		
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = hspan;
+		label.setLayoutData(gridData);
+		return label;
+	}
+	
+
 	protected Text createLabelAndText(FormToolkit toolkit, Composite composite,
 			String labelString) {
 		return createLabelAndText(toolkit, composite, labelString, SWT.NONE, 0);
@@ -232,12 +263,22 @@ public abstract class AbstractEditorFormPage extends FormPage {
 	}
 	protected Text createLabelAndText(FormToolkit toolkit, Composite composite,
 			String labelString, int style, int color) {
-		return createLabelAndText(toolkit, composite, labelString, style, color, 1);
+		return createLabelAndText(toolkit, composite, labelString, style, color, 0);
 	}
 	protected Text createLabelAndText(FormToolkit toolkit, Composite composite,
 			String labelString, int style, int color, int hspan) {
+		return createLabelAndText(toolkit, composite, labelString, style, color, hspan, 0);
+	}
+	protected Text createLabelAndText(FormToolkit toolkit, Composite composite,
+			String labelString, int style, int color, int hspan, int labelSpan) {
 		if( labelString!=null && labelString.length()>0 ) {
 			Label label = toolkit.createLabel(composite, labelString);
+			if(0<labelSpan) {
+				GridData lblData = new GridData();
+				lblData.horizontalSpan = labelSpan;
+				label.setLayoutData(lblData);
+			}
+
 			if(color>0 ) label.setForeground(getSite().getShell().getDisplay().getSystemColor(color));
 		}
 
@@ -272,6 +313,12 @@ public abstract class AbstractEditorFormPage extends FormPage {
 		});
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.horizontalSpan = hspan;
+		
+		GC gc = new GC(text);
+		int fontHeight = gc.getFontMetrics().getHeight();
+		gc.dispose();
+		gridData.heightHint = fontHeight + 4;
+		
 		text.setLayoutData(gridData);
 		return text;
 	}
@@ -288,6 +335,12 @@ public abstract class AbstractEditorFormPage extends FormPage {
 		
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
 		gridData.horizontalSpan = hspan;
+		
+		GC gc = new GC(text);
+		int fontHeight = gc.getFontMetrics().getHeight();
+		gc.dispose();
+		gridData.heightHint = fontHeight + 4;
+
 		text.setLayoutData(gridData);
 		return text;
 	}
@@ -371,6 +424,32 @@ public abstract class AbstractEditorFormPage extends FormPage {
 		return combo;
 	}
 
+	protected Combo createCombo(FormToolkit toolkit, Composite composite,
+			String labelString, String[] defaultValue) {
+		return createCombo(toolkit, composite, labelString, defaultValue,
+							SWT.COLOR_BLACK, 1);
+	}
+	protected Combo createCombo(FormToolkit toolkit, Composite composite,
+			String labelString, String[] defaultValue, int color, int hspan) {
+		Label label = toolkit.createLabel(composite, labelString);
+		if(color>0) label.setForeground(getSite().getShell().getDisplay().getSystemColor(color));
+		Combo combo = new Combo(composite, SWT.READ_ONLY);
+		for(int index=0;index<defaultValue.length;index++) {
+			combo.add(defaultValue[index]);
+		}
+
+		combo.select(0);
+		combo.addSelectionListener(new SelectionListener() {
+			  public void widgetDefaultSelected(SelectionEvent e){}
+			  public void widgetSelected(SelectionEvent e){ update(); }
+			});
+		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+		gridData.horizontalSpan = hspan;
+		combo.setLayoutData(gridData);
+
+		return combo;
+	}
+
 	protected Button createRadioCheckButton(FormToolkit toolkit,
 			Composite composite, String labelString, int style) {
 		Button radio = toolkit.createButton(composite, "", style);
@@ -378,6 +457,26 @@ public abstract class AbstractEditorFormPage extends FormPage {
 			public void widgetSelected(SelectionEvent e) { update(); }
 		});
 		radio.setText(labelString);
+
+		GridData gd = new GridData();
+		gd.widthHint = 120;
+		radio.setLayoutData(gd);
+		
+		return radio;
+	}
+
+	protected Button createLanguageRadioButton(FormToolkit toolkit,
+			Composite composite, String labelString) {
+		Button radio = toolkit.createButton(composite, "", SWT.RADIO);
+		radio.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) { update(); }
+		});
+		radio.setText(labelString);
+
+		GridData gd = new GridData();
+		gd.widthHint = 80;
+		radio.setLayoutData(gd);
+		
 		return radio;
 	}
 
@@ -403,6 +502,11 @@ public abstract class AbstractEditorFormPage extends FormPage {
 			}
 		});
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		GC gc = new GC(text);
+		int fontHeight = gc.getFontMetrics().getHeight();
+		gc.dispose();
+		gd.heightHint = fontHeight + 4;
+
 		text.setLayoutData(gd);
 
 		Button checkButton = toolkit.createButton(composite, "Browse...", SWT.PUSH);
@@ -502,12 +606,45 @@ public abstract class AbstractEditorFormPage extends FormPage {
 		//
 		return defaultTypeList;
 	}
+	
+	protected List<String> extractROSEtcTypes(String projectName, String source) {
+		List<String> typeList = new ArrayList<String>();
+
+		IWorkspaceRoot workspaceHandle = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = workspaceHandle.getProject(projectName);
+		IFolder srcFolder = project.getFolder(source);
+		if (srcFolder.exists()) {
+			try {
+				srcFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
+			    IResource[] members = srcFolder.members();
+			    String targetExtension = source;
+	
+			    for (IResource resource : members) {
+			        if (resource.getType() == IResource.FILE && targetExtension.equals(resource.getFileExtension())) {
+			        	IFile file = (IFile)resource;
+			        	String fullName = file.getName();
+			            String extension = file.getFileExtension();
+			            String nameWithoutExtension;
+
+			            if (extension != null && !extension.isEmpty()) {
+			                nameWithoutExtension = fullName.substring(0, fullName.length() - (extension.length() + 1));
+			            } else {
+			                nameWithoutExtension = fullName;
+			            }			        	
+			        	typeList.add(nameWithoutExtension);
+			        }
+			    }
+			} catch(CoreException ex) {
+			}
+		}
+	    return typeList;
+	}
 
 	abstract protected void update();
 
 	abstract public void load();
 
-	abstract protected String validateParam();
+	abstract public String validateParam();
 
 	@Override
 	public void setActive(boolean active) {

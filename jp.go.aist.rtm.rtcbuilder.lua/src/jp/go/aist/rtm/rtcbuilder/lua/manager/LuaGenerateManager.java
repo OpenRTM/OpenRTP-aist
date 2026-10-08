@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.go.aist.rtm.rtcbuilder.IRtcBuilderConstants;
+import jp.go.aist.rtm.rtcbuilder.ParamBase;
 import jp.go.aist.rtm.rtcbuilder.generator.GeneratedResult;
 import jp.go.aist.rtm.rtcbuilder.generator.param.RtcParam;
 import jp.go.aist.rtm.rtcbuilder.generator.param.idl.IdlFileParam;
@@ -24,7 +26,7 @@ import jp.go.aist.rtm.rtcbuilder.util.RTCUtil;
 
 
 /**
- * Luaãƒ•ã‚¡ã‚¤ãƒ«ã®å‡ºåŠ›ã‚’åˆ¶å¾¡ã™ã‚‹ãƒãƒãƒ¼ã‚¸ãƒ£
+ * Luaƒtƒ@ƒCƒ‹‚Ìo—Í‚ğ§Œä‚·‚éƒ}ƒl[ƒWƒƒ
  */
 public class LuaGenerateManager extends GenerateManager {
 
@@ -48,7 +50,12 @@ public class LuaGenerateManager extends GenerateManager {
 	}
 
 	@Override
-	public LanguageProperty getLanguageProperty(RtcParam rtcParam) {
+	public String getTargetMiddleware() {
+		return IRtcBuilderConstants.MIDDLEWARE_RTM;
+	}
+
+	@Override
+	public LanguageProperty getLanguageProperty(ParamBase rtcParam) {
 		LanguageProperty langProp = null;
 		if (rtcParam.isLanguageExist(LANG_LUA)) {
 			langProp = new LuaProperty();
@@ -57,12 +64,14 @@ public class LuaGenerateManager extends GenerateManager {
 	}
 
 	/**
-	 * ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›ã™ã‚‹
+	 * ƒtƒ@ƒCƒ‹‚ğo—Í‚·‚é
 	 *
 	 * @param generatorParam
-	 * @return å‡ºåŠ›çµæœã®ãƒªã‚¹ãƒˆ
+	 *            ¶¬—pƒpƒ‰ƒ[ƒ^
+	 * @return o—ÍŒ‹‰Ê‚ÌƒŠƒXƒg
 	 */
-	public List<GeneratedResult> generateTemplateCode(RtcParam rtcParam) {
+	public List<GeneratedResult> generateTemplateCode(ParamBase baseParam) {
+		RtcParam rtcParam = (RtcParam)baseParam;
 		List<GeneratedResult> result = new ArrayList<GeneratedResult>();
 
 		if (!rtcParam.isLanguageExist(LANG_LUA)) {
@@ -87,7 +96,6 @@ public class LuaGenerateManager extends GenerateManager {
 			if(RTCUtil.checkDefault(target.getIdlPath(), rtcParam.getParent().getDataTypeParams())) continue;
 			allIdlFileParamsForBuild.add(target);
 		}
-		// IDLãƒ•ã‚¡ã‚¤ãƒ«å†…ã«è¨˜è¿°ã•ã‚Œã¦ã„ã‚‹ServiceClassParamã‚’è¨­å®šã™ã‚‹
 		for (IdlFileParam idlFileParam : allIdlFileParams) {
 			for (ServiceClassParam serviceClassParam : rtcParam.getServiceClassParams()) {
 				if (idlFileParam.getIdlPath().equals(serviceClassParam.getIdlPath())){
@@ -111,7 +119,7 @@ public class LuaGenerateManager extends GenerateManager {
 		return generateTemplateCode10(contextMap);
 	}
 
-	// RTM 1.0ç³»
+	// RTM 1.0Œn
 	@SuppressWarnings("unchecked")
 	public List<GeneratedResult> generateTemplateCode10(
 			Map<String, Object> contextMap) {
@@ -154,8 +162,6 @@ public class LuaGenerateManager extends GenerateManager {
 
 		return result;
 	}
-
-	// 1.0ç³» (Lua)
 
 	public GeneratedResult generateLuaSource(Map<String, Object> contextMap) {
 		RtcParam rtcParam = (RtcParam) contextMap.get("rtcParam");
@@ -236,7 +242,6 @@ public class LuaGenerateManager extends GenerateManager {
 		return result;
 	}
 
-	// 1.0ç³» (ãƒ“ãƒ«ãƒ‰ç’°å¢ƒ)
 	public GeneratedResult generateIDLCompileBat(Map<String, Object> contextMap) {
 		String outfile = "idlcompile.bat";
 		String infile = "lua/idlcompile.bat.vsl";

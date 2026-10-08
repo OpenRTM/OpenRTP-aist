@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import jp.go.aist.rtm.rtcbuilder.IRTCBMessageConstants;
+import jp.go.aist.rtm.rtcbuilder.IRtcBuilderConstants;
+import jp.go.aist.rtm.rtcbuilder.ParamBase;
 import jp.go.aist.rtm.rtcbuilder.fsm.StateParam;
 import jp.go.aist.rtm.rtcbuilder.generator.GeneratedResult;
 import jp.go.aist.rtm.rtcbuilder.generator.param.RtcParam;
@@ -51,7 +53,12 @@ public class ProcessingGenerateManager extends GenerateManager {
 	}
 
 	@Override
-	public LanguageProperty getLanguageProperty(RtcParam rtcParam) {
+	public String getTargetMiddleware() {
+		return IRtcBuilderConstants.MIDDLEWARE_RTM;
+	}
+
+	@Override
+	public LanguageProperty getLanguageProperty(ParamBase rtcParam) {
 		LanguageProperty langProp = null;
 		if (rtcParam.isLanguageExist(LANG_PROCESSING)) {
 			langProp = new ProcessingProperty();
@@ -66,7 +73,8 @@ public class ProcessingGenerateManager extends GenerateManager {
 	 *            生成用パラメータ
 	 * @return 出力結果のリスト
 	 */
-	public List<GeneratedResult> generateTemplateCode(RtcParam rtcParam) {
+	public List<GeneratedResult> generateTemplateCode(ParamBase baseParam) {
+		RtcParam rtcParam = (RtcParam)baseParam;
 		List<GeneratedResult> result = new ArrayList<GeneratedResult>();
 
 		if (!rtcParam.isLanguageExist(LANG_PROCESSING) || rtcParam.getName() == null) {

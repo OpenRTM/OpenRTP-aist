@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:rosExt="http://www.openrtp.org/namespaces/ros_ext"
+	xmlns:rosDoc="http://www.openrtp.org/namespaces/ros_doc"
+	xmlns:ros="http://www.openrtp.org/namespaces/ros"
+	targetNamespace="http://www.openrtp.org/namespaces/ros_ext"
+	elementFormDefault="qualified"
+	attributeFormDefault="qualified">
+
+	<xsd:import namespace="http://www.openrtp.org/namespaces/ros" schemaLocation="ROSProfile_basic.xsd"/>
+	<xsd:import namespace="http://www.openrtp.org/namespaces/ros_doc" schemaLocation="ROSProfile_doc.xsd"/>
+
+	<xsd:complexType name="basic_info_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="rosDoc:basic_info_doc">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+				<xsd:attribute name="save_project" type="xsd:string" use="optional"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="life_cycle_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:lifecycle">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="Timers" type="rosExt:timer" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="timer">
+		<xsd:attribute name="timer_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="rate" type="xsd:double" use="required"/>
+		<xsd:attribute name="call_back" type="xsd:string" use="required"/>
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="lifecycle_callback_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="rosDoc:lifecycle_callback_doc">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="topic_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="rosDoc:topic_doc">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="service_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="rosDoc:service_doc">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="action_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="rosDoc:action_doc">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="parameter_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="rosDoc:parameter_doc">
+				<xsd:sequence>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<xsd:complexType name="language_ext">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:language">
+				<xsd:sequence>
+					<xsd:element name="targets" type="rosExt:target_environment" minOccurs="1" maxOccurs="1"/>
+					<xsd:element name="Properties" type="rosExt:property" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="target_environment">
+		<xsd:sequence>
+			<xsd:element name="libraries" type="rosExt:library" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="ros_version" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="library">
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="version" type="xsd:string" use="optional"/>
+		<xsd:attribute name="other" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="property">
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="value" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+</xsd:schema>

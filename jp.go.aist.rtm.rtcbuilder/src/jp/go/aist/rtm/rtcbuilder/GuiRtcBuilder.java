@@ -109,6 +109,49 @@ public class GuiRtcBuilder {
 		}
 	}
 
+	/**
+	 * ジェネレートを行い、ファイル出力を行う
+	 *
+	 * @param generatorParam   パラメータ
+	 * @param isShowDialog     完了時にダイアログを表示するか
+	 */
+	public boolean doGenerateWriteROS(GeneratorParam generatorParam, boolean isShowDialog, String genTime) {
+
+		try {
+			//設定されたパラメータのチェック
+			generator.validateROS(generatorParam.getROSParam());
+			//
+			generator.doGenerateWriteROS(generatorParam, genTime, new MergeHandler() {
+				public int getSelectedProcess(GeneratedResult generatedResult,
+						String originalFileContents) {
+					return compareByDialog(generatedResult,
+							originalFileContents);
+				}
+			});
+
+			if( isShowDialog ) {
+				if(0<generator.getWarningMessage().length()) {
+					MessageDialog.openWarning(PlatformUI.getWorkbench()
+							.getDisplay().getActiveShell(), "Warning",
+							generator.getWarningMessage());
+				} else {
+					MessageDialog.openInformation(PlatformUI.getWorkbench()
+							.getDisplay().getActiveShell(), "Information",
+							"Generate success.");
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getDisplay()
+					.getActiveShell(), "Error", e.getMessage());
+			return false;
+		} catch (Error e) {
+			MessageDialog.openError(PlatformUI.getWorkbench().getDisplay()
+					.getActiveShell(), "Error", e.getMessage());
+			return false;
+		}
+	}
+
 	private int compareByDialog(GeneratedResult generatedResult,
 			String originalFileContents) {
 		CompareTarget target = new CompareTarget();

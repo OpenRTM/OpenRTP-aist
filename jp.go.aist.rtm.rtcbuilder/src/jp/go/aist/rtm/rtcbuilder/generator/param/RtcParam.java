@@ -4,14 +4,13 @@ import static jp.go.aist.rtm.toolscommon.profiles.util.XmlHandler.createXMLGrego
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import jp.go.aist.rtm.rtcbuilder.IRtcBuilderConstants;
+import jp.go.aist.rtm.rtcbuilder.ParamBase;
 import jp.go.aist.rtm.rtcbuilder.container.param.ContainerParam;
 import jp.go.aist.rtm.rtcbuilder.container.param.setting.ContainerConfig;
 import jp.go.aist.rtm.rtcbuilder.fsm.EventParam;
@@ -25,7 +24,7 @@ import jp.go.aist.rtm.rtcbuilder.generator.param.idl.ServiceClassParam;
 /**
  * RTCを表すクラス
  */
-public class RtcParam extends AbstractRecordedParam implements Serializable {
+public class RtcParam extends ParamBase implements Serializable {
 
 	private static final long serialVersionUID = -1249129059979166069L;
 
@@ -61,8 +60,6 @@ public class RtcParam extends AbstractRecordedParam implements Serializable {
 	//コンフィギュレーション
 	private RecordedList<ConfigSetParam> configParams = new RecordedList<ConfigSetParam>();
 	//言語・環境
-	private RecordedList<String> langList = new RecordedList<String>();
-	private RecordedList<String> langArgList = new RecordedList<String>();
 	private RecordedList<String> libraryPath = new RecordedList<String>();
 	private String architecture = new String();
 	private RecordedList<TargetEnvParam> targetEnvs = new RecordedList<TargetEnvParam>();
@@ -344,18 +341,6 @@ public class RtcParam extends AbstractRecordedParam implements Serializable {
 		this.rtcxml = rtcXml;
 	}
 	//
-	public String getLanguage() {
-		return getLangageListString(langList);
-	}
-	public String getLanguageArg() {
-		return getLangageListArgString();
-	}
-	public List<String> getLangList() {
-		return langList;
-	}
-	public List<String> getLangArgList() {
-		return langArgList;
-	}
 	public List<String> getLibraryPathes() {
 		return libraryPath;
 	}
@@ -366,35 +351,11 @@ public class RtcParam extends AbstractRecordedParam implements Serializable {
 		return this.targetEnvs;
 	}
 	//
-	public void setLanguage(String lang) {
-		if (lang != null) {
-			getLangList().clear();
-			getLangList().addAll(Arrays.asList(lang.split(",")));
-		}
-	}
-	public void setLanguageArg(String lang) {
-		if (lang != null) {
-			getLangArgList().clear();
-			getLangArgList().addAll(Arrays.asList(lang.split(",")));
-		}
-	}
-
 	public void setArchitecture(String arch) {
 		checkUpdated(this.architecture, arch);
 		this.architecture = arch;
 	}
 	//
-	public boolean isLanguageExist(String language) {
-		boolean result = false;
-		for (String str : getLangList()) {
-			if (language.equalsIgnoreCase(str)) {
-				result = true;
-				break;
-			}
-		}
-		return result;
-	}
-
 	//
 	public boolean isDocExist() {
 		if( (doc_description==null || doc_description.equals("")) &&
@@ -518,29 +479,6 @@ public class RtcParam extends AbstractRecordedParam implements Serializable {
 		this.doc_reference = reference;
 	}
 
-	public String getLangageListArgString() {
-		StringBuffer result = new StringBuffer();
-		for (Iterator iter = langArgList.iterator(); iter.hasNext();) {
-			String element = (String) iter.next();
-			if ("".equals(result.toString()) == false) {
-				result.append(",");
-			}
-			result.append(element);
-		}
-		return result.toString();
-	}
-
-	public static String getLangageListString(List langList) {
-		StringBuffer result = new StringBuffer();
-		for (Iterator iter = langList.iterator(); iter.hasNext();) {
-			String element = (String) iter.next();
-			if ("".equals(result.toString()) == false) {
-				result.append(",");
-			}
-			result.append(element);
-		}
-		return result.toString();
-	}
 	//
 	public String getOutputProject() {
 		return outputProject;

@@ -1,4 +1,5 @@
-#Mon Dec 06 15:18:34 JST 2010
 eclipse.preferences.version=1
 encoding//src/jp/go/aist/rtm/rtcbuilder/nl/messages.properties=8859_1
+encoding//src/jp/go/aist/rtm/rtcbuilder/ros/template/cpp/CXX_ROS.cpp.vsl=UTF-8
+encoding//test/jp/go/aist/rtm/rtcbuilder/_test/ROS/DocumentTest.java=UTF-8
 encoding/<project>=UTF-8

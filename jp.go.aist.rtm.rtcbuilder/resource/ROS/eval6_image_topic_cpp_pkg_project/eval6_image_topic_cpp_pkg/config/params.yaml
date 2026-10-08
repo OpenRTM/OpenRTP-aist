@@ -1,0 +1,3 @@
+eval6_image_topic_node:
+  # No ROS parameters defined in UI
+  ros__parameters: {}

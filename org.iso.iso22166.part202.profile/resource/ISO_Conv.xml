@@ -222,6 +222,10 @@
             <moType>MANDATORY</moType>
             <additionalInfo>
                 <nv>
+                    <name>__iso__kind</name>
+                    <value>service</value>
+                </nv>
+                <nv>
                     <name>svxxx</name>
                     <value>svVl01</value>
                 </nv>
@@ -246,6 +250,12 @@
             </methodList>
             <pvType>Physical</pvType>
             <moType>MANDATORY</moType>
+            <additionalInfo>
+                <nv>
+                    <name>__iso__kind</name>
+                    <value>service</value>
+                </nv>
+            </additionalInfo>
         </serviceProfile>
         <serviceProfile>
             <id>sv03</id>
@@ -258,6 +268,12 @@
             </methodList>
             <pvType>Virtual</pvType>
             <moType>OPTIONAL</moType>
+            <additionalInfo>
+                <nv>
+                    <name>__iso__kind</name>
+                    <value>service</value>
+                </nv>
+            </additionalInfo>
         </serviceProfile>
     </services>
     <infra>
@@ -496,7 +512,7 @@
     <additionalInfo>
         <nv>
             <name>__iso__profileVersion</name>
-            <value>0.3</value>
+            <value>0.1</value>
         </nv>
         <nv>
             <name>SIM_Version</name>

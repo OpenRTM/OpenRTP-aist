@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:rosDoc="http://www.openrtp.org/namespaces/ros_doc"
+	xmlns:ros="http://www.openrtp.org/namespaces/ros"
+	targetNamespace="http://www.openrtp.org/namespaces/ros_doc"
+	elementFormDefault="qualified"
+	attributeFormDefault="qualified">
+
+	<xsd:import namespace="http://www.openrtp.org/namespaces/ros" schemaLocation="ROSProfile_basic.xsd"/>
+
+	<xsd:complexType name="basic_info_doc">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:basic_info">
+				<xsd:sequence>
+					<xsd:element name="Doc" type="rosDoc:doc_basic" minOccurs="1" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="doc_basic">
+		<xsd:attribute name="algorithm" type="xsd:string" use="optional"/>
+		<xsd:attribute name="inout" type="xsd:string" use="optional"/>
+		<xsd:attribute name="creator" type="xsd:string" use="optional"/>
+		<xsd:attribute name="license" type="xsd:string" use="required"/>
+		<xsd:attribute name="contact_address" type="xsd:string" use="required"/>
+		<xsd:attribute name="reference" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="lifecycle_callback_doc">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:lifecycle_callback">
+				<xsd:sequence>
+					<xsd:element name="Doc" type="rosDoc:doc_lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="doc_lifecycle_callback">
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+		<xsd:attribute name="pre_condition" type="xsd:string" use="optional"/>
+		<xsd:attribute name="post_condition" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="topic_doc">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:topic">
+				<xsd:sequence>
+					<xsd:element name="Doc" type="rosDoc:doc_topic" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="doc_topic">
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+		<xsd:attribute name="type" type="xsd:string" use="optional"/>
+		<xsd:attribute name="semantics" type="xsd:string" use="optional"/>
+		<xsd:attribute name="unit" type="xsd:string" use="optional"/>
+		<xsd:attribute name="occurrence" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="service_doc">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:service">
+				<xsd:sequence>
+					<xsd:element name="Doc" type="rosDoc:doc_service" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="doc_service">
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+		<xsd:attribute name="argument" type="xsd:string" use="optional"/>
+		<xsd:attribute name="return" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="action_doc">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:action">
+				<xsd:sequence>
+					<xsd:element name="Doc" type="rosDoc:doc_action" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="doc_action">
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+		<xsd:attribute name="goal" type="xsd:string" use="optional"/>
+		<xsd:attribute name="feedback" type="xsd:string" use="optional"/>
+		<xsd:attribute name="result" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="parameter_doc">
+		<xsd:complexContent>
+			<xsd:extension base ="ros:parameter">
+				<xsd:sequence>
+					<xsd:element name="Doc" type="rosDoc:doc_parameter" minOccurs="0" maxOccurs="1"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="doc_parameter">
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+		<xsd:attribute name="dataname" type="xsd:string" use="optional"/>
+		<xsd:attribute name="default_value" type="xsd:string" use="optional"/>
+		<xsd:attribute name="unit" type="xsd:string" use="optional"/>
+		<xsd:attribute name="range" type="xsd:string" use="optional"/>
+		<xsd:attribute name="constraint" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+</xsd:schema>

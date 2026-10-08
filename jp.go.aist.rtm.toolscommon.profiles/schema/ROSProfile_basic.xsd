@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:ros="http://www.openrtp.org/namespaces/ros"
+	targetNamespace="http://www.openrtp.org/namespaces/ros"
+	elementFormDefault="qualified"
+	attributeFormDefault="qualified">
+
+	<xsd:element name="ROSProfile" type="ros:ros_profile"/>
+	<xsd:complexType name="ros_profile">
+		<xsd:sequence>
+			<xsd:element name="BasicInfo" type="ros:basic_info" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="LifeCycle" type="ros:lifecycle" minOccurs="1" maxOccurs="1"/>
+			<xsd:element name="Topics" type="ros:topic" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Services" type="ros:service" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Actions" type="ros:action" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Parameters" type="ros:parameter" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Language" type="ros:language" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:string" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="basic_info">
+		<xsd:attribute name="package_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="node_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="class_name" type="xsd:string" use="optional"/>
+		<xsd:attribute name="description" type="xsd:string" use="optional"/>
+		<xsd:attribute name="version" type="xsd:string" use="required"/>
+		<xsd:attribute name="maintainer" type="xsd:string" use="required"/>
+		<xsd:attribute name="category" type="xsd:string" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="lifecycle">
+		<xsd:sequence>
+			<xsd:element name="OnConfigure" type="ros:lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="OnActivate" type="ros:lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="OnDeactivate" type="ros:lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="OnCleanup" type="ros:lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="OnShutdown" type="ros:lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="OnError" type="ros:lifecycle_callback" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="lifecycle_callback">
+		<xsd:attribute name="implemented" type="xsd:boolean" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="topic">
+		<xsd:attribute name="topic_role" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="Subscribe"/>
+					<xsd:enumeration value="Publish"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="topic_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="message_type" type="xsd:string" use="required"/>
+		<xsd:attribute name="QoS_reliability_type" use="optional">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="Reliable"/>
+					<xsd:enumeration value="Best_Effort"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="QoS_history_type" use="optional">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="KeepLast"/>
+					<xsd:enumeration value="KeepAll"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="QoS_history_depth" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="variable_callback_name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="service">
+		<xsd:attribute name="service_role" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="Server"/>
+					<xsd:enumeration value="Client"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="service_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="service_type" type="xsd:string" use="required"/>
+		<xsd:attribute name="variable_callback_name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="action">
+		<xsd:attribute name="action_role" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ActionServer"/>
+					<xsd:enumeration value="ActionClient"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="action_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="action_type" type="xsd:string" use="required"/>
+		<xsd:attribute name="callback_base" type="xsd:string" use="required"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="parameter">
+		<xsd:attribute name="parameter_name" type="xsd:string" use="required"/>
+		<xsd:attribute name="data_type" type="xsd:string" use="required"/>
+		<xsd:attribute name="default_value" type="xsd:string" use="required"/>
+		<xsd:attribute name="constraint" type="xsd:string" use="optional"/>
+		<xsd:attribute name="read_only" type="xsd:boolean" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:complexType name="language">
+		<xsd:attribute name="kind" type="xsd:string" use="required"/>
+	</xsd:complexType>
+</xsd:schema>

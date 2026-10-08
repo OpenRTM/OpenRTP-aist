@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ros:ROSProfile ros:version="0.1" xmlns:rosExt="http://www.openrtp.org/namespaces/ros_ext" xmlns:ros="http://www.openrtp.org/namespaces/ros" xmlns:rosDoc="http://www.openrtp.org/namespaces/ros_doc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ros:BasicInfo xsi:type="rosExt:basic_info_ext" ros:maintainer="Vecdor01" ros:version="1.3.5" ros:description="mod01Desc" ros:node_name="mod01">
+        <rosDoc:Doc/>
+        <rosExt:Properties rosExt:value="Mod01Example" rosExt:name="__iso__examples"/>
+        <rosExt:Properties rosExt:value="iso22166-202:2025" rosExt:name="SIM_Version"/>
+        <rosExt:Properties rosExt:value="2345678901" rosExt:name="__iso__mID"/>
+        <rosExt:Properties rosExt:value="080706050403020100:09" rosExt:name="__iso__swAspects"/>
+        <rosExt:Properties rosExt:value="010305070902040608:08" rosExt:name="__iso__swAspects"/>
+        <rosExt:Properties rosExt:value="00050100010502000205:05" rosExt:name="__iso__swAspects"/>
+        <rosExt:Properties rosExt:value="Windows" rosExt:name="__iso__osType_type"/>
+        <rosExt:Properties rosExt:value="BIT64" rosExt:name="__iso__osType_bit"/>
+        <rosExt:Properties rosExt:value="11" rosExt:name="__iso__osType_version"/>
+        <rosExt:Properties rosExt:value="PERIODIC" rosExt:name="__iso__exeType_0_opType"/>
+        <rosExt:Properties rosExt:value="false" rosExt:name="__iso__exeType_0_hardRT"/>
+        <rosExt:Properties rosExt:value="0.5" rosExt:name="__iso__exeType_0_timeConstraint"/>
+        <rosExt:Properties rosExt:value="01" rosExt:name="__iso__exeType_0_priority"/>
+        <rosExt:Properties rosExt:value="SINGLETON" rosExt:name="__iso__exeType_0_instanceType"/>
+        <rosExt:Properties rosExt:value="EVENTDRIVEN" rosExt:name="__iso__exeType_1_opType"/>
+        <rosExt:Properties rosExt:value="true" rosExt:name="__iso__exeType_1_hardRT"/>
+        <rosExt:Properties rosExt:value="0.1" rosExt:name="__iso__exeType_1_timeConstraint"/>
+        <rosExt:Properties rosExt:value="02" rosExt:name="__iso__exeType_1_priority"/>
+        <rosExt:Properties rosExt:value="MULTITON_STATIC" rosExt:name="__iso__exeType_1_instanceType"/>
+        <rosExt:Properties rosExt:value="NONRT" rosExt:name="__iso__exeType_2_opType"/>
+        <rosExt:Properties rosExt:value="false" rosExt:name="__iso__exeType_2_hardRT"/>
+        <rosExt:Properties rosExt:value="1.0" rosExt:name="__iso__exeType_2_timeConstraint"/>
+        <rosExt:Properties rosExt:value="0a" rosExt:name="__iso__exeType_2_priority"/>
+        <rosExt:Properties rosExt:value="MULTITON_COMM" rosExt:name="__iso__exeType_2_instanceType"/>
+        <rosExt:Properties rosExt:value="CREATE" rosExt:name="__iso__executionStatus"/>
+        <rosExt:Properties rosExt:value="5" rosExt:name="__iso__errorType"/>
+        <rosExt:Properties rosExt:value="db01:1.2:3.4" rosExt:name="__iso__infra_database"/>
+        <rosExt:Properties rosExt:value="db02:5.6:7.8" rosExt:name="__iso__infra_database"/>
+        <rosExt:Properties rosExt:value="db03:9.8:7.6" rosExt:name="__iso__infra_database"/>
+        <rosExt:Properties rosExt:value="mid01:1.2:3.4" rosExt:name="__iso__infra_comms_mostTop_1"/>
+        <rosExt:Properties rosExt:value="mid02:5.7:6.8" rosExt:name="__iso__infra_comms_mostTop_1"/>
+        <rosExt:Properties rosExt:value="mid03:9.1:2.7" rosExt:name="__iso__infra_comms_mostTop_1"/>
+        <rosExt:Properties rosExt:value="USB-A" rosExt:name="__iso__infra_comms_underlaying_1_connectionType"/>
+        <rosExt:Properties rosExt:value="USB" rosExt:name="__iso__infra_comms_underlaying_1_typePhyMac"/>
+        <rosExt:Properties rosExt:value="TCP/IP,TCP,IP" rosExt:name="__iso__infra_comms_underlaying_1_typeNetTrans"/>
+        <rosExt:Properties rosExt:value="FTP,HTTP,DNS" rosExt:name="__iso__infra_comms_underlaying_1_typeApp"/>
+        <rosExt:Properties rosExt:value="3.7" rosExt:name="__iso__infra_comms_underlaying_1_speed"/>
+        <rosExt:Properties rosExt:value="val01" rosExt:name="__iso__infra_comms_underlaying_1_add_nv01"/>
+        <rosExt:Properties rosExt:value="val02" rosExt:name="__iso__infra_comms_underlaying_1_add_nv02"/>
+        <rosExt:Properties rosExt:value="val03" rosExt:name="__iso__infra_comms_underlaying_1_add_nv03"/>
+        <rosExt:Properties rosExt:value="mid201:8.3:6.4" rosExt:name="__iso__infra_comms_mostTop_2"/>
+        <rosExt:Properties rosExt:value="USB-C" rosExt:name="__iso__infra_comms_underlaying_2_connectionType"/>
+        <rosExt:Properties rosExt:value="USB2" rosExt:name="__iso__infra_comms_underlaying_2_typePhyMac"/>
+        <rosExt:Properties rosExt:value="IP" rosExt:name="__iso__infra_comms_underlaying_2_typeNetTrans"/>
+        <rosExt:Properties rosExt:value="BOOTP" rosExt:name="__iso__infra_comms_underlaying_2_typeApp"/>
+        <rosExt:Properties rosExt:value="4.1" rosExt:name="__iso__infra_comms_underlaying_2_speed"/>
+        <rosExt:Properties rosExt:value="mid301:6.3:8.7" rosExt:name="__iso__infra_comms_mostTop_3"/>
+        <rosExt:Properties rosExt:value="RJ45" rosExt:name="__iso__infra_comms_underlaying_3_connectionType"/>
+        <rosExt:Properties rosExt:value="EtherCAT" rosExt:name="__iso__infra_comms_underlaying_3_typePhyMac"/>
+        <rosExt:Properties rosExt:value="TCP" rosExt:name="__iso__infra_comms_underlaying_3_typeNetTrans"/>
+        <rosExt:Properties rosExt:value="XXX" rosExt:name="__iso__infra_comms_underlaying_3_typeApp"/>
+        <rosExt:Properties rosExt:value="4.1" rosExt:name="__iso__infra_comms_underlaying_3_speed"/>
+        <rosExt:Properties rosExt:value="mid01:1.2:3.4" rosExt:name="__iso__infra_middleware"/>
+        <rosExt:Properties rosExt:value="mid02:5.6:7.8" rosExt:name="__iso__infra_middleware"/>
+        <rosExt:Properties rosExt:value="mid03:9.8:7.6" rosExt:name="__iso__infra_middleware"/>
+        <rosExt:Properties rosExt:value="PL" rosExt:name="__iso__safeSecure_overallValidSafetyLevelType"/>
+        <rosExt:Properties rosExt:value="C" rosExt:name="__iso__safeSecure_overallSafetyLevelPL"/>
+        <rosExt:Properties rosExt:value="3" rosExt:name="__iso__safeSecure_overallSafetyLevelSIL"/>
+        <rosExt:Properties rosExt:value="4" rosExt:name="__iso__safeSecure_overallPhySecurityLevel"/>
+        <rosExt:Properties rosExt:value="5" rosExt:name="__iso__safeSecure_overallCybSecurityLevel"/>
+        <rosExt:Properties rosExt:value="ESTOP" rosExt:name="__iso__safeSecure_inSafetyLevel_1_safetyFunctionType"/>
+        <rosExt:Properties rosExt:value="NONE" rosExt:name="__iso__safeSecure_inSafetyLevel_1_validSafetyLevelType"/>
+        <rosExt:Properties rosExt:value="B" rosExt:name="__iso__safeSecure_inSafetyLevel_1_eachSafetyLevelPL"/>
+        <rosExt:Properties rosExt:value="4" rosExt:name="__iso__safeSecure_inSafetyLevel_1_eachSafetyLevelSIL"/>
+        <rosExt:Properties rosExt:value="HCOLA" rosExt:name="__iso__safeSecure_inSafetyLevel_2_safetyFunctionType"/>
+        <rosExt:Properties rosExt:value="BOTH" rosExt:name="__iso__safeSecure_inSafetyLevel_2_validSafetyLevelType"/>
+        <rosExt:Properties rosExt:value="E" rosExt:name="__iso__safeSecure_inSafetyLevel_2_eachSafetyLevelPL"/>
+        <rosExt:Properties rosExt:value="1" rosExt:name="__iso__safeSecure_inSafetyLevel_2_eachSafetyLevelSIL"/>
+        <rosExt:Properties rosExt:value="LIMWS" rosExt:name="__iso__safeSecure_inSafetyLevel_3_safetyFunctionType"/>
+        <rosExt:Properties rosExt:value="PL" rosExt:name="__iso__safeSecure_inSafetyLevel_3_validSafetyLevelType"/>
+        <rosExt:Properties rosExt:value="D" rosExt:name="__iso__safeSecure_inSafetyLevel_3_eachSafetyLevelPL"/>
+        <rosExt:Properties rosExt:value="3" rosExt:name="__iso__safeSecure_inSafetyLevel_3_eachSafetyLevelSIL"/>
+        <rosExt:Properties rosExt:value="CRYTO" rosExt:name="__iso__safeSecure_inCybSecurityLevel_1_securityType"/>
+        <rosExt:Properties rosExt:value="2" rosExt:name="__iso__safeSecure_inCybSecurityLevel_1_eachSecurityLevel"/>
+        <rosExt:Properties rosExt:value="ACC_UNTRUST_NET" rosExt:name="__iso__safeSecure_inCybSecurityLevel_2_securityType"/>
+        <rosExt:Properties rosExt:value="2" rosExt:name="__iso__safeSecure_inCybSecurityLevel_2_eachSecurityLevel"/>
+        <rosExt:Properties rosExt:value="DO_S" rosExt:name="__iso__safeSecure_inCybSecurityLevel_3_securityType"/>
+        <rosExt:Properties rosExt:value="5" rosExt:name="__iso__safeSecure_inCybSecurityLevel_3_eachSecurityLevel"/>
+        <rosExt:Properties rosExt:value="valsf01" rosExt:name="__iso__safeSecure_add_sf01"/>
+        <rosExt:Properties rosExt:value="valsf02" rosExt:name="__iso__safeSecure_add_sf02"/>
+        <rosExt:Properties rosExt:value="valsf03" rosExt:name="__iso__safeSecure_add_sf03"/>
+        <rosExt:Properties rosExt:value="Sim01" rosExt:name="__iso__modelling_1_simulator"/>
+        <rosExt:Properties rosExt:value="xxx,yyy,zzz" rosExt:name="__iso__modelling_1_mdf"/>
+        <rosExt:Properties rosExt:value="lib01" rosExt:name="__iso__modelling_1_lib"/>
+        <rosExt:Properties rosExt:value="lib02" rosExt:name="__iso__modelling_1_lib"/>
+        <rosExt:Properties rosExt:value="lib03" rosExt:name="__iso__modelling_1_lib"/>
+        <rosExt:Properties rosExt:value="url01" rosExt:name="__iso__modelling_1_dynamicSW_1_exeFileURL"/>
+        <rosExt:Properties rosExt:value="cmdxxx" rosExt:name="__iso__modelling_1_dynamicSW_1_shellCmd"/>
+        <rosExt:Properties rosExt:value="url02" rosExt:name="__iso__modelling_1_dynamicSW_2_exeFileURL"/>
+        <rosExt:Properties rosExt:value="cmdyyy" rosExt:name="__iso__modelling_1_dynamicSW_2_shellCmd"/>
+        <rosExt:Properties rosExt:value="url03" rosExt:name="__iso__modelling_1_dynamicSW_3_exeFileURL"/>
+        <rosExt:Properties rosExt:value="cmdzzz" rosExt:name="__iso__modelling_1_dynamicSW_3_shellCmd"/>
+        <rosExt:Properties rosExt:value="Sim02" rosExt:name="__iso__modelling_2_simulator"/>
+        <rosExt:Properties rosExt:value="xxx2" rosExt:name="__iso__modelling_2_mdf"/>
+        <rosExt:Properties rosExt:value="lib021" rosExt:name="__iso__modelling_2_lib"/>
+        <rosExt:Properties rosExt:value="url012" rosExt:name="__iso__modelling_2_dynamicSW_1_exeFileURL"/>
+        <rosExt:Properties rosExt:value="cmdxxx2" rosExt:name="__iso__modelling_2_dynamicSW_1_shellCmd"/>
+        <rosExt:Properties rosExt:value="Sim03" rosExt:name="__iso__modelling_3_simulator"/>
+        <rosExt:Properties rosExt:value="xxx3" rosExt:name="__iso__modelling_3_mdf"/>
+        <rosExt:Properties rosExt:value="lib031" rosExt:name="__iso__modelling_3_lib"/>
+        <rosExt:Properties rosExt:value="url013" rosExt:name="__iso__modelling_3_dynamicSW_1_exeFileURL"/>
+        <rosExt:Properties rosExt:value="cmdxxx3" rosExt:name="__iso__modelling_3_dynamicSW_1_shellCmd"/>
+        <rosExt:Properties rosExt:value="aaa" rosExt:name="__iso__exeForm_LibraryURL"/>
+        <rosExt:Properties rosExt:value="bbb" rosExt:name="__iso__exeForm_LibraryURL"/>
+        <rosExt:Properties rosExt:value="ccc" rosExt:name="__iso__exeForm_LibraryURL"/>
+        <rosExt:Properties rosExt:value="ef01" rosExt:name="__iso__exeForm_exeForm_1_exeFileURL"/>
+        <rosExt:Properties rosExt:value="scm01" rosExt:name="__iso__exeForm_exeForm_1_shellCmd"/>
+        <rosExt:Properties rosExt:value="ef02" rosExt:name="__iso__exeForm_exeForm_2_exeFileURL"/>
+        <rosExt:Properties rosExt:value="scm02" rosExt:name="__iso__exeForm_exeForm_2_shellCmd"/>
+        <rosExt:Properties rosExt:value="ef03" rosExt:name="__iso__exeForm_exeForm_3_exeFileURL"/>
+        <rosExt:Properties rosExt:value="scm03" rosExt:name="__iso__exeForm_exeForm_3_shellCmd"/>
+    </ros:BasicInfo>
+    <ros:Topics xsi:type="rosExt:topic_ext" ros:variable_callback_name="" ros:QoS_history_type="" ros:QoS_reliability_type="" ros:message_type="String" ros:topic_name="Var01" ros:topic_role="Subscribe">
+        <rosDoc:Doc rosDoc:occurrence="" rosDoc:unit="var01Unit" rosDoc:semantics="" rosDoc:type="" rosDoc:description="var01Desc"/>
+        <rosExt:Properties rosExt:value="val01" rosExt:name="__iso__value"/>
+        <rosExt:Properties rosExt:value="val01" rosExt:name="__iso__nv01"/>
+        <rosExt:Properties rosExt:value="val02" rosExt:name="__iso__nv02"/>
+        <rosExt:Properties rosExt:value="val03" rosExt:name="__iso__nv03"/>
+    </ros:Topics>
+    <ros:Topics xsi:type="rosExt:topic_ext" ros:message_type="float" ros:topic_name="Var02" ros:topic_role="Publish">
+        <rosDoc:Doc rosDoc:unit="var02Unit" rosDoc:description="var02Desc"/>
+        <rosExt:Properties rosExt:value="val02" rosExt:name="__iso__value"/>
+    </ros:Topics>
+    <ros:Topics xsi:type="rosExt:topic_ext" ros:message_type="int" ros:topic_name="Var03" ros:topic_role="Publish">
+        <rosDoc:Doc rosDoc:unit="var03Unit" rosDoc:description="var03Desc"/>
+        <rosExt:Properties rosExt:value="val03" rosExt:name="__iso__value"/>
+    </ros:Topics>
+    <ros:Services xsi:type="rosExt:service_ext" ros:variable_callback_name="" ros:service_type="" ros:service_name="sv01" ros:service_role="">
+        <rosDoc:Doc rosDoc:return="" rosDoc:argument="" rosDoc:description=""/>
+        <rosExt:Properties rosExt:value="xxx.idl" rosExt:name="__iso__ifURL"/>
+        <rosExt:Properties rosExt:value="PHYSICAL" rosExt:name="__iso__pvType"/>
+        <rosExt:Properties rosExt:value="MANDATORY" rosExt:name="__iso__moType"/>
+        <rosExt:Properties rosExt:value="svVl01" rosExt:name="__iso__svxxx"/>
+        <rosExt:Properties rosExt:value="svVl02" rosExt:name="__iso__svyyy"/>
+        <rosExt:Properties rosExt:value="svVl03" rosExt:name="__iso__svzzz"/>
+        <rosExt:Properties rosExt:value="method0101" rosExt:name="__iso__method_1_name"/>
+        <rosExt:Properties rosExt:value="void" rosExt:name="__iso__method_1_retType"/>
+        <rosExt:Properties rosExt:value="MANDATORY" rosExt:name="__iso__method_1_moType"/>
+        <rosExt:Properties rosExt:value="PROVIDED" rosExt:name="__iso__method_1_reqProvType"/>
+        <rosExt:Properties rosExt:value="mel01" rosExt:name="__iso__method_1_add_mexxx"/>
+        <rosExt:Properties rosExt:value="mel02" rosExt:name="__iso__method_1_add_meyyy"/>
+        <rosExt:Properties rosExt:value="mel03" rosExt:name="__iso__method_1_add_mezzz"/>
+        <rosExt:Properties rosExt:value="Arg01" rosExt:name="__iso__method_1_valueName"/>
+        <rosExt:Properties rosExt:value="type01" rosExt:name="__iso__method_1_Arg01_type"/>
+        <rosExt:Properties rosExt:value="IN" rosExt:name="__iso__method_1_Arg01_inout"/>
+        <rosExt:Properties rosExt:value="argl01" rosExt:name="__iso__method_1_Arg01_add_argxxx"/>
+        <rosExt:Properties rosExt:value="arg02" rosExt:name="__iso__method_1_Arg01_add_argyyy"/>
+        <rosExt:Properties rosExt:value="arg03" rosExt:name="__iso__method_1_Arg01_add_argzzz"/>
+        <rosExt:Properties rosExt:value="Arg02" rosExt:name="__iso__method_1_valueName"/>
+        <rosExt:Properties rosExt:value="type02" rosExt:name="__iso__method_1_Arg02_type"/>
+        <rosExt:Properties rosExt:value="IN" rosExt:name="__iso__method_1_Arg02_inout"/>
+        <rosExt:Properties rosExt:value="Arg03" rosExt:name="__iso__method_1_valueName"/>
+        <rosExt:Properties rosExt:value="type03" rosExt:name="__iso__method_1_Arg03_type"/>
+        <rosExt:Properties rosExt:value="IN" rosExt:name="__iso__method_1_Arg03_inout"/>
+        <rosExt:Properties rosExt:value="method0102" rosExt:name="__iso__method_2_name"/>
+        <rosExt:Properties rosExt:value="int" rosExt:name="__iso__method_2_retType"/>
+        <rosExt:Properties rosExt:value="MANDATORY" rosExt:name="__iso__method_2_moType"/>
+        <rosExt:Properties rosExt:value="PROVIDED" rosExt:name="__iso__method_2_reqProvType"/>
+        <rosExt:Properties rosExt:value="Arg11" rosExt:name="__iso__method_2_valueName"/>
+        <rosExt:Properties rosExt:value="type11" rosExt:name="__iso__method_2_Arg11_type"/>
+        <rosExt:Properties rosExt:value="IN" rosExt:name="__iso__method_2_Arg11_inout"/>
+        <rosExt:Properties rosExt:value="Arg12" rosExt:name="__iso__method_2_valueName"/>
+        <rosExt:Properties rosExt:value="type12" rosExt:name="__iso__method_2_Arg12_type"/>
+        <rosExt:Properties rosExt:value="IN" rosExt:name="__iso__method_2_Arg12_inout"/>
+        <rosExt:Properties rosExt:value="method0103" rosExt:name="__iso__method_3_name"/>
+        <rosExt:Properties rosExt:value="float" rosExt:name="__iso__method_3_retType"/>
+        <rosExt:Properties rosExt:value="OPTIONAL" rosExt:name="__iso__method_3_moType"/>
+        <rosExt:Properties rosExt:value="REQUIRED" rosExt:name="__iso__method_3_reqProvType"/>
+    </ros:Services>
+    <ros:Services xsi:type="rosExt:service_ext" ros:service_name="sv02">
+        <rosDoc:Doc/>
+        <rosExt:Properties rosExt:value="yyy.idl" rosExt:name="__iso__ifURL"/>
+        <rosExt:Properties rosExt:value="PHYSICAL" rosExt:name="__iso__pvType"/>
+        <rosExt:Properties rosExt:value="MANDATORY" rosExt:name="__iso__moType"/>
+        <rosExt:Properties rosExt:value="method02" rosExt:name="__iso__method_1_name"/>
+        <rosExt:Properties rosExt:value="float" rosExt:name="__iso__method_1_retType"/>
+        <rosExt:Properties rosExt:value="MANDATORY" rosExt:name="__iso__method_1_moType"/>
+        <rosExt:Properties rosExt:value="PROVIDED" rosExt:name="__iso__method_1_reqProvType"/>
+    </ros:Services>
+    <ros:Services xsi:type="rosExt:service_ext" ros:service_name="sv03">
+        <rosDoc:Doc/>
+        <rosExt:Properties rosExt:value="zzz.idl" rosExt:name="__iso__ifURL"/>
+        <rosExt:Properties rosExt:value="VIRTUAL" rosExt:name="__iso__pvType"/>
+        <rosExt:Properties rosExt:value="OPTIONAL" rosExt:name="__iso__moType"/>
+        <rosExt:Properties rosExt:value="method03" rosExt:name="__iso__method_1_name"/>
+        <rosExt:Properties rosExt:value="int" rosExt:name="__iso__method_1_retType"/>
+        <rosExt:Properties rosExt:value="MANDATORY" rosExt:name="__iso__method_1_moType"/>
+        <rosExt:Properties rosExt:value="PROVIDED" rosExt:name="__iso__method_1_reqProvType"/>
+    </ros:Services>
+    <ros:Parameters xsi:type="rosExt:parameter_ext" ros:read_only="false" ros:default_value="Val01" ros:data_type="String" ros:parameter_name="Prop01">
+        <rosDoc:Doc rosDoc:unit="prop01Unit" rosDoc:description="prop01Desc"/>
+    </ros:Parameters>
+    <ros:Parameters xsi:type="rosExt:parameter_ext" ros:read_only="true" ros:default_value="Val02" ros:data_type="int" ros:parameter_name="Prop02">
+        <rosDoc:Doc rosDoc:unit="prop02Unit" rosDoc:description="prop02Desc"/>
+    </ros:Parameters>
+    <ros:Parameters xsi:type="rosExt:parameter_ext" ros:read_only="true" ros:default_value="Val03" ros:data_type="float" ros:parameter_name="Prop03">
+        <rosDoc:Doc rosDoc:unit="prop03Unit" rosDoc:description="prop03Desc"/>
+    </ros:Parameters>
+    <ros:Language xsi:type="rosExt:language_ext" ros:kind="VisualStudio">
+        <rosExt:targets>
+            <rosExt:libraries rosExt:version="1.2.3" rosExt:name="xxx"/>
+            <rosExt:libraries rosExt:version="4.5.6" rosExt:name="yyy"/>
+            <rosExt:libraries rosExt:version="7.8.9" rosExt:name="zzz"/>
+        </rosExt:targets>
+        <rosExt:Properties rosExt:value="Windows" rosExt:name="__iso__os_name"/>
+        <rosExt:Properties rosExt:value="3.4.5" rosExt:name="__iso__compiler_min"/>
+        <rosExt:Properties rosExt:value="5.6.7" rosExt:name="__iso__compiler_max"/>
+        <rosExt:Properties rosExt:value="64Bit" rosExt:name="__iso__bitnCPUarch"/>
+    </ros:Language>
+</ros:ROSProfile>
+

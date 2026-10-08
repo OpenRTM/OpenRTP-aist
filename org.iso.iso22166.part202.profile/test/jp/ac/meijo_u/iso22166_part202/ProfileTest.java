@@ -56,11 +56,15 @@ import org.iso.iso22166.part202.profile.ServiceProfile;
 import org.iso.iso22166.part202.profile.Services;
 import org.iso.iso22166.part202.profile.Status;
 import org.iso.iso22166.part202.profile.Variable;
+import org.openrtp.namespaces.ros.version01.RosProfile;
 import org.openrtp.namespaces.rtc.version03.RtcProfile;
 
+import jp.ac.meijo_u.iso22166_part202.util.ISO2ROSProfileHandler;
 import jp.ac.meijo_u.iso22166_part202.util.ISO2RTCProfileHandler;
+import jp.ac.meijo_u.iso22166_part202.util.ROS2ISOProfileHandler;
 import jp.ac.meijo_u.iso22166_part202.util.RTC2ISOProfileHandler;
-import jp.go.aist.rtm.toolscommon.profiles.util.XmlHandler;	
+import jp.go.aist.rtm.toolscommon.profiles.util.XmlHandler;
+import jp.go.aist.rtm.toolscommon.profiles.util.XmlHandlerROS;	
 
 public class ProfileTest {
 	private String rootPath;
@@ -759,25 +763,66 @@ public class ProfileTest {
 		}
 	}
 	
+	public void convertROS2IsoProfile(String rtcPath, String isoPath) {
+		String resourceDir = rootPath + rtcPath;
+		String profileStr = readFile(resourceDir,"\n");
+		String targetFile = rootPath + isoPath;
+		
+		XmlHandlerROS handler = new XmlHandlerROS();
+		RosProfile profile = null;
+		try {
+			profile = handler.restoreFromXmlROS(profileStr);
 
+			ROS2ISOProfileHandler isoHandler = new ROS2ISOProfileHandler();
+			SIM isoProfile = isoHandler.convertROS2Iso(profile);
+			isoHandler.saveXmlIso(isoProfile, targetFile);
+		} catch(Exception ex) {
+			int a = 0;
+		}
+	}
+
+	public void convertIso2RosProfile(String isoPath, String rtcPath) {
+		String resourceDir = rootPath + isoPath;
+		String profileStr = readFile(resourceDir,"\n");
+		String targetFile = rootPath + rtcPath;
+		
+		ISO2ROSProfileHandler handler = new ISO2ROSProfileHandler();
+		SIM profile = null;
+		try {
+			profile = handler.restoreFromXmlIso(profileStr);
+			RosProfile rosProfile = handler.convertIso2Ros(profile);
+			
+			handler.saveXmlRos(rosProfile, targetFile);
+		} catch(Exception ex) {
+			int a = 0;
+		}
+	}
+	
 	public static void main(String[] args) {
 		ProfileTest test = new ProfileTest();
 //		test.makeIsoProfile();
 		
-//		//RTC - ISO - RTC 
-//		test.convertRtc2IsoProfile("\\resource\\RTC_Base.xml", "\\resource\\ISO.xml");
-//		test.convertIso2RtcProfile("\\resource\\ISO.xml", "\\resource\\RTC.xml");
-//
-//		//ISO - RTC - ISO 
-//		test.convertIso2RtcProfile("\\resource\\ISO_Base.xml", "\\resource\\RTC_Conv.xml");
-//		test.convertRtc2IsoProfile("\\resource\\RTC_Conv.xml", "\\resource\\ISO_Conv.xml");
-//		test.convertIso2RtcProfile("\\resource\\ISO_Base_InOut.xml", "\\resource\\RTC_Conv_InOut.xml");
-//		test.convertRtc2IsoProfile("\\resource\\RTC_Conv_InOut.xml", "\\resource\\ISO_Conv_InOut.xml");
+		//RTC - ISO - RTC 
+		test.convertRtc2IsoProfile("\\resource\\RTC_Base.xml", "\\resource\\ISO.xml");
+		test.convertIso2RtcProfile("\\resource\\ISO.xml", "\\resource\\RTC.xml");
+
+		//ISO - RTC - ISO 
+		test.convertIso2RtcProfile("\\resource\\ISO_Base.xml", "\\resource\\RTC_Conv.xml");
+		test.convertRtc2IsoProfile("\\resource\\RTC_Conv.xml", "\\resource\\ISO_Conv.xml");
+		test.convertIso2RtcProfile("\\resource\\ISO_Base_InOut.xml", "\\resource\\RTC_Conv_InOut.xml");
+		test.convertRtc2IsoProfile("\\resource\\RTC_Conv_InOut.xml", "\\resource\\ISO_Conv_InOut.xml");
 
 		//RTC - ISO - RTC 
 		test.convertRtc2IsoProfile("\\resource\\RTC_Docker_Base.xml", "\\resource\\ISO_Docker.xml");
-//		test.convertIso2RtcProfile("\\resource\\ISO_Docker.xml", "\\resource\\RTC_Docker_Conv.xml");
+		test.convertIso2RtcProfile("\\resource\\ISO_Docker.xml", "\\resource\\RTC_Docker_Conv.xml");
 
+		//ROS - ISO - ROS 
+		test.convertROS2IsoProfile("\\resource\\ROS_Base.xml", "\\resource\\ISO_ROS.xml");
+		test.convertIso2RosProfile("\\resource\\ISO_ROS.xml", "\\resource\\ROS.xml");
+
+		//ISO - ROS - ISO 
+		test.convertIso2RosProfile("\\resource\\ISO_Base.xml", "\\resource\\ROS_Conv.xml");
+		test.convertROS2IsoProfile("\\resource\\ROS_Conv.xml", "\\resource\\ISO_Conv.xml");
 	}
 
 }

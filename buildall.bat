@@ -22,6 +22,7 @@ set TARGETS=^
 	jp.go.aist.rtm.rtcbuilder.python ^
 	jp.go.aist.rtm.rtcbuilder.lua ^
 	jp.go.aist.rtm.rtcbuilder.processing ^
+    jp.go.aist.rtm.rtcbuilder.ros.python ^
 	jp.go.aist.rtm.repositoryView ^
 	jp.go.aist.rtm.repositoryView.nl1 ^
 	jp.go.aist.rtm.nameserviceview ^

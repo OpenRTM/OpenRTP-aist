@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>${rosParam.packageName}</name>
+  <version>${rosParam.version}</version>
+  <description>${rosParam.description}</description>
+  <maintainer email="${rosParam.contactAddress}">${rosParam.maintainer}</maintainer>
+  <license>${rosParam.license}</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <!-- Core dependencies -->
+  <build_depend>lifecycle_msgs</build_depend>
+  <exec_depend>lifecycle_msgs</exec_depend>
+  <build_depend>rclcpp</build_depend>
+  <exec_depend>rclcpp</exec_depend>
+  <build_depend>rclcpp_lifecycle</build_depend>
+  <exec_depend>rclcpp_lifecycle</exec_depend>
+
+#if( ${rosParam.parameters.size()}>0 )
+  <!-- Parameter / descriptor dependencies -->
+  <build_depend>rcl_interfaces</build_depend>
+  <exec_depend>rcl_interfaces</exec_depend>
+#end
+
+#if( ${tmpltHelper.getTopicTypes(${rosParam}).size()} > 0 )
+  <!-- Topic message dependencies -->
+#foreach($topic in ${tmpltHelper.getTopicTypes(${rosParam})})
+  <build_depend>${tmpltHelper.getMessageBasename(${topic})}</build_depend>
+  <exec_depend>${tmpltHelper.getMessageBasename(${topic})}</exec_depend>
+#end
+#end
+#if( ${tmpltHelper.getServiceTypes(${rosParam}).size()} > 0 )
+  <!-- Service dependencies -->
+#foreach($service in ${tmpltHelper.getServiceTypes(${rosParam})})
+  <build_depend>${tmpltHelper.getMessageBasename(${service})}</build_depend>
+  <exec_depend>${tmpltHelper.getMessageBasename(${service})}</exec_depend>
+#end
+#end
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+  <!-- Action dependencies -->
+  <build_depend>action_msgs</build_depend>
+  <exec_depend>action_msgs</exec_depend>
+#foreach($action in ${tmpltHelper.getActionTypes(${rosParam})})
+  <build_depend>${tmpltHelper.getMessageBasename(${action})}</build_depend>
+  <exec_depend>${tmpltHelper.getMessageBasename(${action})}</exec_depend>
+#end
+  <build_depend>rclcpp_action</build_depend>
+  <exec_depend>rclcpp_action</exec_depend>
+#end
+#if( ${rosParam.targetEnv.getLibraries().size()}>0 )
+  <!-- Extra dependencies -->
+#foreach($ext in ${rosParam.targetEnv.getLibraries()})
+  <build_depend>${ext.name}</build_depend>
+  <exec_depend>${ext.name}</exec_depend>
+#end
+#end
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

@@ -30,6 +30,7 @@ import jp.go.aist.rtm.rtcbuilder.ui.parts.SingleLabelProvider;
 
 public class RestoreDialog extends Dialog {
 	private String targetProject = "";
+	private String targetFile = "";
 	private String selected = "";
 	private TableViewer timeStampViewer;
     private List<SingleLabelItem> timeStampList = new ArrayList<SingleLabelItem>();
@@ -37,6 +38,9 @@ public class RestoreDialog extends Dialog {
 	
     public void setTargetProject(String target) {
     	this.targetProject = target;
+    }
+    public void setTargetFile(String target) {
+    	this.targetFile = target;
     }
 	public String getTimeStamp() {
 		return selected;
@@ -113,7 +117,7 @@ public class RestoreDialog extends Dialog {
 		File dir = new File(project.getLocation().toOSString());
 		File[] files = dir.listFiles();
 		for(File target : files) {
-			if(target.getName().startsWith("RTC.xml")) {
+			if(target.getName().startsWith(this.targetFile)) {
 				String name = target.getName();
 				if(name.length() < 14) continue;
 				String strTimestamp = name.substring(7);

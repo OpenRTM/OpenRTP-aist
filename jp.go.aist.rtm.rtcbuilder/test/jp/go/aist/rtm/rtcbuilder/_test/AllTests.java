@@ -1,5 +1,8 @@
 package jp.go.aist.rtm.rtcbuilder._test;
 
+import jp.go.aist.rtm.rtcbuilder._test.ROS.DocumentTest;
+import jp.go.aist.rtm.rtcbuilder._test.container.ContainerROS2Test;
+import jp.go.aist.rtm.rtcbuilder._test.container.ContainerRTCTest;
 import jp.go.aist.rtm.rtcbuilder._test.etc.MergeBlockParserTest;
 import jp.go.aist.rtm.rtcbuilder._test.etc.PreProcessorTest;
 import jp.go.aist.rtm.rtcbuilder._test.etc.StringUtilTest;
@@ -110,6 +113,14 @@ public class AllTests {
 		suite.addTestSuite(ServicePortTest.class);
 		//
 		suite.addTestSuite(TestComp.class);
+		/////
+		suite.addTestSuite(jp.go.aist.rtm.rtcbuilder._test.ROS.BasicTest.class);
+		suite.addTestSuite(DocumentTest.class);
+		
+		suite.addTestSuite(ContainerROS2Test.class);
+		suite.addTestSuite(ContainerRTCTest.class);
+
+
 		//$JUnit-END$
 		return suite;
 	}

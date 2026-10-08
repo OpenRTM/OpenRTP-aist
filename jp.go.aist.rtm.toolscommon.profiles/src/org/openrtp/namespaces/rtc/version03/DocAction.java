@@ -108,5 +108,12 @@ public class DocAction {
     public void setPostCondition(String value) {
         this.postCondition = value;
     }
+    
+    public boolean isNull() {
+        if(description != null && 0 < description.length()) return false;
+        if(preCondition != null && 0 < preCondition.length()) return false;
+        if(postCondition != null && 0 < postCondition.length()) return false;
+        return true;
+    }
 
 }

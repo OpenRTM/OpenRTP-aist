@@ -1,0 +1,107 @@
+${sharp} ==============================================================================
+${sharp} OpenRTM Dockerfile
+${sharp} ==============================================================================
+
+${sharp} 1. Base Image
+FROM docker.io/openrtm/devel-rtm:${tmpltHelper.convOSVersion(${containerParam.osVersion})}
+
+${sharp} 2. Multi-Architecture and Metadata
+ARG TARGETARCH
+LABEL org.opencontainers.image.architecture="${dol}{TARGETARCH:-amd64}"
+LABEL org.opencontainers.image.authors="${rtcParam.vender}"
+LABEL org.opencontainers.image.description="${rtcParam.description}"
+
+${sharp} 3. Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV OPENRTM_VERSION=latest
+ENV OPENRTM_NAMING_COMMAND=rtm2-naming
+ENV OPENRTM_CONFIG_COMMAND=rtm2-config
+
+${sharp} 4. Configure the official OpenRTM APT repository
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
+    && curl -fsSL https://openrtm.org/pub/openrtm-keyring.gpg \
+       -o /usr/share/keyrings/openrtm-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/openrtm-archive-keyring.gpg] https://openrtm.org/pub/Linux/ubuntu noble main" \
+       > /etc/apt/sources.list.d/openrtm.list \
+    && rm -rf /var/lib/apt/lists/*
+
+${sharp} 5. Install System Dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    sudo \
+#foreach($aptLib in ${containerParam.aptList})
+    ${aptLib} \
+#end
+#if( ${tmpltHelper.convLanguage(${containerParam.language})} == 2 )
+    python3-setuptools \
+    python3-wheel \
+#end
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+#if( ${containerParam.pipList.size()} > 0 )
+${sharp} 5. Install Python Dependencies
+RUN pip3 install --break-system-packages --no-cache-dir #foreach($pipLib in ${containerParam.pipList})${pipLib}#end
+#end
+
+${sharp} 6. Create Non-root User
+ARG USERNAME=container_user
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+ARG USER_PASSWORD=container_user
+
+RUN (userdel -r ubuntu || true) \
+    && groupadd --gid ${dol}USER_GID ${dol}USERNAME \
+    && useradd --uid ${dol}USER_UID --gid ${dol}USER_GID -m -s /bin/bash ${dol}USERNAME \
+    && echo "${dol}USERNAME:${dol}USER_PASSWORD" | chpasswd \
+    && usermod -aG sudo ${dol}USERNAME \
+    && echo "${dol}USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${dol}USERNAME \
+    && chmod 0440 /etc/sudoers.d/${dol}USERNAME
+
+${sharp} 7. Setup Workspace
+RUN mkdir -p /workspace/${containerParam.workspace} \
+    && chown -R ${dol}USERNAME:${dol}USERNAME /workspace
+
+USER ${dol}USERNAME
+WORKDIR /workspace/${containerParam.workspace}
+
+${sharp} 8. Clone and Build Source Code
+#foreach($repParam in ${containerParam.repositories})
+RUN git clone -b ${repParam.branch} ${repParam.uRL} \
+    && cd ${tmpltHelper.getRepositoryName(${repParam.uRL})} \
+#if( ${tmpltHelper.convLanguage(${containerParam.language})} == 1 )
+    && git submodule update --init --recursive \
+    && mkdir -p build && cd build \
+    && cmake .. -DBUILD_DOCUMENTATION=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    && make -j2
+#elseif( ${tmpltHelper.convLanguage(${containerParam.language})} == 2 )
+    && if [ -f requirements.txt ]; then sudo pip3 install -r requirements.txt || echo "Warning: pip install -r requirements.txt failed. Skipping..."; fi \
+    && if [ -f setup.py ]; then sudo python3 setup.py install; fi
+#end
+#end
+
+${sharp} 9. Setup Entrypoint
+RUN echo '${sharp}!/bin/bash' > /workspace/entrypoint.sh && \
+    echo 'set -e' >> /workspace/entrypoint.sh && \
+    echo '${sharp} OpenRTM 2.x helper commands:' >> /workspace/entrypoint.sh && \
+    echo '${sharp}   rtm2-naming' >> /workspace/entrypoint.sh && \
+    echo '${sharp}   rtm2-config' >> /workspace/entrypoint.sh && \
+    echo 'exec "${dol}@"' >> /workspace/entrypoint.sh && \
+    sudo chmod +x /workspace/entrypoint.sh
+
+${sharp} 10. Setup Volume for Logs
+RUN mkdir -p /workspace/workspace/logs \
+    && sudo chown ${dol}USERNAME:${dol}USERNAME /workspace/workspace/logs
+
+WORKDIR /workspace/workspace
+VOLUME ["/workspace/workspace/logs"]
+
+${sharp} 11. Security: Revoke Sudo Privileges
+RUN sudo rm -f /etc/sudoers.d/${dol}USERNAME \
+    && test ! -f /etc/sudoers.d/${dol}USERNAME
+
+${sharp} 12. Execution Command
+STOPSIGNAL SIGINT
+ENTRYPOINT ["/workspace/entrypoint.sh"]
+CMD ["bash"]
+

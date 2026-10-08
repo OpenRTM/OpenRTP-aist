@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>${rosParam.packageName}_interfaces</name>
+  <version>${rosParam.version}</version>
+  <description>Custom interface extension package for ${rosParam.packageName}</description>
+  <maintainer email="${rosParam.contactAddress}">${rosParam.maintainer}</maintainer>
+  <license>${rosParam.license}</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+#if( ${rosParam.extMsgFiles.size()}>0 ||${rosParam.extSrvFiles.size()}>0 || ${rosParam.extActionFiles.size()}>0)
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <!-- Custom interface dependencies -->
+  <build_depend>builtin_interfaces</build_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
+  <build_depend>std_msgs</build_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+#if( ${rosParam.extActionFiles.size()}>0)
+  <!-- Action interface dependencies -->
+  <build_depend>action_msgs</build_depend>
+  <exec_depend>action_msgs</exec_depend>
+#end
+
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+#end
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

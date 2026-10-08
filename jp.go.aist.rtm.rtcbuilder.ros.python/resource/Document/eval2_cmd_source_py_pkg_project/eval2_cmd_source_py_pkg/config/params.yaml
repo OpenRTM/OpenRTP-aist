@@ -1,0 +1,9 @@
+eval2_cmd_source_node:
+  ros__parameters:
+    # Parameter: command_speed
+    # Type: double
+    # Description: Command speed.
+    # Min: 0.0
+    # Max: 2.0
+    # Step: 0.1
+    command_speed: 0.5

@@ -1,7 +1,10 @@
 package jp.go.aist.rtm.rtcbuilder.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,12 +30,188 @@ public class StringUtil {
 	    return true;
 	}
 
+	public static boolean checkDigitSmallAlphabetUS(String source) {
+		if(source==null) return true;
+	    for(int intIdx = 0; intIdx < source.length(); intIdx++) {
+	        char target = source.charAt(intIdx);
+	        if( (target < '0' || target > '9') &&    //数字チェック
+	            (target < 'a' || target > 'z') &&    //小文字アルファベットチェック
+	            (target != '_') ) {
+	             return false;
+	        }
+	    }
+	    return true;
+	}
+
+	public static boolean checkDigitSmallAlphabetUｓSlash(String source) {
+		if(source==null) return true;
+	    for(int intIdx = 0; intIdx < source.length(); intIdx++) {
+	        char target = source.charAt(intIdx);
+	        if( (target < '0' || target > '9') &&    //数字チェック
+	            (target < 'a' || target > 'z') &&    //小文字アルファベットチェック
+	            (target != '_') && (target != '/')) {
+	             return false;
+	        }
+	    }
+	    return true;
+	}
+
+	public static boolean checkSmallAlphabetFirst(String source) {
+		if(source==null || source.isEmpty()) return true;
+		char firstChar = source.charAt(0);
+		if (firstChar >= 'a' && firstChar <= 'z') return true;
+	    return false;
+	}
+
+	public static boolean checkStartedWithUnderscoreFast(String source) {
+	    if (source == null || source.isEmpty()) {
+	        return false;
+	    }
+	    char firstChar = source.charAt(0);
+	    return firstChar != '_';
+	}
+
+	public static boolean checkStartedWithDigitOrUnderscoreFast(String source) {
+	    if (source == null || source.isEmpty()) {
+	        return false;
+	    }
+	    char firstChar = source.charAt(0);
+	    return !Character.isDigit(firstChar) || firstChar == '_';
+	}
+	
+	public static boolean checkStartedWithDigitFast(String source) {
+	    if (source == null || source.isEmpty()) {
+	        return false;
+	    }
+	    char firstChar = source.charAt(0);
+	    return !Character.isDigit(firstChar);
+	}
+
 	public static boolean checkProhibitedChar(String source) {
 		if(source.length()==0) return true;
 		Pattern p = Pattern.compile("^[\\p{Alnum}|_]*$");
 		Matcher m = p.matcher(source);
 		return m.find();
 	}
+	
+	public static boolean checkMultiUnderBar(String source) {
+		if(source.contains("__")) return false;
+		return true;
+	}
+	
+	public static boolean checkHyphenSpaceSlashDotJpn(String source) {
+		if (source == null) {
+            return false;
+        }
+		Pattern TARGET_PATTERN = Pattern.compile("[-_\\s./\\p{IsHiragana}\\p{IsKatakana}\\p{IsHan}]");		
+        return TARGET_PATTERN.matcher(source).find();
+    }
+
+	public static boolean checkHyphenSpaceDotJpn(String source) {
+		if (source == null) {
+            return false;
+        }
+		Pattern TARGET_PATTERN = Pattern.compile("[-\\s.\\p{IsHiragana}\\p{IsKatakana}\\p{IsHan}]");
+        return TARGET_PATTERN.matcher(source).find();
+//		Pattern TARGET_PATTERN = Pattern.compile("[- .\\p{IsHiragana}\\p{IsKatakana}\\p{IsHan}]");
+//		return TARGET_PATTERN.matcher(source).find();
+    }
+
+	public static boolean checkHyphenSpaceSlashJpn(String source) {
+		if (source == null) {
+            return false;
+        }
+		Pattern TARGET_PATTERN = Pattern.compile("[\\s/\\p{IsHiragana}\\p{IsKatakana}\\p{IsHan}-]");		
+        return TARGET_PATTERN.matcher(source).find();
+    }
+
+	public static boolean hasUppercase(String source) {
+        if (source == null) {
+            return false;
+        }
+        return source.matches(".*[A-Z].*");
+    }
+	
+	public static boolean checkValidIdentifier(String source) {
+        if (source == null) {
+            return false;
+        }
+        
+        Set<String> CPP_KEYWORDS = new HashSet<>(Arrays.asList(
+                "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel", "atomic_commit", 
+                "atomic_noexcept", "auto", "bitand", "bitor", "bool", "break", "case", "catch", 
+                "char", "char8_t", "char16_t", "char32_t", "class", "compl", "concept", "const", 
+                "consteval", "constexpr", "constinit", "const_cast", "continue", "co_await", 
+                "co_return", "co_yield", "decltype", "default", "delete", "do", "double", 
+                "dynamic_cast", "else", "enum", "explicit", "export", "extern", "false", "float", 
+                "for", "friend", "goto", "if", "inline", "int", "long", "mutable", "namespace", 
+                "new", "noexcept", "not", "not_eq", "nullptr", "operator", "or", "or_eq", 
+                "private", "protected", "public", "reflexpr", "register", "reinterpret_cast", 
+                "requires", "return", "short", "signed", "sizeof", "static", "static_assert", 
+                "static_cast", "struct", "switch", "template", "this", "thread_local", "throw", 
+                "true", "try", "typedef", "typeid", "typename", "union", "unsigned", "using", 
+                "virtual", "void", "volatile", "wchar_t", "while", "xor", "xor_eq"
+            ));
+
+        Set<String> PYTHON_KEYWORDS = new HashSet<>(Arrays.asList(
+            "False", "None", "True", "and", "as", "assert", "async", "await", "break", 
+            "class", "continue", "def", "del", "elif", "else", "except", "finally", "for", 
+            "from", "global", "if", "import", "in", "is", "lambda", "nonlocal", "not", 
+            "or", "pass", "raise", "return", "try", "while", "with", "yield"
+        ));
+
+        if (CPP_KEYWORDS.contains(source.toLowerCase())) {
+            return false;
+        }
+        if (PYTHON_KEYWORDS.contains(source.toLowerCase())) {
+            return false;
+        }
+
+        return true;
+	}
+	
+	public static boolean checkValidIdentifierCode(String source) {
+        if (source == null) {
+            return false;
+        }
+        
+        Set<String> CODE_KEYWORDS = new HashSet<>(Arrays.asList(
+            "_declare_parameters", "_on_set_parameters", "on_configure", "on_activate",
+            "on_deactivate", "on_cleanup", "on_shutdown", "on_error"
+        ));
+        if (CODE_KEYWORDS.contains(source.toLowerCase())) {
+            return false;
+        }
+
+        return true;
+	}
+
+	public static boolean checkInvalidRosVersion(String version) {
+        if (version == null || version.trim().isEmpty()) {
+            return true;
+        }
+        Pattern ROS_VERSION_PATTERN = Pattern.compile("^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$");
+        
+        return ROS_VERSION_PATTERN.matcher(version).matches();
+    }
+	
+	public static boolean checkInvalidTilde(String input) {
+        if (input == null) {
+            return false;
+        }
+        if (input.contains("~")) {
+            return !input.startsWith("~/");
+        }
+        return false;
+    }
+	
+	public static boolean checkInvalidFormat(String input) {
+        if (input == null || input.isEmpty()) {
+            return true;
+        }
+        Pattern VALID_FORMAT_PATTERN = Pattern.compile("^([^/]+/[^/]+/[^/]+|[^/]+\\.msg)$");
+        return !VALID_FORMAT_PATTERN.matcher(input).matches();
+    }
 	
 	public static String splitString(String source, int width, String prefix, int offset) {
 		if( source==null || source.equals("") || width<=0 ) return "";
@@ -233,4 +412,24 @@ public class StringUtil {
         
         return source;
 	}
+	
+	public static String convertCamelCase(String source) {
+		if (source == null || source.isEmpty()) {
+            return source;
+        }
+		
+		StringBuilder sb = new StringBuilder();
+        String[] words = source.toLowerCase().split("_");
+
+        for (int index = 0; index < words.length; index++) {
+            String word = words[index];
+            if (word.isEmpty()) {
+                continue;
+            }
+            sb.append(Character.toUpperCase(word.charAt(0)));
+            sb.append(word.substring(1));
+        }
+
+        return sb.toString();
+    }
 }

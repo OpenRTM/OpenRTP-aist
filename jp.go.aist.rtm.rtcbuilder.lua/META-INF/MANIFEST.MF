@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: jp.go.aist.rtm.rtcbuilder.lua;singleton:=true
-Bundle-Version: 0.2.0.rc1v20180305
+Bundle-Version: 2.1.0
 Bundle-ClassPath: jp.go.aist.rtm.rtcbuilder.lua,
  jp.go.aist.rtm.rtcbuilder.lua,
  jp.go.aist.rtm.rtcbuilder.lua,

@@ -11,7 +11,9 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -61,6 +63,7 @@ import jp.go.aist.rtm.rtcbuilder.manager.CommonGenerateManager;
 import jp.go.aist.rtm.rtcbuilder.manager.ContainerGenerateManager;
 import jp.go.aist.rtm.rtcbuilder.manager.GenerateManager;
 import jp.go.aist.rtm.rtcbuilder.nl.Messages;
+import jp.go.aist.rtm.rtcbuilder.ros.param.ROSParam;
 import jp.go.aist.rtm.rtcbuilder.ui.compare.GeneratedCautionDialog;
 import jp.go.aist.rtm.rtcbuilder.ui.editors.IMessageConstants;
 import jp.go.aist.rtm.rtcbuilder.ui.preference.ComponentPreferenceManager;
@@ -252,6 +255,24 @@ public class Generator {
 		return result;
 	}
 
+	public List<GeneratedResult> generateTemplateCodeROS(GeneratorParam generatorParam) throws Exception {
+		List<GeneratedResult> result = new ArrayList<GeneratedResult>();
+
+		ROSParam rosParam =  generatorParam.getROSParam();
+		
+		for (String key : generateManagerList.keySet()) {
+			GenerateManager manager = generateManagerList.get(key);
+			if (!"Common".equals(manager.getManagerKey())
+					&& !rosParam.getLangList().contains(
+							manager.getManagerKey())) {
+				continue;
+			}
+			result.addAll(manager.generateTemplateCode(rosParam));
+		}
+
+		return result;
+	}
+
 	/**
 	 * バリデートを行う
 	 *
@@ -351,6 +372,11 @@ public class Generator {
 		}
 	}
 
+	public void validateROS(ROSParam rosParam) {
+		if( rosParam.getOutputProject() == null ) {
+			throw new RuntimeException(IRTCBMessageConstants.VALIDATE_ERROR_OUTPUTPROJECT);
+		}
+	}
 	/**
 	 * 参照されているServiceが存在するか確認する
 	 *
@@ -709,6 +735,55 @@ public class Generator {
 		}
 	}
 
+	private void writeFileROS(List<GeneratedResult> generatedResultList,
+			ROSParam rosParam, String genTime, MergeHandler handler) throws IOException, CoreException {
+
+		IWorkspaceRoot workspaceHandle = ResourcesPlugin.getWorkspace().getRoot();
+		IProject project = workspaceHandle.getProject(rosParam.getOutputProject());
+		if(!project.exists()) {
+			return;
+		}
+
+		for (GeneratedResult generatedResult : generatedResultList) {
+			if (generatedResult.getName().equals("") == false) {
+				writeFile(generatedResult, project, handler, genTime);
+			}
+		}
+		File dirIf = new File(project.getLocation().toOSString() + File.separator + rosParam.getPackageName() + "_interfaces");
+		
+		File dirMsg = new File(project.getLocation().toOSString() + File.separator + "msg");
+		File dirTargetMsg = new File(dirIf + File.separator + "msg");
+		if(dirTargetMsg.exists() == false) {
+			Files.createDirectories(dirTargetMsg.toPath());
+		}
+		for(File each : FileUtil.listAllFiles(dirMsg)) {
+			Path inputPath = FileSystems.getDefault().getPath(dirMsg + File.separator + each.getName());
+			Path outputPath = FileSystems.getDefault().getPath(dirTargetMsg + File.separator + each.getName());			        				
+			Files.copy(inputPath, outputPath, StandardCopyOption.REPLACE_EXISTING);
+		}
+		File dirSrv = new File(project.getLocation().toOSString() + File.separator + "srv");
+		File dirTargetSrv = new File(dirIf + File.separator + "srv");
+		if(dirTargetSrv.exists() == false) {
+			Files.createDirectories(dirTargetSrv.toPath());
+		}
+		for(File each : FileUtil.listAllFiles(dirSrv)) {
+			Path inputPath = FileSystems.getDefault().getPath(dirSrv + File.separator + each.getName());
+			Path outputPath = FileSystems.getDefault().getPath(dirTargetSrv + File.separator + each.getName());			        				
+			Files.copy(inputPath, outputPath, StandardCopyOption.REPLACE_EXISTING);
+		}
+		File dirAction = new File(project.getLocation().toOSString() + File.separator + "action");
+		File dirTargetAction = new File(dirIf + File.separator + "action");
+		if(dirTargetAction.exists() == false) {
+			Files.createDirectories(dirTargetAction.toPath());
+		}
+		for(File each : FileUtil.listAllFiles(dirAction)) {
+			Path inputPath = FileSystems.getDefault().getPath(dirAction + File.separator + each.getName());
+			Path outputPath = FileSystems.getDefault().getPath(dirTargetAction + File.separator + each.getName());			        				
+			Files.copy(inputPath, outputPath, StandardCopyOption.REPLACE_EXISTING);
+		}
+		project.refreshLocal(IResource.DEPTH_INFINITE, null);
+	}
+
 	private void writeFile(GeneratedResult generatedResult, IProject outputProject,
 			MergeHandler handler, String genTime) throws IOException {
 
@@ -815,6 +890,14 @@ public class Generator {
 		validate(rtcParam);
 		List<GeneratedResult> generatedResult = generateTemplateCode(generatorParam, idlDirs);
 		writeFile(generatedResult, rtcParam, genTime, handler);
+	}
+
+	public void doGenerateWriteROS(GeneratorParam generatorParam, String genTime, MergeHandler handler) throws Exception {
+		warningMessage = "";
+		ROSParam rosParam =  generatorParam.getROSParam();
+		validateROS(rosParam);
+		List<GeneratedResult> generatedResult = generateTemplateCodeROS(generatorParam);
+		writeFileROS(generatedResult, rosParam, genTime, handler);
 	}
 
 	/**

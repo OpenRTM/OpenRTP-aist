@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ros:ROSProfile ros:version="0.1" xmlns:rosExt="http://www.openrtp.org/namespaces/ros_ext" xmlns:ros="http://www.openrtp.org/namespaces/ros" xmlns:rosDoc="http://www.openrtp.org/namespaces/ros_doc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ros:BasicInfo xsi:type="rosExt:basic_info_ext" rosExt:save_project="ROS" ros:category="Sensor" ros:maintainer="TODO Maintainer" ros:version="0.0.1" ros:description="TODO: package description" ros:class_name="Class_Name" ros:node_name="Node_Naame" ros:package_name="Package_Name">
+        <rosDoc:Doc rosDoc:reference="q1" rosDoc:contact_address="todo@example.com" rosDoc:license="Apache-2.0" rosDoc:creator="z1" rosDoc:inout="y1" rosDoc:algorithm="x1"/>
+        <rosExt:Properties rosExt:value="iso22166-202:2025" rosExt:name="SIM_Version"/>
+        <rosExt:Properties rosExt:value="false" rosExt:name="__iso__exeType_0_hardRT"/>
+        <rosExt:Properties rosExt:value="0.0" rosExt:name="__iso__exeType_0_timeConstraint"/>
+    </ros:BasicInfo>
+    <ros:LifeCycle xsi:type="rosExt:life_cycle_ext">
+        <ros:OnConfigure xsi:type="rosExt:lifecycle_callback_ext" ros:implemented="true">
+            <rosDoc:Doc rosDoc:post_condition="c11" rosDoc:pre_condition="b11" rosDoc:description="a11"/>
+        </ros:OnConfigure>
+        <ros:OnActivate xsi:type="rosExt:lifecycle_callback_ext" ros:implemented="true">
+            <rosDoc:Doc rosDoc:post_condition="c22" rosDoc:pre_condition="b22" rosDoc:description="a22"/>
+        </ros:OnActivate>
+        <ros:OnDeactivate xsi:type="rosExt:lifecycle_callback_ext" ros:implemented="true">
+            <rosDoc:Doc rosDoc:post_condition="c33" rosDoc:pre_condition="b33" rosDoc:description="a33"/>
+        </ros:OnDeactivate>
+        <ros:OnCleanup xsi:type="rosExt:lifecycle_callback_ext" ros:implemented="true">
+            <rosDoc:Doc rosDoc:post_condition="c44" rosDoc:pre_condition="b44" rosDoc:description="a44"/>
+        </ros:OnCleanup>
+        <ros:OnShutdown xsi:type="rosExt:lifecycle_callback_ext" ros:implemented="true">
+            <rosDoc:Doc rosDoc:post_condition="c55" rosDoc:pre_condition="b55" rosDoc:description="a55"/>
+        </ros:OnShutdown>
+        <ros:OnError xsi:type="rosExt:lifecycle_callback_ext" ros:implemented="true">
+            <rosDoc:Doc rosDoc:post_condition="c66" rosDoc:pre_condition="b66" rosDoc:description="a66"/>
+        </ros:OnError>
+        <rosExt:Timers rosExt:description="bbb1" rosExt:call_back="aaa2" rosExt:rate="2.0" rosExt:timer_name="timer01"/>
+        <rosExt:Timers rosExt:description="ddd" rosExt:call_back="ccc" rosExt:rate="3.5" rosExt:timer_name="timer02"/>
+    </ros:LifeCycle>
+    <ros:Topics xsi:type="rosExt:topic_ext" ros:variable_callback_name="xxxS" ros:QoS_history_depth="10" ros:QoS_history_type="KeepLast" ros:QoS_reliability_type="Reliable" ros:message_type="aaa" ros:topic_name="topicSubscribe" ros:topic_role="Subscribe">
+        <rosDoc:Doc rosDoc:occurrence="e1" rosDoc:unit="d1" rosDoc:semantics="c11" rosDoc:type="b1" rosDoc:description="a1"/>
+    </ros:Topics>
+    <ros:Topics xsi:type="rosExt:topic_ext" ros:variable_callback_name="xxxP1" ros:QoS_history_depth="0" ros:QoS_history_type="KeepAll" ros:QoS_reliability_type="Best_Effort" ros:message_type="bbb" ros:topic_name="topicPublish" ros:topic_role="Publish">
+        <rosDoc:Doc rosDoc:occurrence="e2" rosDoc:unit="d2" rosDoc:semantics="c2" rosDoc:type="b2" rosDoc:description="a2"/>
+    </ros:Topics>
+    <ros:Services xsi:type="rosExt:service_ext" ros:variable_callback_name="bb" ros:service_type="aa" ros:service_name="serviceServer" ros:service_role="Server">
+        <rosDoc:Doc rosDoc:return="ee" rosDoc:argument="dd" rosDoc:description="cc"/>
+        <rosExt:Properties rosExt:value="service" rosExt:name="kind"/>
+    </ros:Services>
+    <ros:Services xsi:type="rosExt:service_ext" ros:variable_callback_name="bb1" ros:service_type="aa1" ros:service_name="serviceClient" ros:service_role="Client">
+        <rosDoc:Doc rosDoc:return="ee1" rosDoc:argument="dd1" rosDoc:description="cc1"/>
+        <rosExt:Properties rosExt:value="service" rosExt:name="kind"/>
+    </ros:Services>
+    <ros:Actions xsi:type="rosExt:action_ext" ros:callback_base="b1" ros:action_type="a1" ros:action_name="actionServer1" ros:action_role="ActionServer">
+        <rosDoc:Doc rosDoc:result="f1" rosDoc:feedback="e1" rosDoc:goal="d1" rosDoc:description="c1"/>
+        <rosExt:Properties rosExt:value="action" rosExt:name="kind"/>
+    </ros:Actions>
+    <ros:Actions xsi:type="rosExt:action_ext" ros:callback_base="bb2" ros:action_type="aa2" ros:action_name="actionClient2" ros:action_role="ActionClient">
+        <rosDoc:Doc rosDoc:result="ff2" rosDoc:feedback="ee2" rosDoc:goal="dd2" rosDoc:description="cc2"/>
+        <rosExt:Properties rosExt:value="action" rosExt:name="kind"/>
+    </ros:Actions>
+    <ros:Parameters xsi:type="rosExt:parameter_ext" ros:read_only="false" ros:constraint="0.0|0.0|0.0" ros:default_value="12.3" ros:data_type="double" ros:parameter_name="new_param">
+        <rosDoc:Doc rosDoc:constraint="f" rosDoc:range="e" rosDoc:unit="d" rosDoc:default_value="b" rosDoc:dataname="a" rosDoc:description="c"/>
+    </ros:Parameters>
+    <ros:Parameters xsi:type="rosExt:parameter_ext" ros:read_only="true" ros:constraint="1.0|10.0|2.0" ros:default_value="5" ros:data_type="int" ros:parameter_name="param2">
+        <rosDoc:Doc rosDoc:constraint="f2" rosDoc:range="e2" rosDoc:unit="d2" rosDoc:default_value="b2" rosDoc:dataname="a2" rosDoc:description="c2"/>
+    </ros:Parameters>
+    <ros:Language xsi:type="rosExt:language_ext" ros:kind="C++">
+        <rosExt:targets rosExt:ros_version="2">
+            <rosExt:libraries rosExt:other="abc" rosExt:version="1" rosExt:name="package01"/>
+            <rosExt:libraries rosExt:other="xyz" rosExt:version="2" rosExt:name="package2"/>
+        </rosExt:targets>
+    </ros:Language>
+</ros:ROSProfile>
+

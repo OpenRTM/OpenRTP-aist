@@ -4,7 +4,7 @@ Created-By: 20.0-b12 (Sun Microsystems Inc.)
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: jp.go.aist.rtm.rtcbuilder; singleton:=true
-Bundle-Version: 2.0.0
+Bundle-Version: 2.1.0
 Bundle-ClassPath: .,
  lib/velocity-1.6.3-dep.jar,
  lib/commons-beanutils-1.9.3.jar,
@@ -33,6 +33,9 @@ Export-Package: jp.go.aist.rtm.rtcbuilder,
  jp.go.aist.rtm.rtcbuilder.model.component,
  jp.go.aist.rtm.rtcbuilder.model.component.impl,
  jp.go.aist.rtm.rtcbuilder.model.component.util,
+ jp.go.aist.rtm.rtcbuilder.ros,
+ jp.go.aist.rtm.rtcbuilder.ros.manager,
+ jp.go.aist.rtm.rtcbuilder.ros.param,
  jp.go.aist.rtm.rtcbuilder.template,
  jp.go.aist.rtm.rtcbuilder.ui,
  jp.go.aist.rtm.rtcbuilder.ui.Perspective,

@@ -154,5 +154,15 @@ public class DataOutPortImpl extends PortBaseImpl implements DataOutPort {
 		result.append(')');
 		return result.toString();
 	}
+	
+	protected int port_Type = 0;
+
+	public int getPort_Type() {
+		return port_Type;
+	}
+
+	public void setPort_Type(int port_Type) {
+		this.port_Type = port_Type;
+	}
 
 } //DataOutPortImpl

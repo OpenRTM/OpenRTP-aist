@@ -49,5 +49,8 @@ public interface DataOutPort extends PortBase {
 	 * @generated
 	 */
 	void setOutPort_Name(String value);
+	
+	int getPort_Type();
+	void setPort_Type(int port_Type) ;
 
 } // DataOutPort

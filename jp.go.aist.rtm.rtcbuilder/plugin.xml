@@ -28,8 +28,16 @@
            default="true"
            icon="icons/RTCBuilder.png"
            id="jp.go.aist.rtm.rtcbuilder.ui.editors.RtcBuilderEditor"
-           name="%RtcBuilderEditorName">
-        <contentTypeBinding contentTypeId="jp.go.aist.rtm.rtcbuilder.rtcProfile"/>
+           name="%RtcBuilderEditorName"
+           filenames="RTC.xml">
+     </editor>
+     <editor
+           class="jp.go.aist.rtm.rtcbuilder.ros.ui.editors.ROSBuilderEditor"
+           default="true"
+           icon="icons/ROSBuilder.png"
+           id="jp.go.aist.rtm.rtcbuilder.ros.ui.editors.ROSBuilderEditor"
+           name="%ROSBuilderEditorName"
+           filenames="ROS.xml">
      </editor>
   </extension>
   <extension
@@ -37,6 +45,15 @@
      <actionSet
            id="jp.go.aist.rtm.rtcbuilder.ui.actionSet"
            label="RTCBuilder Actions">
+			<action
+				id="jp.go.aist.rtm.rtcbuilder.ros.ui.action.NewRtcBuilderEditorAction" 
+				label="%NewRosBuilderEditorActionLabel"
+				menubarPath="file/RtcBuilderGroup" 
+				toolbarPath="RtcBuilder"
+				icon="icons/ROSBuilder.png" 
+				tooltip="%NewRosBuilderEditorActionToolTip" 
+				class="jp.go.aist.rtm.rtcbuilder.ros.ui.action.NewROSBuilderEditorAction"> 
+			</action>
 			<action
 				id="jp.go.aist.rtm.rtcbuilder.ui.action.NewRtcBuilderEditorAction" 
 				label="%NewRtcBuilderEditorActionLabel"
@@ -114,8 +131,13 @@
            class="jp.go.aist.rtm.rtcbuilder.ui.preference.CodeGenerateConfigPreferencePage"
            id="jp.go.aist.rtm.rtcbuilder.ui.preferencePage.codeGenerate.Configuration"
            name="%preferecePagesConfigurationName"/>
+
+     <page
+           class="jp.go.aist.rtm.rtcbuilder.ros.ui.preference.ROSBuilderPreferencePage"
+           id="jp.go.aist.rtm.rosbuilder.ui.preferencePage"
+           name="%preferecePagesNameROS"/>
   </extension>
-  <extension
+<!--  <extension
         point="org.eclipse.core.runtime.contentTypes">
      <content-type
            base-type="org.eclipse.core.runtime.xml"
@@ -127,7 +149,17 @@
            <parameter name="element" value="RtcProfile"/>
         </describer>
      </content-type>
-  </extension>
+     <content-type
+           base-type="org.eclipse.core.runtime.xml"
+           file-names="ROS.xml"
+           id="rosProfile"
+           name="%rosProfileName"
+           priority="high">
+        <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber">
+           <parameter name="element" value="ROSProfile"/>
+        </describer>
+     </content-type>
+  </extension> -->
 
 </plugin>
 

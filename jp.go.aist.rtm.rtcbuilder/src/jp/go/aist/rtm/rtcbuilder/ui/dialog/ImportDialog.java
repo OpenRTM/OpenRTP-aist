@@ -21,6 +21,8 @@ import jp.go.aist.rtm.rtcbuilder.nl.Messages;
 import jp.go.aist.rtm.rtcbuilder.ui.editors.IMessageConstants;
 
 public class ImportDialog extends Dialog {
+	private String targetKind = "";
+
 	private String selectedKind = "";
 	private String selectedFile = "";
 	
@@ -30,6 +32,9 @@ public class ImportDialog extends Dialog {
 	
 	private ImportExtension extension;
 
+	public void setTargetKind(String source) {
+		this.targetKind = source;
+	}
 	public void setExtension(ImportExtension source) {
 		this.extension = source;
 	}
@@ -57,7 +62,7 @@ public class ImportDialog extends Dialog {
 	
 	@Override
 	protected Point getInitialSize() {
-		return new Point(500, 150);
+		return new Point(500, 180);
 	}
 	
 	@Override
@@ -74,7 +79,7 @@ public class ImportDialog extends Dialog {
 		Composite kindComposite = new Composite(mainComposite, SWT.NULL);
 		GridLayout gl = new GridLayout(3, false);
 		kindComposite.setLayout(gl);
-		kindComposite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_CENTER));
+		kindComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
 		
 		Label label = new Label(kindComposite, SWT.NONE);
 		label.setText(Messages.getString("IMC.IMPORT_KIND")); //$NON-NLS-1$
@@ -83,7 +88,7 @@ public class ImportDialog extends Dialog {
 		
 		rtcBtn = new Button(kindComposite, SWT.RADIO);
 		gd = new GridData(GridData.BEGINNING, SWT.CENTER, false, false);
-		rtcBtn.setText("RtcProfile");
+		rtcBtn.setText(targetKind);
 		rtcBtn.setLayoutData(gd);
 		
 		isoBtn = new Button(kindComposite, SWT.RADIO);

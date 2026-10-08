@@ -1,0 +1,441 @@
+#if( ${rosParam.isDocExist()} )
+// -*- C++ -*-
+/*!
+ * @file  ${rosParam.nodeName}.hpp
+ * @brief ${rosParam.description}
+ *
+ * @author ${rosParam.maintainer} <${rosParam.contactAddress}>
+ * ${rosParam.docCreator}
+ *
+ */
+
+#end
+${sharp}include "${rosParam.packageName}/${rosParam.nodeName}.hpp"
+
+${sharp}include <chrono>
+${sharp}include <functional>
+${sharp}include <future>
+${sharp}include <thread>
+
+using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+
+namespace ${rosParam.packageName}
+{
+
+${rosParam.className}::${rosParam.className}(const rclcpp::NodeOptions & options)
+: rclcpp_lifecycle::LifecycleNode("${rosParam.nodeName}", options)
+{
+  RCLCPP_INFO(this->get_logger(), "[Constructor] Node created.");
+#if( ${rosParam.parameters.size()}>0 )
+  declare_parameters();
+#end
+}
+
+#if( ${rosParam.parameters.size()}>0 )
+// ============================================================
+// Parameter handling
+// ============================================================
+
+void ${rosParam.className}::declare_parameters()
+{
+#foreach($param in ${rosParam.parameters})
+#if( ${param.isDocExist()} )
+  // ${param.docDescription}
+  // - Name: ${param.docDataname}
+  // - DefaultValue: ${param.docDefault}
+  // - Unit: ${param.docUnit}
+  // - Range: ${param.docRange}
+  // - Constraint: ${param.docConstraint}
+#end
+  rcl_interfaces::msg::ParameterDescriptor desc_${param.name};
+  desc_${param.name}.description = "${param.docDescription}";
+#if( ${param.readOnly} )
+  desc_${param.name}.read_only = true;
+#end
+  this->declare_parameter("${param.name}", ${tmpltHelper.quoteDefaultWithType(${param})}, desc_${param.name});
+#end
+  param_cb_handle_ = this->add_on_set_parameters_callback(std::bind(&${rosParam.className}::on_set_parameters, this, std::placeholders::_1));
+}
+
+rcl_interfaces::msg::SetParametersResult ${rosParam.className}::on_set_parameters(const std::vector<rclcpp::Parameter> & params)
+{
+  rcl_interfaces::msg::SetParametersResult result;
+  result.successful = true;
+
+  for (const auto & param : params) {
+#foreach($param in ${rosParam.parameters})
+    if (param.get_name() == "${param.name}") {
+      // TODO: Update internal state when this parameter changes.
+      // Note: min / max / step are documentation metadata only. Add explicit validation here if needed.
+      const ${tmpltHelper.convType(${param.type})} value = param.as_${param.type}();
+      (void)value;
+      // TODO: Store the parameter value in member variables or runtime settings as needed.
+    }
+#end
+  }
+
+  return result;
+}
+
+#end
+// ============================================================
+// Lifecycle callbacks
+// ============================================================
+
+#if( ${rosParam.isCallbackDocExist(0)} )
+/*!
+ * ${rosParam.getDocActionOverView(0)}
+ */
+#end
+CallbackReturn ${rosParam.className}::on_configure(const rclcpp_lifecycle::State &)
+{
+  RCLCPP_INFO(this->get_logger(), "[on_configure] called.");
+  // TODO: Implement initialization required for this lifecycle transition.
+#if( ${rosParam.topicPublishes.size()}>0 )
+#foreach($topic in ${rosParam.topicPublishes})
+  // Publish Topic: ${topic.name}
+  // Type: ${tmpltHelper.convTopicType(${topic.messageType}, ${rosParam})}
+  // Description: ${topic.docDescription}
+  ${topic.varCallbackName}_ = this->create_publisher<${tmpltHelper.slash2Cc(${tmpltHelper.convTopicType(${topic.messageType}, ${rosParam})})}>("${topic.name}", rclcpp::QoS(${topic.depth}).${tmpltHelper.convReliabilityType(${topic.reliabilityType})}());
+#end
+#end
+#if( ${rosParam.topicSubscribes.size()}>0 )
+#foreach($topic in ${rosParam.topicSubscribes})
+  ${topic.name}_sub_ = this->create_subscription<${tmpltHelper.slash2Cc(${topic.messageType})}>("${topic.name}", rclcpp::QoS(${topic.depth}).${tmpltHelper.convReliabilityType(${topic.reliabilityType})}(), std::bind(&${rosParam.className}::${topic.varCallbackName}, this, std::placeholders::_1));
+#end
+#end
+#if( ${rosParam.serviceClients.size()}>0 )
+#foreach($service in ${rosParam.serviceClients})
+  ${service.varCallbackName}_ = this->create_client<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}>("${service.name}");
+#end
+#end
+#if( ${rosParam.serviceServers.size()}>0 )
+#foreach($service in ${rosParam.serviceServers})
+  ${service.name}_srv_ = this->create_service<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}>("${service.name}", std::bind(&${rosParam.className}::handle_${service.name}, this, std::placeholders::_1, std::placeholders::_2));
+#end
+#end
+#if( ${rosParam.actionClients.size()}>0 )
+#foreach($action in ${rosParam.actionClients})
+  ${action.name}_client_ = rclcpp_action::create_client<${tmpltHelper.capitalize(${action.name})}>(this, "${action.name}");
+#end
+#end
+#if( ${rosParam.actionServers.size()}>0 )
+#foreach($action in ${rosParam.actionServers})
+  ${action.name}_server_ = rclcpp_action::create_server<${tmpltHelper.capitalize(${action.name})}>(this, "${action.name}", std::bind(&${rosParam.className}::handle_goal_${action.name}, this, std::placeholders::_1, std::placeholders::_2), std::bind(&${rosParam.className}::handle_cancel_${action.name}, this, std::placeholders::_1), std::bind(&${rosParam.className}::handle_accepted_${action.name}, this, std::placeholders::_1));
+#end
+#end
+#if( ${rosParam.timers.size()}>0 )
+#foreach($timer in ${rosParam.timers})
+  // Timer: ${timer.name}
+  // Period: ${timer.rate} sec
+  // Callback: ${timer.callBack}()
+  // Description: ${timer.description}
+  ${timer.name}_ = this->create_wall_timer(std::chrono::milliseconds(${tmpltHelper.toMilliSec(${timer.rate})}), std::bind(&${rosParam.className}::${timer.callBack}, this));
+  ${timer.name}_->cancel();
+#end
+#end
+  return CallbackReturn::SUCCESS;
+}
+
+#if( ${rosParam.isCallbackDocExist(1)} )
+/*!
+ * ${rosParam.getDocActionOverView(1)}
+ */
+#end
+CallbackReturn ${rosParam.className}::on_activate(const rclcpp_lifecycle::State &)
+{
+  RCLCPP_INFO(this->get_logger(), "[on_activate] called.");
+  // TODO: Start processing required while the node is active.
+#if( ${rosParam.topicPublishes.size()}>0 )
+#foreach($topic in ${rosParam.topicPublishes})
+  if (${topic.varCallbackName}_) { ${topic.varCallbackName}_->on_activate(); }
+#end
+#end
+#if( ${rosParam.timers.size()}>0 )
+#foreach($timer in ${rosParam.timers})
+  if (${timer.name}_) { ${timer.name}_->reset(); }
+#end
+#end
+  return CallbackReturn::SUCCESS;
+}
+
+#if( ${rosParam.isCallbackDocExist(2)} )
+/*!
+ * ${rosParam.getDocActionOverView(2)}
+ */
+#end
+CallbackReturn ${rosParam.className}::on_deactivate(const rclcpp_lifecycle::State &)
+{
+  RCLCPP_INFO(this->get_logger(), "[on_deactivate] called.");
+  // TODO: Stop processing before returning to the inactive state.
+#if( ${rosParam.topicPublishes.size()}>0 )
+#foreach($topic in ${rosParam.topicPublishes})
+  if (${topic.varCallbackName}_) { ${topic.varCallbackName}_->on_deactivate(); }
+#end
+#end
+#if( ${rosParam.timers.size()}>0 )
+#foreach($timer in ${rosParam.timers})
+  if (${timer.name}_) { ${timer.name}_->cancel(); }
+#end
+#end
+  return CallbackReturn::SUCCESS;
+}
+
+#if( ${rosParam.isCallbackDocExist(3)} )
+/*!
+ * ${rosParam.getDocActionOverView(3)}
+ */
+#end
+#if(${rosParam.IsNotImplemented(3)})// Optional: on_cleanup. Enable the declaration in the header before using this definition.
+#end
+#if(${rosParam.IsNotImplemented(3)})// #end##
+CallbackReturn ${rosParam.className}::on_cleanup(const rclcpp_lifecycle::State &)
+#if(${rosParam.IsNotImplemented(3)})// #end##
+{
+#if(${rosParam.IsNotImplemented(3)})// #end  RCLCPP_INFO(this->get_logger(), "[on_cleanup] called.");
+#if(${rosParam.IsNotImplemented(3)})// #end  // TODO: Release resources when the node is cleaned up.
+#if( ${rosParam.topicPublishes.size()}>0 )
+#foreach($topic in ${rosParam.topicPublishes})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${topic.varCallbackName}_.reset();
+#end
+#end
+#if( ${rosParam.topicSubscribes.size()}>0 )
+#foreach($topic in ${rosParam.topicSubscribes})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${topic.name}_sub_.reset();
+#end
+#end
+#if( ${rosParam.serviceClients.size()}>0 )
+#foreach($service in ${rosParam.serviceClients})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${service.varCallbackName}_.reset();
+#end
+#end
+#if( ${rosParam.serviceServers.size()}>0 )
+#foreach($service in ${rosParam.serviceServers})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${service.name}_srv_.reset();
+#end
+#end
+#if( ${rosParam.actionClients.size()}>0 )
+#foreach($action in ${rosParam.actionClients})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${action.name}_client_.reset();
+#end
+#end
+#if( ${rosParam.actionServers.size()}>0 )
+#foreach($action in ${rosParam.actionServers})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${action.name}_server_.reset();
+#end
+#end
+#if( ${rosParam.timers.size()}>0 )
+#foreach($timer in ${rosParam.timers})
+#if(${rosParam.IsNotImplemented(3)})// #end  ${timer.name}_.reset();
+#end
+#end
+#if(${rosParam.IsNotImplemented(3)})// #end  return CallbackReturn::SUCCESS;
+#if(${rosParam.IsNotImplemented(3)})// #end}
+
+#if( ${rosParam.isCallbackDocExist(4)} )
+/*!
+ * ${rosParam.getDocActionOverView(4)}
+ */
+#end
+#if(${rosParam.IsNotImplemented(3)})// Optional: on_shutdown. Enable the declaration in the header before using this definition.
+#end
+#if(${rosParam.IsNotImplemented(4)})// #end##
+CallbackReturn ${rosParam.className}::on_shutdown(const rclcpp_lifecycle::State &)
+#if(${rosParam.IsNotImplemented(4)})// #end##
+{
+#if(${rosParam.IsNotImplemented(4)})// #end  RCLCPP_INFO(this->get_logger(), "[on_shutdown] called.");
+#if(${rosParam.IsNotImplemented(4)})// #end  // TODO: Implement shutdown handling.
+#if(${rosParam.IsNotImplemented(4)})// #end  return CallbackReturn::SUCCESS;
+#if(${rosParam.IsNotImplemented(4)})// #end}
+
+#if( ${rosParam.isCallbackDocExist(5)} )
+/*!
+ * ${rosParam.getDocActionOverView(5)}
+ */
+#end
+#if(${rosParam.IsNotImplemented(3)})// Optional: on_error. Enable the declaration in the header before using this definition.
+#end
+#if(${rosParam.IsNotImplemented(5)})// #end##
+CallbackReturn ${rosParam.className}::on_error(const rclcpp_lifecycle::State &)
+#if(${rosParam.IsNotImplemented(5)})// #end##
+{
+#if(${rosParam.IsNotImplemented(5)})// #end  RCLCPP_INFO(this->get_logger(), "[on_error] called.");
+#if(${rosParam.IsNotImplemented(5)})// #end  // TODO: Implement error recovery or safe-stop handling.
+#if(${rosParam.IsNotImplemented(5)})// #end  return CallbackReturn::SUCCESS;
+#if(${rosParam.IsNotImplemented(5)})// #end}
+#if( ${rosParam.topicSubscribes.size()}>0 )
+// ============================================================
+// Topic callbacks
+// ============================================================
+
+#foreach($topic in ${rosParam.topicSubscribes})
+void ${rosParam.className}::${topic.varCallbackName}(const ${tmpltHelper.slash2Cc(${topic.messageType})}::SharedPtr msg)
+{
+  // Subscribe Topic: ${topic.name}
+  // Type: ${tmpltHelper.convTopicType(${topic.messageType}, ${rosParam})}
+  // Description: ${topic.docDescription}
+  // TODO: Use the received message to implement this node's behavior.
+  // Note: This callback is called each time a message arrives on the subscribed topic.
+  (void)msg;
+}
+
+#end
+#end
+#if( ${rosParam.serviceClients.size()}>0 || ${rosParam.serviceServers.size()}>0)
+// ============================================================
+// Service callbacks and clients
+// ============================================================
+
+#foreach($service in ${rosParam.serviceClients})
+void ${rosParam.className}::call_${service.name}_service()
+{
+  // Service Client: ${service.name}
+  // Type: ${tmpltHelper.convServiceType(${service.type}, ${rosParam})}
+  // Description: ${service.docDescription}
+  // Service Client helper: create a request and send it asynchronously to the server.
+  if (!${service.varCallbackName}_) {
+    RCLCPP_WARN(this->get_logger(), "Service client is not configured.");
+    return;
+  }
+  auto request = std::make_shared<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}::Request>();
+  // TODO: Call this helper at the appropriate time in your node logic.
+  // TODO: Fill the request fields according to the selected service type.
+  // Note: After filling the request, async_send_request() sends it to the service server.
+  auto future = ${service.varCallbackName}_->async_send_request(request);
+  (void)future;
+}
+
+#end
+
+#foreach($service in ${rosParam.serviceServers})
+void ${rosParam.className}::handle_${service.name}(const std::shared_ptr<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}::Request> request, std::shared_ptr<${tmpltHelper.slash2Cc(${tmpltHelper.convServiceType(${service.type}, ${rosParam})})}::Response> response)
+{
+  // Service Server: ${service.name}
+  // Type: ${tmpltHelper.convServiceType(${service.type}, ${rosParam})}
+  // Description: ${service.docDescription}
+  // TODO: Read the request and implement the service behavior.
+  // TODO: Fill the response fields before returning.
+  (void)request;
+  (void)response;
+}
+
+#end
+#end
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0)
+// ============================================================
+// Action callbacks and clients
+// ============================================================
+
+#foreach($action in ${rosParam.actionClients})
+void ${rosParam.className}::send_${action.name}_goal()
+{
+  // Action Client: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  // Action Client helper: create a goal and send it to the action server.
+  if (!${action.name}_client_) {
+    RCLCPP_WARN(this->get_logger(), "Action client is not configured.");
+    return;
+  }
+  // TODO: Call this goal-sending helper at the appropriate time in your node logic.
+  // Note: Goal fields differ by action type, so this generator does not set concrete values.
+  // TODO: Create a goal, configure response / feedback / result callbacks, and send it.
+  RCLCPP_WARN(this->get_logger(), "Goal send skeleton is disabled. Implement goal send code before use.");
+  return;
+}
+
+void ${rosParam.className}::${action.name}_action_response(rclcpp_action::ClientGoalHandle<${tmpltHelper.capitalize(${action.name})}>::SharedPtr goal_handle)
+{
+  // Action Client: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  if (!goal_handle) {
+    RCLCPP_ERROR(this->get_logger(), "Goal rejected");
+    return;
+  }
+  RCLCPP_INFO(this->get_logger(), "Goal accepted");
+}
+
+void ${rosParam.className}::${action.name}_action_feedback(rclcpp_action::ClientGoalHandle<${tmpltHelper.capitalize(${action.name})}>::SharedPtr, const std::shared_ptr<const ${tmpltHelper.capitalize(${action.name})}::Feedback> feedback)
+{
+  // Action Client: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  // TODO: Use feedback data as needed.
+  (void)feedback;
+}
+
+void ${rosParam.className}::${action.name}_action_result(const rclcpp_action::ClientGoalHandle<${tmpltHelper.capitalize(${action.name})}>::WrappedResult & result)
+{
+  // Action Client: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  // TODO: Use result data as needed.
+  (void)result;
+}
+
+#end
+#foreach($action in ${rosParam.actionServers})
+rclcpp_action::GoalResponse ${rosParam.className}::handle_goal_${action.name}(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const ${tmpltHelper.capitalize(${action.name})}::Goal> goal)
+{
+  // Action Server: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  (void)uuid;
+  (void)goal;
+  return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+}
+
+rclcpp_action::CancelResponse ${rosParam.className}::handle_cancel_${action.name}(const std::shared_ptr<GoalHandle${tmpltHelper.capitalize(${action.name})}> goal_handle)
+{
+  // Action Server: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  (void)goal_handle;
+  return rclcpp_action::CancelResponse::ACCEPT;
+}
+
+void ${rosParam.className}::handle_accepted_${action.name}(const std::shared_ptr<GoalHandle${tmpltHelper.capitalize(${action.name})}> goal_handle)
+{
+  // Action Server: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  std::thread{std::bind(&${rosParam.className}::execute_${action.name}, this, std::placeholders::_1), goal_handle}.detach();
+}
+
+void ${rosParam.className}::execute_${action.name}(const std::shared_ptr<GoalHandle${tmpltHelper.capitalize(${action.name})}> goal_handle)
+{
+  // Action Server: ${action.name}
+  // Type: ${tmpltHelper.convActionType(${action.type}, ${rosParam})}
+  // Description: ${action.docDescription}
+  const auto goal = goal_handle->get_goal();
+  auto result = std::make_shared<${tmpltHelper.capitalize(${action.name})}::Result>();
+
+  // TODO: Read the goal and implement the action execution logic.
+  // TODO: Set feedback and result fields as needed.
+  (void)goal;
+
+  goal_handle->succeed(result);
+}
+
+#end
+#end
+#if( ${rosParam.timers.size()}>0 )
+// ============================================================
+// Timer callbacks
+// ============================================================
+
+#foreach($timer in ${rosParam.timers})
+void ${rosParam.className}::${timer.callBack}()
+{
+  // Timer: ${timer.name}
+  // Period: ${timer.rate} sec
+  // Callback: ${timer.callBack}()
+  // Description: ${timer.description}
+  // TODO: Implement the periodic behavior described above.
+}
+
+#end
+#end
+
+}  // namespace ${rosParam.packageName}

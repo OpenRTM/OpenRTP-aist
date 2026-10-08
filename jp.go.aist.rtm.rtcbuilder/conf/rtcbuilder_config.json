@@ -1,0 +1,402 @@
+{
+  "OpenRTM": {
+    "versions": [
+      {
+        "id": "latest",
+        "os": "Ubuntu 24.04 (Noble)"
+      }
+    ],
+    "workspace_presets": [
+      "workspace",
+      "rtm_ws",
+      "openrtm_ws"
+    ],
+    "default_libs": [
+      "git",
+      "build-essential",
+      "cmake",
+      "python3-pip",
+      "python-is-python3"
+    ],
+    "functional_presets": {
+      "Image Processing": [
+            "opencv",
+            "opencv-python"
+      ],
+      "Camera": [
+            "opencv",
+            "opencv-python",
+        "libudev-dev"
+      ],
+      "RTM Tools": [
+        "rtm2-naming",
+        "rtm2-config",
+        "rtm2-skelwrapper"
+      ],
+      "Calculation": [
+        "eigen",
+        "numpy",
+        "scipy"
+      ],
+      "Graph & Plot": [
+        "matplotlib",
+        "gnuplot"
+      ],
+      "Hardware Control": [
+            "dynamixelsdk",
+        "libdynamixel",
+        "libmikataarm",
+        "libaqua",
+        "libudev-dev",
+        "pyserial"
+      ],
+      "GUI / OpenGL": [
+        "x11-apps",
+        "mesa-utils",
+        "libgl1-mesa-glx",
+        "libgl1-mesa-dri"
+      ]
+    }
+  },
+  "mapping_db": {
+    "libraries": {
+      "git": {
+        "default": {
+          "apt": "git"
+        }
+      },
+      "build-essential": {
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "cmake": {
+        "default": {
+          "apt": "cmake"
+        }
+      },
+      "libboost-all-dev": {
+        "default": {
+          "apt": "libboost-all-dev"
+        }
+      },
+      "boost": {
+        "default": {
+          "apt": "libboost-all-dev"
+        }
+      },
+      "python-is-python3": {
+        "default": {
+          "apt": "python-is-python3"
+        }
+      },
+      "python3-pip": {
+        "default": {
+          "apt": "python3-pip"
+        }
+      },
+      "openrtm-aist": {
+        "c++": {
+          "apt": "openrtm2 openrtm2-dev openrtm2-idl openrtm2-naming"
+        },
+        "python": {
+          "apt": "openrtm2-python3 openrtm2-naming"
+        },
+        "default": {
+          "apt": "openrtm2"
+        }
+      },
+      "openrtm2": {
+        "default": {
+          "apt": "openrtm2"
+        }
+      },
+      "openrtm-aist-python": {
+        "openrtm": {
+          "apt": "openrtm2-python3 openrtm2-naming"
+        },
+        "ubuntu": {
+          "apt": "openrtm2-python3 openrtm2-naming"
+        },
+        "default": {
+          "apt": "openrtm2-python3 openrtm2-naming"
+        }
+      },
+      "openrtm-aist-dev": {
+        "openrtm": {
+          "apt": "openrtm2-dev"
+        },
+        "ubuntu": {
+          "apt": "openrtm2-dev"
+        },
+        "default": {
+          "apt": "openrtm2-dev"
+        }
+      },
+      "openrtm2-dev": {
+        "default": {
+          "apt": "openrtm2-dev"
+        }
+      },
+      "openrtm2-idl": {
+        "default": {
+          "apt": "openrtm2-idl"
+        }
+      },
+      "openrtm2-naming": {
+        "default": {
+          "apt": "openrtm2-naming"
+        }
+      },
+      "openrtm2-python3": {
+        "default": {
+          "apt": "openrtm2-python3"
+        }
+      },
+      "omniorb": {
+        "openrtm": {
+          "apt": "libomniorb4-dev omniidl"
+        },
+        "ubuntu": {
+          "apt": "libomniorb4-dev omniidl"
+        },
+        "default": {
+          "apt": "libomniorb4-dev omniidl"
+        }
+      },
+      "libomniorb4-dev": {
+        "openrtm": {
+          "apt": "libomniorb4-dev"
+        },
+        "ubuntu": {
+          "apt": "libomniorb4-dev"
+        },
+        "default": {
+          "apt": "libomniorb4-dev"
+        }
+      },
+      "omniidl": {
+        "openrtm": {
+          "apt": "omniidl"
+        },
+        "ubuntu": {
+          "apt": "omniidl"
+        },
+        "default": {
+          "apt": "omniidl"
+        }
+      },
+      "python3-omniorb": {
+        "openrtm": {
+          "apt": ""
+        },
+        "ubuntu": {
+          "apt": "python3-omniorb"
+        },
+        "default": {
+          "apt": "python3-omniorb"
+        }
+      },
+      "omniorb-nameserver": {
+        "openrtm": {
+          "apt": ""
+        },
+        "ubuntu": {
+          "apt": ""
+        },
+        "default": {
+          "apt": ""
+        }
+      },
+      "rtm2-naming": {
+        "default": {
+          "apt": ""
+        }
+      },
+      "rtm2-config": {
+        "default": {
+          "apt": ""
+        }
+      },
+      "rtm2-skelwrapper": {
+        "default": {
+          "apt": "openrtm2-dev"
+        }
+      },
+      "coil": {
+        "openrtm": {
+          "apt": "openrtm2-dev"
+        },
+        "ubuntu": {
+          "apt": "openrtm2-dev"
+        },
+        "default": {
+          "apt": "openrtm2-dev"
+        }
+      },
+      "opencv": {
+        "ubuntu": {
+          "apt": "libopencv-dev"
+        },
+        "openrtm": {
+          "apt": "libopencv-dev"
+        },
+        "python": {
+          "apt": "python3-opencv"
+        },
+        "default": {
+          "apt": "libopencv-dev"
+        }
+      },
+      "opencv-python": {
+        "python": {
+          "apt": "python3-opencv"
+        },
+        "openrtm": {
+          "apt": "python3-opencv"
+        },
+        "default": {
+          "apt": "python3-opencv"
+        }
+      },
+      "opencv2": {
+        "ubuntu": {
+          "apt": "libopencv-dev"
+        },
+        "openrtm": {
+          "apt": "libopencv-dev"
+        },
+        "python": {
+          "apt": "python3-opencv"
+        },
+        "default": {
+          "apt": "libopencv-dev"
+        }
+      },
+      "numpy": {
+        "ubuntu": {
+          "apt": "python3-numpy"
+        },
+        "python": {
+          "pip": "numpy"
+        },
+        "default": {
+          "apt": "python3-numpy"
+        }
+      },
+      "scipy": {
+        "ubuntu": {
+          "apt": "python3-scipy"
+        },
+        "python": {
+          "pip": "scipy"
+        },
+        "default": {
+          "apt": "python3-scipy"
+        }
+      },
+      "matplotlib": {
+        "ubuntu": {
+          "apt": "python3-matplotlib"
+        },
+        "python": {
+          "pip": "matplotlib"
+        },
+        "default": {
+          "apt": "python3-matplotlib"
+        }
+      },
+      "gnuplot": {
+        "default": {
+          "apt": "gnuplot"
+        }
+      },
+      "yaml-cpp": {
+        "ubuntu": {
+          "apt": "libyaml-cpp-dev"
+        },
+        "openrtm": {
+          "apt": "libyaml-cpp-dev"
+        },
+        "default": {
+          "apt": "libyaml-cpp-dev"
+        }
+      },
+      "eigen": {
+        "default": {
+          "apt": "libeigen3-dev"
+        }
+      },
+      "libudev-dev": {
+        "default": {
+          "apt": "libudev-dev"
+        }
+      },
+      "dynamixelsdk": {
+        "openrtm": {
+          "apt": "build-essential"
+        },
+        "ubuntu": {
+          "apt": "build-essential"
+        },
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "dynamixel_sdk": {
+        "openrtm": {
+          "apt": "build-essential"
+        },
+        "ubuntu": {
+          "apt": "build-essential"
+        },
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "libdynamixel": {
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "libmikataarm": {
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "libaqua": {
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "pyserial": {
+        "python": {
+          "pip": "pyserial"
+        },
+        "default": {
+          "pip": "pyserial"
+        }
+      },
+      "x11-apps": {
+        "default": {
+          "apt": "x11-apps"
+        }
+      },
+      "mesa-utils": {
+        "default": {
+          "apt": "mesa-utils"
+        }
+      },
+      "libgl1-mesa-glx": {
+        "default": {
+          "apt": "libgl1-mesa-glx"
+        }
+      },
+      "libgl1-mesa-dri": {
+        "default": {
+          "apt": "libgl1-mesa-dri"
+        }
+      }
+    }
+  }
+}

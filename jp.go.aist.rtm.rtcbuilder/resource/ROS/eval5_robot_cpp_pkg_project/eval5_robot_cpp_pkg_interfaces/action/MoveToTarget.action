@@ -1,0 +1,13 @@
+float64 target_x
+float64 target_y
+float64 target_yaw
+float64 timeout_sec
+---
+bool success
+string message
+float64 final_x
+float64 final_y
+---
+float64 current_x
+float64 current_y
+float32 progress

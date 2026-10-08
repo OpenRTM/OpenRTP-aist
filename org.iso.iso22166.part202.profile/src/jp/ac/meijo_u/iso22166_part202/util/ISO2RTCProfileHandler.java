@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -654,7 +655,18 @@ public class ISO2RTCProfileHandler {
 			List<ExeForm> exeForm = exeForms.getExeForm();
 			int containerNum = 0;
 			LanguageExt lang = (LanguageExt)result.getLanguage();
-			lang.getTargets().clear();
+			List<TargetEnvironment> removeCand = new ArrayList<TargetEnvironment>();
+//			lang.getTargets().clear();
+			for(TargetEnvironment env : lang.getTargets()) {
+				if(env.isNull()) {
+					removeCand.add(env);
+				}
+			}
+			if(0<removeCand.size()) {
+				for(TargetEnvironment each : removeCand) {
+					lang.getTargets().remove(each);		
+				}
+			}
 			for(int index=0;index<exeForm.size(); index++) {
 				ExeForm eachExe = exeForm.get(index);
 				
@@ -788,12 +800,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onInitialize = factory.createActionStatusDoc();
 			actions.setOnInitialize(onInitialize);
 			DocAction docInitialize = factory.createDocAction();
-			onInitialize.setDoc(docInitialize);
 			
 			onInitialize.setImplementedbln(getTargetNVValueBoolean("onInitialize", nvList));
 			docInitialize.setDescription(getTargetNVValue("onInitializeDocDescription", nvList));
 			docInitialize.setPreCondition(getTargetNVValue("onInitializeDocPreCondition", nvList));
 			docInitialize.setPostCondition(getTargetNVValue("onInitializeDocPostCondition", nvList));
+			
+			if(docInitialize.isNull() == false) {
+				onInitialize.setDoc(docInitialize);
+			}
 		}
 		//
 		List<NameValue> onFinalizes = getTargetStartNV("onFinalize", nvList);
@@ -801,12 +816,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onFinalize = factory.createActionStatusDoc();
 			actions.setOnFinalize(onFinalize);
 			DocAction docFinalize = factory.createDocAction();
-			onFinalize.setDoc(docFinalize);
 			
 			onFinalize.setImplementedbln(getTargetNVValueBoolean("onFinalize", nvList));
 			docFinalize.setDescription(getTargetNVValue("onFinalizeDocDescription", nvList));
 			docFinalize.setPreCondition(getTargetNVValue("onFinalizeDocPreCondition", nvList));
 			docFinalize.setPostCondition(getTargetNVValue("onFinalizeDocPostCondition", nvList));
+
+			if(docFinalize.isNull() == false) {
+				onFinalize.setDoc(docFinalize);
+			}
 		}
 		//
 		List<NameValue> onStartups = getTargetStartNV("onStartup", nvList);
@@ -814,12 +832,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onStartup = factory.createActionStatusDoc();
 			actions.setOnStartup(onStartup);
 			DocAction docStartup = factory.createDocAction();
-			onStartup.setDoc(docStartup);
 			
 			onStartup.setImplementedbln(getTargetNVValueBoolean("onStartup", nvList));
 			docStartup.setDescription(getTargetNVValue("onStartupDocDescription", nvList));
 			docStartup.setPreCondition(getTargetNVValue("onStartupDocPreCondition", nvList));
 			docStartup.setPostCondition(getTargetNVValue("onStartupDocPostCondition", nvList));
+
+			if(docStartup.isNull() == false) {
+				onStartup.setDoc(docStartup);
+			}
 		}
 		//
 		List<NameValue> onShutdowns = getTargetStartNV("onShutdown", nvList);
@@ -827,12 +848,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onShutdown = factory.createActionStatusDoc();
 			actions.setOnShutdown(onShutdown);
 			DocAction docShutdown = factory.createDocAction();
-			onShutdown.setDoc(docShutdown);
 			
 			onShutdown.setImplementedbln(getTargetNVValueBoolean("onShutdown", nvList));
 			docShutdown.setDescription(getTargetNVValue("onShutdownDocDescription", nvList));
 			docShutdown.setPreCondition(getTargetNVValue("onShutdownDocPreCondition", nvList));
 			docShutdown.setPostCondition(getTargetNVValue("onShutdownDocPostCondition", nvList));
+			
+			if(docShutdown.isNull() == false) {
+				onShutdown.setDoc(docShutdown);
+			}
 		}
 		//
 		List<NameValue> onActivateds = getTargetStartNV("onActivated", nvList);
@@ -840,12 +864,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onActivated = factory.createActionStatusDoc();
 			actions.setOnActivated(onActivated);
 			DocAction docActivated = factory.createDocAction();
-			onActivated.setDoc(docActivated);
 			
 			onActivated.setImplementedbln(getTargetNVValueBoolean("onActivated", nvList));
 			docActivated.setDescription(getTargetNVValue("onActivatedDocDescription", nvList));
 			docActivated.setPreCondition(getTargetNVValue("onActivatedDocPreCondition", nvList));
 			docActivated.setPostCondition(getTargetNVValue("onActivatedDocPostCondition", nvList));
+
+			if(docActivated.isNull() == false) {
+				onActivated.setDoc(docActivated);
+			}
 		}
 		//
 		List<NameValue> onDeactivateds = getTargetStartNV("onDeactivated", nvList);
@@ -853,12 +880,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onDeactivated = factory.createActionStatusDoc();
 			actions.setOnDeactivated(onDeactivated);
 			DocAction docDeactivated = factory.createDocAction();
-			onDeactivated.setDoc(docDeactivated);
 			
 			onDeactivated.setImplementedbln(getTargetNVValueBoolean("onDeactivated", nvList));
 			docDeactivated.setDescription(getTargetNVValue("onDeactivatedDocDescription", nvList));
 			docDeactivated.setPreCondition(getTargetNVValue("onDeactivatedDocPreCondition", nvList));
 			docDeactivated.setPostCondition(getTargetNVValue("onDeactivatedDocPostCondition", nvList));
+
+			if(docDeactivated.isNull() == false) {
+				onDeactivated.setDoc(docDeactivated);
+			}
 		}
 		//
 		List<NameValue> onAbortings = getTargetStartNV("onAborting", nvList);
@@ -866,12 +896,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onAborting = factory.createActionStatusDoc();
 			actions.setOnAborting(onAborting);
 			DocAction docAborting = factory.createDocAction();
-			onAborting.setDoc(docAborting);
 			
 			onAborting.setImplementedbln(getTargetNVValueBoolean("onAborting", nvList));
 			docAborting.setDescription(getTargetNVValue("onAbortingDocDescription", nvList));
 			docAborting.setPreCondition(getTargetNVValue("onAbortingDocPreCondition", nvList));
 			docAborting.setPostCondition(getTargetNVValue("onAbortingDocPostCondition", nvList));
+
+			if(docAborting.isNull() == false) {
+				onAborting.setDoc(docAborting);
+			}
 		}
 		//
 		List<NameValue> onErrors = getTargetStartNV("onError", nvList);
@@ -879,12 +912,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onError = factory.createActionStatusDoc();
 			actions.setOnError(onError);
 			DocAction docError = factory.createDocAction();
-			onError.setDoc(docError);
 			
 			onError.setImplementedbln(getTargetNVValueBoolean("onError", nvList));
 			docError.setDescription(getTargetNVValue("onErrorDocDescription", nvList));
 			docError.setPreCondition(getTargetNVValue("onErrorDocPreCondition", nvList));
 			docError.setPostCondition(getTargetNVValue("onErrorDocPostCondition", nvList));
+
+			if(docError.isNull() == false) {
+				onError.setDoc(docError);
+			}
 		}
 		//
 		List<NameValue> onResets = getTargetStartNV("onReset", nvList);
@@ -892,12 +928,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onReset = factory.createActionStatusDoc();
 			actions.setOnReset(onReset);
 			DocAction docReset = factory.createDocAction();
-			onReset.setDoc(docReset);
 			
 			onReset.setImplementedbln(getTargetNVValueBoolean("onReset", nvList));
 			docReset.setDescription(getTargetNVValue("onResetDocDescription", nvList));
 			docReset.setPreCondition(getTargetNVValue("onResetDocPreCondition", nvList));
 			docReset.setPostCondition(getTargetNVValue("onResetDocPostCondition", nvList));
+
+			if(docReset.isNull() == false) {
+				onReset.setDoc(docReset);
+			}
 		}
 		//
 		List<NameValue> onExecutes = getTargetStartNV("onStateUpdate", nvList);
@@ -905,12 +944,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onExecute = factory.createActionStatusDoc();
 			actions.setOnExecute(onExecute);
 			DocAction docExecute = factory.createDocAction();
-			onExecute.setDoc(docExecute);
 			
 			onExecute.setImplementedbln(getTargetNVValueBoolean("onExecute", nvList));
 			docExecute.setDescription(getTargetNVValue("onExecuteDocDescription", nvList));
 			docExecute.setPreCondition(getTargetNVValue("onExecuteDocPreCondition", nvList));
 			docExecute.setPostCondition(getTargetNVValue("onExecuteDocPostCondition", nvList));
+
+			if(docExecute.isNull() == false) {
+				onExecute.setDoc(docExecute);
+			}
 		}
 		//
 		List<NameValue> onStateUpdates = getTargetStartNV("onStateUpdate", nvList);
@@ -918,12 +960,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onStateUpdate = factory.createActionStatusDoc();
 			actions.setOnStateUpdate(onStateUpdate);
 			DocAction docStateUpdate = factory.createDocAction();
-			onStateUpdate.setDoc(docStateUpdate);
 			
 			onStateUpdate.setImplementedbln(getTargetNVValueBoolean("onStateUpdate", nvList));
 			docStateUpdate.setDescription(getTargetNVValue("onStateUpdateDocDescription", nvList));
 			docStateUpdate.setPreCondition(getTargetNVValue("onStateUpdateDocPreCondition", nvList));
 			docStateUpdate.setPostCondition(getTargetNVValue("onStateUpdateDocPostCondition", nvList));
+
+			if(docStateUpdate.isNull() == false) {
+				onStateUpdate.setDoc(docStateUpdate);
+			}
 		}
 		//
 		List<NameValue> onRateChangeds = getTargetStartNV("onRateChanged", nvList);
@@ -931,12 +976,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onRateChanged = factory.createActionStatusDoc();
 			actions.setOnRateChanged(onRateChanged);
 			DocAction docRateChanged = factory.createDocAction();
-			onRateChanged.setDoc(docRateChanged);
 			
 			onRateChanged.setImplementedbln(getTargetNVValueBoolean("onRateChanged", nvList));
 			docRateChanged.setDescription(getTargetNVValue("onRateChangedDocDescription", nvList));
 			docRateChanged.setPreCondition(getTargetNVValue("onRateChangedDocPreCondition", nvList));
 			docRateChanged.setPostCondition(getTargetNVValue("onRateChangedDocPostCondition", nvList));
+
+			if(docRateChanged.isNull() == false) {
+				onRateChanged.setDoc(docRateChanged);
+			}
 		}
 		//
 		List<NameValue> onActions = getTargetStartNV("onAction", nvList);
@@ -944,12 +992,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onAction = factory.createActionStatusDoc();
 			actions.setOnAction(onAction);
 			DocAction docAction = factory.createDocAction();
-			onAction.setDoc(docAction);
 			
 			onAction.setImplementedbln(getTargetNVValueBoolean("onAction", nvList));
 			docAction.setDescription(getTargetNVValue("onActionDocDescription", nvList));
 			docAction.setPreCondition(getTargetNVValue("onActionDocPreCondition", nvList));
 			docAction.setPostCondition(getTargetNVValue("onActionDocPostCondition", nvList));
+
+			if(docAction.isNull() == false) {
+				onAction.setDoc(docAction);
+			}
 		}
 		//
 		List<NameValue> onModeChangeds = getTargetStartNV("onModeChanged", nvList);
@@ -957,12 +1008,15 @@ public class ISO2RTCProfileHandler {
 			ActionStatusDoc onModeChanged = factory.createActionStatusDoc();
 			actions.setOnModeChanged(onModeChanged);
 			DocAction docModeChanged = factory.createDocAction();
-			onModeChanged.setDoc(docModeChanged);
 			
 			onModeChanged.setImplementedbln(getTargetNVValueBoolean("onModeChanged", nvList));
 			docModeChanged.setDescription(getTargetNVValue("onModeChangedDocDescription", nvList));
 			docModeChanged.setPreCondition(getTargetNVValue("onModeChangedDocPreCondition", nvList));
 			docModeChanged.setPostCondition(getTargetNVValue("onModeChangedDocPostCondition", nvList));
+
+			if(docModeChanged.isNull() == false) {
+				onModeChanged.setDoc(docModeChanged);
+			}
 		}
 
 		
@@ -995,11 +1049,27 @@ public class ISO2RTCProfileHandler {
 		return "";
 	}
 	
-	private boolean checkNVName(String name, List<String> definedList) {
+	protected boolean checkNVName(String name, List<String> definedList) {
 		if(name.startsWith(IProfileConstants.ISO_PREFIX)) {
 			if(definedList.contains(name.substring(IProfileConstants.ISO_PREFIX.length()))) return true;
 		} else {
 			if(definedList.contains(name)) return true;
+		}
+		return false;
+	}
+
+	protected boolean checkNVName(String name, List<String> definedList, List<String> prefixList) {
+		if(name.startsWith(IProfileConstants.ISO_PREFIX)) {
+			String convName = name.substring(IProfileConstants.ISO_PREFIX.length());
+			if(definedList.contains(convName)) return true;
+			for(String each : prefixList) {
+				if(convName.startsWith(each)) return true;
+			}
+		} else {
+			if(definedList.contains(name)) return true;
+			for(String each : prefixList) {
+				if(name.startsWith(each)) return true;
+			}
 		}
 		return false;
 	}
@@ -1024,7 +1094,7 @@ public class ISO2RTCProfileHandler {
 		}
 	}
 
-	private BigInteger getTargetNVValueBigInteger(String key, List<NameValue> nvList) {
+	protected BigInteger getTargetNVValueBigInteger(String key, List<NameValue> nvList) {
 		String temp = getTargetNVValue(key, nvList);
 		try {
 			BigInteger val = new BigInteger(temp);
@@ -1034,7 +1104,17 @@ public class ISO2RTCProfileHandler {
 		}
 	}
 	
-	private Boolean getTargetNVValueBoolean(String key, List<NameValue> nvList) {
+	protected Double getTargetNVValueDouble(String key, List<NameValue> nvList) {
+		String temp = getTargetNVValue(key, nvList);
+		try {
+			Double val = new Double(temp);
+			return val;
+		} catch (Exception ex){
+			return null;
+		}
+	}
+	
+	protected Boolean getTargetNVValueBoolean(String key, List<NameValue> nvList) {
 		String temp = getTargetNVValue(key, nvList);
 		try {
 			Boolean val = Boolean.valueOf(temp);
@@ -1044,7 +1124,7 @@ public class ISO2RTCProfileHandler {
 		}
 	}
 
-	private String getTargetNVValue(String key, List<NameValue> nvList) {
+	protected String getTargetNVValue(String key, List<NameValue> nvList) {
 		List<NameValue> filtered = nvList.stream()
 									.filter(p -> p.getName().equals(IProfileConstants.ISO_PREFIX + key))
 									.collect(Collectors.toList());
@@ -1054,7 +1134,7 @@ public class ISO2RTCProfileHandler {
 		return "";
 	}
 
-	private String getTargetNVValueRaw(String key, List<NameValue> nvList) {
+	protected String getTargetNVValueRaw(String key, List<NameValue> nvList) {
 		List<NameValue> filtered = nvList.stream()
 									.filter(p -> p.getName().equals(key))
 									.collect(Collectors.toList());
@@ -1071,7 +1151,7 @@ public class ISO2RTCProfileHandler {
 		return filtered;
 	}
 
-	private List<NameValue> getTargetStartNV(String key, List<NameValue> nvList) {
+	protected List<NameValue> getTargetStartNV(String key, List<NameValue> nvList) {
 		List<NameValue> filtered = nvList.stream()
 									.filter(p -> p.getName().startsWith(IProfileConstants.ISO_PREFIX + key))
 									.collect(Collectors.toList());
@@ -1102,7 +1182,7 @@ public class ISO2RTCProfileHandler {
 		propList.add(prop);
 	}
 	
-	private String bytesToHexString(byte[] bytes) {
+	protected String bytesToHexString(byte[] bytes) {
 	    if (bytes == null) return null;
 
 	    StringBuilder sb = new StringBuilder(bytes.length * 2);
@@ -1112,7 +1192,7 @@ public class ISO2RTCProfileHandler {
 	    return sb.toString();
 	}
 
-	private String bytesListToHexString(List<byte[]> list) {
+	protected String bytesListToHexString(List<byte[]> list) {
 	    if (list == null) return null;
 
 	    StringBuilder sb = new StringBuilder();

@@ -19,6 +19,8 @@ import jp.go.aist.rtm.rtcbuilder.nl.Messages;
 import jp.go.aist.rtm.rtcbuilder.ui.editors.IMessageConstants;
 
 public class ExportDialog extends Dialog {
+	private String targetKind = "";
+
 	private boolean outputRtc = false;
 	private boolean outputIso = false;
 	private String rtcFileName = "";
@@ -30,6 +32,10 @@ public class ExportDialog extends Dialog {
 	private Text isoFileText;
 	private Button rtcRefBtn;
 	private Button isoRefBtn;
+
+	public void setTargetKind(String source) {
+		this.targetKind = source;
+	}
 
 	public boolean outputRtc() {
 		return outputRtc;
@@ -60,7 +66,7 @@ public class ExportDialog extends Dialog {
 	
 	@Override
 	protected Point getInitialSize() {
-		return new Point(500, 160);
+		return new Point(500, 180);
 	}
 	
 	@Override
@@ -81,7 +87,7 @@ public class ExportDialog extends Dialog {
 		///////
 		rtcBtn = new Button(selectComposite, SWT.CHECK);
 		GridData gd = new GridData(GridData.BEGINNING, SWT.CENTER, false, false);
-		rtcBtn.setText("RtcProfile");
+		rtcBtn.setText(targetKind);
 		rtcBtn.setLayoutData(gd);
 		rtcBtn.setSelection(false);
 		rtcBtn.addSelectionListener(new SelectionAdapter() {

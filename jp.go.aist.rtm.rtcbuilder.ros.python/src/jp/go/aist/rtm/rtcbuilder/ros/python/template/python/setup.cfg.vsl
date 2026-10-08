@@ -1,0 +1,4 @@
+[develop]
+script_dir=$base/lib/${rosParam.packageName}
+[install]
+install_scripts=$base/lib/${rosParam.packageName}

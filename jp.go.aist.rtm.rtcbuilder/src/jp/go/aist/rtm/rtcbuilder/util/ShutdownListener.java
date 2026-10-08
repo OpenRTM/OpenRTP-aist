@@ -1,15 +1,15 @@
 package jp.go.aist.rtm.rtcbuilder.util;
 
-import jp.go.aist.rtm.rtcbuilder.RtcBuilderPlugin;
-import jp.go.aist.rtm.rtcbuilder.ui.editors.IMessageConstants;
-import jp.go.aist.rtm.rtcbuilder.ui.editors.RtcBuilderEditor;
-
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchListener;
 import org.eclipse.ui.internal.WorkbenchMessages;
+
+import jp.go.aist.rtm.rtcbuilder.RtcBuilderPlugin;
+import jp.go.aist.rtm.rtcbuilder.ui.editors.IMessageConstants;
+import jp.go.aist.rtm.rtcbuilder.ui.editors.RtcBuilderEditor;
 
 public class ShutdownListener implements IWorkbenchListener {
 	private final int RETURN_YES = 0;

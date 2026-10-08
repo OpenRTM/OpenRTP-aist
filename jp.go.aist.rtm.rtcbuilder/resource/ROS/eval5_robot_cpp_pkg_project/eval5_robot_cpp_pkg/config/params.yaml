@@ -1,0 +1,14 @@
+eval5_robot_node:
+  ros__parameters:
+    # Parameter: max_speed
+    # Type: double
+    # Description: Maximum linear speed.
+    # Min: 0.0
+    # Max: 5.0
+    # Step: 0.1
+    max_speed: 1.0
+
+    # Parameter: robot_id
+    # Type: string
+    # Description: Robot identifier.
+    robot_id: "robot_01"

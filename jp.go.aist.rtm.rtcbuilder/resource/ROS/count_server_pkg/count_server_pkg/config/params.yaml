@@ -1,0 +1,3 @@
+﻿count_server_node:
+  # No ROS parameters defined in UI
+  ros__parameters: {}

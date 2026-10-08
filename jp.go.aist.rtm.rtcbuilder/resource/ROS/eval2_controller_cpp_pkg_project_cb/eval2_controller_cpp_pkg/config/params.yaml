@@ -1,0 +1,19 @@
+eval2_controller_node:
+  ros__parameters:
+    # Parameter: max_speed
+    # Type: double
+    # Description: Maximum speed.
+    # Min: 0.0
+    # Max: 5.0
+    # Step: 0.1
+    max_speed: 1.0
+
+    # Parameter: status_prefix
+    # Type: string
+    # Description: Status prefix.
+    status_prefix: "status"
+
+    # Parameter: enable_safety_limit
+    # Type: bool
+    # Description: Enable safety limit.
+    enable_safety_limit: true

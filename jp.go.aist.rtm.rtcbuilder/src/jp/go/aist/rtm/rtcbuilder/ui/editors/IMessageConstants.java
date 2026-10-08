@@ -500,6 +500,9 @@ public interface IMessageConstants {
 	public static final String CONTAINERC_HINT_MODULENAME_DESC = StringUtil.connectMessageWithSepalator( new String[]{
 			Messages.getString("IMC.CONTAINER_HINT_MODULE_NAME_DESC_P1"),
 			Messages.getString("IMC.CONTAINER_HINT_MODULE_NAME_DESC_P2")});
+	public static final String CONTAINERC_HINT_NODENAME_DESC = StringUtil.connectMessageWithSepalator( new String[]{
+			Messages.getString("IMC.CONTAINER_HINT_NODE_NAME_DESC_P1"),
+			Messages.getString("IMC.CONTAINER_HINT_MODULE_NAME_DESC_P2")});
 
 	public static final String CONTAINERC_HINT_DESCRIPTION_DESC = StringUtil.connectMessageWithSepalator( new String[]{
 			Messages.getString("IMC.CONTAINER_HINT_DESCRIPTION_DESC_P1"),

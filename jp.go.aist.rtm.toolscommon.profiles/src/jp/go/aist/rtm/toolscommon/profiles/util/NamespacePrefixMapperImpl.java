@@ -31,6 +31,15 @@ public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
         if (namespaceUri.equalsIgnoreCase("http://www.openrtp.org/namespaces/rtc_ext")){
             return "rtcExt";
         }
+        if (namespaceUri.equalsIgnoreCase("http://www.openrtp.org/namespaces/ros")){
+            return "ros";
+        }
+        if (namespaceUri.equalsIgnoreCase("http://www.openrtp.org/namespaces/ros_doc")){
+            return "rosDoc";
+        }
+        if (namespaceUri.equalsIgnoreCase("http://www.openrtp.org/namespaces/ros_ext")){
+            return "rosExt";
+        }
         if (namespaceUri.equalsIgnoreCase("http://www.w3.org/2001/XMLSchema-instance") ){
 	      return "xsi";
 	    }

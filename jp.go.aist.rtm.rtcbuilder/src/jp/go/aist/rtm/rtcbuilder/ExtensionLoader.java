@@ -1,7 +1,9 @@
 package jp.go.aist.rtm.rtcbuilder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.go.aist.rtm.rtcbuilder.manager.GenerateManager;
 
@@ -22,15 +24,18 @@ public class ExtensionLoader {
 	// 拡張ポイントID
 	public static final String EXTENSION_POINT_ID = "jp.go.aist.rtm.rtcbuilder.generateManager";
 	// Manager
-	List<GenerateManager> managerList = new ArrayList<GenerateManager>();
+	Map<String, List<GenerateManager>> managerList = new HashMap<String, List<GenerateManager>>(); 
 	// ManagerKey
-	List<String> managerKeyList = new ArrayList<String>();
+	Map<String, List<String>> managerKeyList = new HashMap<String, List<String>>();
+
+	List<GenerateManager> allManager = new ArrayList<GenerateManager>();
 
 	/**
 	 * 拡張オブジェクトをロードしてリストに格納する。
 	 * @throws CoreException 
 	 */
 	public void loadExtensions() throws CoreException {
+		allManager.clear();
 		// 拡張ポイントの取得
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint( EXTENSION_POINT_ID );		
@@ -49,6 +54,19 @@ public class ExtensionLoader {
 				}
 			}
 		}
+		//
+		if(0<allManager.size()) {
+			for (String key : managerList.keySet()) {
+				List<GenerateManager> managers = managerList.get(key);
+				List<String> keys = managerKeyList.get(key);
+				for(GenerateManager each : allManager) {
+					managers.add(each);
+					if (!keys.contains(each.getManagerKey())) {
+						keys.add(each.getManagerKey());
+					}
+				}
+			}
+		}
 	}
 
 	protected void processManager(IConfigurationElement cfgElem)
@@ -58,9 +76,26 @@ public class ExtensionLoader {
 				Object obj = cfgElem.createExecutableExtension("managerclass");
 				if (obj instanceof GenerateManager) {
 					GenerateManager manager = (GenerateManager) obj;
-					managerList.add(manager);
-					if (!managerKeyList.contains(manager.getManagerKey())) {
-						managerKeyList.add(manager.getManagerKey());
+					String targetMdl = manager.getTargetMiddleware(); 
+					if(targetMdl.equals(IRtcBuilderConstants.MIDDLEWARE_ALL)) {
+						allManager.add(manager);
+					} else {
+						List<GenerateManager> managers;
+						List<String> keys;
+						if(managerList.containsKey(targetMdl)) {
+							managers = managerList.get(targetMdl);
+							keys = managerKeyList.get(targetMdl);
+						} else {
+							managers = new ArrayList<GenerateManager>();
+							managerList.put(targetMdl, managers);
+							
+							keys = new ArrayList<String>();
+							managerKeyList.put(targetMdl, keys);
+						}
+						managers.add(manager);
+						if (!keys.contains(manager.getManagerKey())) {
+							keys.add(manager.getManagerKey());
+						}
 					}
 				}
 			}
@@ -70,12 +105,12 @@ public class ExtensionLoader {
 		}
 	}
 
-	public List<GenerateManager> getManagerList() {
-		return managerList;
+	public List<GenerateManager> getManagerList(String key) {
+		return managerList.get(key);
 	}
 
-	public List<String> getManagerKeyList() {
-		return managerKeyList;
+	public List<String> getManagerKeyList(String key) {
+		return managerKeyList.get(key);
 	}
 
 }

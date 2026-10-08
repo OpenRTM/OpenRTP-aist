@@ -718,8 +718,9 @@ public class RTC2ISOProfileHandler {
 		}
 	}
 	
-	private void buildExeType(ObjectFactory factory, SIM result, List<Property> propList) {
+	protected void buildExeType(ObjectFactory factory, SIM result, List<Property> propList) {
 		List<ExecutionType> exeTypes = result.getProperties().getExeType();
+		if(exeTypes.size() == 0) return;
 		ExecutionType exeType = exeTypes.get(0);
 
 		String hardRtStr = getTargetPropertyValue(propList, "exeType_hardRT");
@@ -772,7 +773,7 @@ public class RTC2ISOProfileHandler {
 
 	}
 	
-	private void buildExeForm(ObjectFactory factory, SIM result, List<Property> propList) {
+	protected void buildExeForm(ObjectFactory factory, SIM result, List<Property> propList) {
 		ExecutableForm exeFrom = factory.createExecutableForm();
 		result.setExeForm(exeFrom);
 		
@@ -866,7 +867,7 @@ public class RTC2ISOProfileHandler {
 		}
 	}
 	
-	private void buildModelling(ObjectFactory factory, SIM result, List<Property> modelList) {
+	protected void buildModelling(ObjectFactory factory, SIM result, List<Property> modelList) {
 		Modelling modelling = factory.createModelling();
 		result.setModelling(modelling);
 		
@@ -885,18 +886,17 @@ public class RTC2ISOProfileHandler {
 				if(modelling.getSimulationModel().size() < modelNo) {
 					func = factory.createModelCase();
 					modelling.getSimulationModel().add(func);
-					
-					List<Property> modelPropList = getTargetStartProperty(modelList, "modelling_" + modelNo + "_add_");
-					NVList mcNv = factory.createNVList();
-					for(Property eachP : modelPropList) {
-						String orgKey = eachP.getName().replace("modelling_" + modelNo + "_add_", "");
-						createISONameValue(factory, orgKey, eachP.getValue(), mcNv);
-					}
-					if(0 < mcNv.getNv().size()) {
-						func.setAdditionalInfo(mcNv);
-					}
 				} else {
 					func = modelling.getSimulationModel().get(modelNo-1); 
+				}
+				List<Property> modelPropList = getTargetStartProperty(modelList, "modelling_" + modelNo + "_add_");
+				NVList mcNv = factory.createNVList();
+				for(Property eachP : modelPropList) {
+					String orgKey = eachP.getName().replace("modelling_" + modelNo + "_add_", "");
+					createISONameValue(factory, orgKey, eachP.getValue(), mcNv);
+				}
+				if(0 < mcNv.getNv().size()) {
+					func.setAdditionalInfo(mcNv);
 				}
 			} catch (NumberFormatException ex) {
 				continue;
@@ -932,18 +932,17 @@ public class RTC2ISOProfileHandler {
 					if(mc.getDynamicSW().size() < dynamicNo) {
 						targetDyn = factory.createExeForm();
 						mc.getDynamicSW().add(targetDyn);
-						List<Property> dynPropList = getTargetStartProperty(modelList, "modelling_" + mcIdx + "_dynamicsw_" + dynamicNo + "_add_");
-						NVList dynNv = factory.createNVList();
-						for(Property eachP : dynPropList) {
-							String orgKey = eachP.getName().replace("modelling_" + mcIdx + "_dynamicsw_" + dynamicNo + "_add_", "");
-							createISONameValue(factory, orgKey, eachP.getValue(), dynNv);
-						}
-						if(0 < dynNv.getNv().size()) {
-							targetDyn.setAdditionalInfo(dynNv);
-						}
-
 					} else {
 						targetDyn = mc.getDynamicSW().get(dynamicNo-1); 
+					}
+					List<Property> dynPropList = getTargetStartProperty(modelList, "modelling_" + mcIdx + "_dynamicsw_" + dynamicNo + "_add_");
+					NVList dynNv = factory.createNVList();
+					for(Property eachP : dynPropList) {
+						String orgKey = eachP.getName().replace("modelling_" + mcIdx + "_dynamicsw_" + dynamicNo + "_add_", "");
+						createISONameValue(factory, orgKey, eachP.getValue(), dynNv);
+					}
+					if(0 < dynNv.getNv().size()) {
+						targetDyn.setAdditionalInfo(dynNv);
 					}
 				} catch (NumberFormatException ex) {
 					continue;
@@ -1000,7 +999,7 @@ public class RTC2ISOProfileHandler {
 		}
 	}
 	
-	private void buildSafeSecure(ObjectFactory factory, SIM result, List<Property> propList) {
+	protected void buildSafeSecure(ObjectFactory factory, SIM result, List<Property> propList) {
 		SafeSecure safes = factory.createSafeSecure();
 		result.setSafeSecure(safes);
 		
@@ -1084,7 +1083,7 @@ public class RTC2ISOProfileHandler {
 		}
 	}
 	
-	private void buildInfrastructure(ObjectFactory factory, SIM result, List<Property> propList) {
+	protected void buildInfrastructure(ObjectFactory factory, SIM result, List<Property> propList) {
 		Infrastructure infra = factory.createInfrastructure();
 		result.setInfra(infra);
 
@@ -1210,21 +1209,21 @@ public class RTC2ISOProfileHandler {
 		}
 	}
 	
-	private boolean equalsKey(String key, String target) {
+	protected boolean equalsKey(String key, String target) {
 		if(key.toLowerCase().equals(IProfileConstants.ISO_PREFIX.toLowerCase() + target.toLowerCase())) {
 			return true;
 		}
 		return false;
 	}
 	
-	private boolean startsWithKey(String key, String target) {
+	protected boolean startsWithKey(String key, String target) {
 		if(key.toLowerCase().startsWith(IProfileConstants.ISO_PREFIX.toLowerCase() + target.toLowerCase())) {
 			return true;
 		}
 		return false;
 	}
 
-	private String getTargetPropertyValue(List<Property> propList, String key) {
+	protected String getTargetPropertyValue(List<Property> propList, String key) {
 		List<Property> filtered = getTargetProperty(propList, key);
 		if(filtered.size() == 1) return filtered.get(0).getValue();
 		return "";
@@ -1238,7 +1237,7 @@ public class RTC2ISOProfileHandler {
 		return filtered;
 	}
 	
-	private List<Property> getTargetStartProperty(List<Property> propList, String key) {
+	protected List<Property> getTargetStartProperty(List<Property> propList, String key) {
 		List<Property> filtered = propList.stream()
 									.filter(p -> p.getName().toLowerCase().startsWith(IProfileConstants.ISO_PREFIX.toLowerCase() + key.toLowerCase())
 													|| p.getName().toLowerCase().startsWith(key.toLowerCase()))
@@ -1246,7 +1245,7 @@ public class RTC2ISOProfileHandler {
 		return filtered;
 	}
 
-	private byte[] hexStringToBytes(String hex) {
+	protected byte[] hexStringToBytes(String hex) {
 	    int len = hex.length();
 	    if (len % 2 != 0) return null;
 	    
@@ -1271,11 +1270,11 @@ public class RTC2ISOProfileHandler {
 		}
 	}
 
-	private void createISONameValue(ObjectFactory factory, String key, String value, NVList nvs) {
+	protected void createISONameValue(ObjectFactory factory, String key, String value, NVList nvs) {
 		createNameValue(factory, key, value, IProfileConstants.ISO_PREFIX, nvs);
 	}
 	
-	private void createNameValue(ObjectFactory factory, String key, String value, String prefix, NVList nvs) {
+	protected void createNameValue(ObjectFactory factory, String key, String value, String prefix, NVList nvs) {
 		if(value==null || value.length() == 0) return;
 		NameValue nv = factory.createNameValue();
 		if(key.toLowerCase().startsWith(prefix.toLowerCase())) {

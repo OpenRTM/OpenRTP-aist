@@ -1,0 +1,192 @@
+import rclpy
+
+from std_msgs.msg import String
+from rcl_interfaces.msg import ParameterDescriptor, SetParametersResult
+from rclpy.executors import MultiThreadedExecutor
+from rclpy.lifecycle import LifecycleNode, State, TransitionCallbackReturn
+from rclpy.qos import QoSHistoryPolicy, QoSProfile, QoSReliabilityPolicy
+from geometry_msgs.msg import Twist
+
+
+class Eval2ControllerNode(LifecycleNode):
+    def __init__(self, node_name: str, **kwargs):
+        super().__init__(node_name, **kwargs)
+        self.get_logger().info("[Constructor] Node created.")
+        self.robot_status_publisher = None
+        self.cmd_vel_sub = None
+        self._status_timer = None
+        self._declare_parameters()
+
+    # ============================================================
+    # Parameter handling
+    # ============================================================
+
+    def _declare_parameters(self):
+        desc_max_speed = ParameterDescriptor(description='Maximum speed.')
+        self.declare_parameter('max_speed', 1.0, desc_max_speed)
+        desc_status_prefix = ParameterDescriptor(description='Status prefix.', read_only=True)
+        self.declare_parameter('status_prefix', 'status', desc_status_prefix)
+        desc_enable_safety_limit = ParameterDescriptor(description='Enable safety limit.')
+        self.declare_parameter('enable_safety_limit', True, desc_enable_safety_limit)
+        self.add_on_set_parameters_callback(self._on_set_parameters)
+
+    def _on_set_parameters(self, params):
+        for param in params:
+            if param.name == 'max_speed':
+                # TODO: Update internal state when this parameter changes.
+                # Note: min / max / step are documentation metadata only. Add explicit validation here if needed.
+                value = param.value
+                # TODO: Store the parameter value in member variables or runtime settings as needed.
+                _ = value
+            if param.name == 'status_prefix':
+                # TODO: Update internal state when this parameter changes.
+                # Note: min / max / step are documentation metadata only. Add explicit validation here if needed.
+                value = param.value
+                # TODO: Store the parameter value in member variables or runtime settings as needed.
+                _ = value
+            if param.name == 'enable_safety_limit':
+                # TODO: Update internal state when this parameter changes.
+                # Note: min / max / step are documentation metadata only. Add explicit validation here if needed.
+                value = param.value
+                # TODO: Store the parameter value in member variables or runtime settings as needed.
+                _ = value
+        return SetParametersResult(successful=True, reason='')
+
+    # ============================================================
+    # Lifecycle callbacks
+    # ============================================================
+
+    ##
+    # Desc1
+    #
+    # @pre preCond1
+    # @post postCond1
+    #
+    def on_configure(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_configure] called.')
+        # TODO: Implement initialization required for this lifecycle transition.
+        # Publish Topic: robot_status
+        # Type: std_msgs/msg/String
+        # Description: Publish robot status text.
+        self.robot_status_publisher = self.create_lifecycle_publisher(String, 'robot_status', QoSProfile(depth=10, reliability=QoSReliabilityPolicy.RELIABLE, history=QoSHistoryPolicy.KEEP_LAST))
+        self.cmd_vel_sub = self.create_subscription(Twist, 'cmd_vel', self.cmd_vel_callback, QoSProfile(depth=10, reliability=QoSReliabilityPolicy.RELIABLE, history=QoSHistoryPolicy.KEEP_LAST))
+        # Timer: status_timer
+        # Period: 1.0 sec
+        # Callback: status_timer_callback()
+        # Description: Publish status periodically.
+        self._status_timer = self.create_timer(1.0, self.status_timer_callback)
+        self._status_timer.cancel()
+        return TransitionCallbackReturn.SUCCESS
+
+    ##
+    # Desc2
+    #
+    # @pre preCond2
+    # @post postCond2
+    #
+    def on_activate(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_activate] called.')
+        # TODO: Start processing required while the node is active.
+        super().on_activate(state)
+        if self._status_timer is not None:
+            self._status_timer.reset()
+        return TransitionCallbackReturn.SUCCESS
+
+    ##
+    # Desc3
+    #
+    # @pre preCond3
+    # @post postCond3
+    #
+    def on_deactivate(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_deactivate] called.')
+        # TODO: Stop processing before returning to the inactive state.
+        if self._status_timer is not None:
+            self._status_timer.cancel()
+        super().on_deactivate(state)
+        return TransitionCallbackReturn.SUCCESS
+
+    ##
+    # Desc4
+    #
+    # @pre preCond4
+    # @post postCond4
+    #
+    def on_cleanup(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_cleanup] called.')
+        # TODO: Release resources when the node is cleaned up.
+        if self._status_timer is not None:
+            self.destroy_timer(self._status_timer)
+            self._status_timer = None
+        if self.robot_status_publisher is not None:
+            self.destroy_publisher(self.robot_status_publisher)
+            self.robot_status_publisher = None
+        if self.cmd_vel_sub is not None:
+            self.destroy_subscription(self.cmd_vel_sub)
+            self.cmd_vel_sub = None
+        return TransitionCallbackReturn.SUCCESS
+
+    ##
+    # Desc5
+    #
+    # @pre preCond5
+    # @post postCond5
+    #
+    def on_shutdown(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_shutdown] called.')
+        # TODO: Implement shutdown handling.
+        return TransitionCallbackReturn.SUCCESS
+
+    ##
+    # Desc6
+    #
+    # @pre preCond6
+    # @post postCond6
+    #
+    def on_error(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_error] called.')
+        # TODO: Implement error recovery or safe-stop handling.
+        return TransitionCallbackReturn.SUCCESS
+
+    # ============================================================
+    # Topic callbacks
+    # ============================================================
+
+    def cmd_vel_callback(self, msg):
+        # Subscribe Topic: cmd_vel
+        # Type: geometry_msgs/msg/Twist
+        # Description: Receive velocity command.
+        # TODO: Use the received message to implement this node's behavior.
+        # Note: This callback is called each time a message arrives on the subscribed topic.
+        pass
+
+    # ============================================================
+    # Timer callbacks
+    # ============================================================
+
+    def status_timer_callback(self):
+        # Timer: status_timer
+        # Period: 1.0 sec
+        # Callback: status_timer_callback()
+        # Description: Publish status periodically.
+        # TODO: Implement the periodic behavior described above.
+        pass
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    node_instance = Eval2ControllerNode('eval2_controller_node')
+    executor = MultiThreadedExecutor()
+    executor.add_node(node_instance)
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node_instance.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

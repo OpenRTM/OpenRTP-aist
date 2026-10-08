@@ -1,0 +1,806 @@
+{
+  "ROS2": {
+    "versions": [
+      {
+        "id": "Jazzy",
+        "os": "Ubuntu 24.04 (Noble)"
+      }
+    ],
+    "workspace_presets": [
+      "colcon_ws",
+      "ros2_ws",
+      "src"
+    ],
+    "default_libs": [
+      "git",
+      "build-essential",
+      "cmake",
+      "python3-pip",
+      "python3-colcon-common-extensions",
+      "rclcpp",
+      "rclpy",
+      "rclcpp_lifecycle",
+      "lifecycle_msgs",
+      "std_msgs",
+      "launch",
+      "launch_ros",
+      "rosidl_default_generators",
+      "rosidl_default_runtime"
+    ],
+    "functional_presets": {
+      "Common Interfaces": [
+        "builtin_interfaces",
+        "geometry_msgs",
+        "sensor_msgs",
+        "nav_msgs",
+        "trajectory_msgs",
+        "visualization_msgs",
+        "diagnostic_msgs"
+      ],
+      "Service / Action": [
+        "std_srvs",
+        "example_interfaces",
+        "action_msgs"
+      ],
+      "Lifecycle / Components": [
+        "rclcpp_components",
+        "pluginlib",
+        "class_loader"
+      ],
+      "Image Processing": [
+        "cv_bridge",
+        "image_transport",
+        "compressed_image_transport",
+        "camera_info_manager",
+        "image_geometry",
+        "vision_opencv"
+      ],
+      "Robot Model / TF": [
+        "tf2",
+        "tf2_ros",
+        "tf2_geometry_msgs",
+        "tf2_eigen",
+        "urdf",
+        "xacro",
+        "robot_state_publisher",
+        "joint_state_publisher",
+        "joint_state_publisher_gui",
+        "angles"
+      ],
+      "Navigation 2 (Nav2)": [
+        "nav2_bringup",
+        "nav2_common",
+        "nav2_map_server",
+        "nav2_planner",
+        "nav2_controller",
+        "nav2_bt_navigator",
+        "nav2_amcl",
+        "nav2_costmap_2d",
+        "nav2_lifecycle_manager",
+        "nav2_util"
+      ],
+      "Path Planning (MoveIt 2)": [
+        "moveit",
+        "moveit_core",
+        "moveit_msgs",
+        "moveit_ros_planning",
+        "moveit_ros_planning_interface",
+        "moveit_ros_move_group",
+        "moveit_planners_ompl"
+      ],
+      "Simulation": [
+        "ros_gz_bridge",
+        "ros_gz_sim",
+        "ros_gz_interfaces",
+        "controller_manager",
+        "robot_state_publisher"
+      ],
+      "Visualization": [
+        "rviz2",
+        "rqt",
+        "rqt_graph",
+        "rqt_plot",
+        "rqt_console",
+        "rqt_tf_tree"
+      ],
+      "Control": [
+        "ros2_control",
+        "ros2_controllers",
+        "controller_manager",
+        "control_msgs",
+        "hardware_interface",
+        "joint_trajectory_controller",
+        "diff_drive_controller"
+      ],
+      "Build / Interface Tools": [
+        "ament_cmake",
+        "ament_cmake_python"
+      ],
+      "ROS 2 CLI / Bag Tools": [
+        "ros2cli",
+        "ros2launch",
+        "ros2topic",
+        "ros2service",
+        "ros2action",
+        "ros2param",
+        "rosbag2",
+        "rosbag2_transport",
+        "rosbag2_storage"
+      ],
+      "Diagnostics": [
+        "diagnostic_updater",
+        "diagnostic_aggregator"
+      ]
+    }
+  },
+  "mapping_db": {
+    "libraries": {
+      "git": {
+        "default": {
+          "apt": "git"
+        }
+      },
+      "build-essential": {
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "cmake": {
+        "default": {
+          "apt": "cmake"
+        }
+      },
+      "python3-pip": {
+        "default": {
+          "apt": "python3-pip"
+        }
+      },
+      "python3-colcon-common-extensions": {
+        "default": {
+          "apt": "python3-colcon-common-extensions"
+        }
+      },
+      "opencv2": {
+        "ubuntu": {
+          "apt": "libopencv-dev"
+        },
+        "ros2": {
+          "apt": "libopencv-dev"
+        },
+        "python": {
+          "apt": "python3-opencv"
+        },
+        "default": {
+          "apt": "libopencv-dev"
+        }
+      },
+      "dynamixelsdk": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-dynamixel-sdk"
+        },
+        "ubuntu": {
+          "apt": "build-essential"
+        },
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "dynamixel_sdk": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-dynamixel-sdk"
+        },
+        "ubuntu": {
+          "apt": "build-essential"
+        },
+        "default": {
+          "apt": "build-essential"
+        }
+      },
+      "ament_cmake": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ament-cmake"
+        }
+      },
+      "cmake_modules": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-cmake-modules"
+        }
+      },
+      "moveit": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit"
+        }
+      },
+      "moveit_core": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-core"
+        }
+      },
+      "moveit_ros_planning": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-ros-planning"
+        }
+      },
+      "moveit_ros_planning_interface": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-ros-planning-interface"
+        }
+      },
+      "moveit_planners_ompl": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-planners-ompl"
+        }
+      },
+      "moveit_ros_move_group": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-ros-move-group"
+        }
+      },
+      "roscpp": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-roscpp"
+        }
+      },
+      "rclcpp": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rclcpp"
+        }
+      },
+      "rclpy": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rclpy"
+        }
+      },
+      "std_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-std-msgs"
+        }
+      },
+      "sensor_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-sensor-msgs"
+        }
+      },
+      "cv_bridge": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-cv-bridge"
+        }
+      },
+      "image_geometry": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-image-geometry"
+        }
+      },
+      "vision_opencv": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-vision-opencv"
+        }
+      },
+      "tf2": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-tf2"
+        }
+      },
+      "tf2_ros": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-tf2-ros"
+        }
+      },
+      "gazebo_ros": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-gazebo-ros"
+        }
+      },
+      "gazebo_ros_pkgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros-gz-sim"
+        }
+      },
+      "ros_gz_bridge": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros-gz-bridge"
+        }
+      },
+      "controller_manager": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-controller-manager"
+        }
+      },
+      "amcl": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-amcl"
+        }
+      },
+      "map_server": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-map-server"
+        }
+      },
+      "nav2_bringup": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-bringup"
+        }
+      },
+      "nav2_common": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-common"
+        }
+      },
+      "nav2_map_server": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-map-server"
+        }
+      },
+      "nav2_planner": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-planner"
+        }
+      },
+      "nav2_controller": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-controller"
+        }
+      },
+      "rclcpp_lifecycle": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rclcpp-lifecycle"
+        }
+      },
+      "lifecycle_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-lifecycle-msgs"
+        }
+      },
+      "std_srvs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-std-srvs"
+        }
+      },
+      "example_interfaces": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-example-interfaces"
+        }
+      },
+      "builtin_interfaces": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-builtin-interfaces"
+        }
+      },
+      "geometry_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-geometry-msgs"
+        }
+      },
+      "action_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-action-msgs"
+        }
+      },
+      "diagnostic_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-diagnostic-msgs"
+        }
+      },
+      "nav_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav-msgs"
+        }
+      },
+      "trajectory_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-trajectory-msgs"
+        }
+      },
+      "visualization_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-visualization-msgs"
+        }
+      },
+      "tf2_geometry_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-tf2-geometry-msgs"
+        }
+      },
+      "tf2_eigen": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-tf2-eigen"
+        }
+      },
+      "angles": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-angles"
+        }
+      },
+      "launch": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-launch"
+        }
+      },
+      "launch_ros": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-launch-ros"
+        }
+      },
+      "rosidl_default_generators": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rosidl-default-generators"
+        }
+      },
+      "rosidl_default_runtime": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rosidl-default-runtime"
+        }
+      },
+      "ament_cmake_python": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ament-cmake-python"
+        }
+      },
+      "rclcpp_components": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rclcpp-components"
+        }
+      },
+      "pluginlib": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-pluginlib"
+        }
+      },
+      "class_loader": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-class-loader"
+        }
+      },
+      "image_transport": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-image-transport"
+        }
+      },
+      "compressed_image_transport": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-compressed-image-transport"
+        }
+      },
+      "camera_info_manager": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-camera-info-manager"
+        }
+      },
+      "urdf": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-urdf"
+        }
+      },
+      "xacro": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-xacro"
+        }
+      },
+      "robot_state_publisher": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-robot-state-publisher"
+        }
+      },
+      "joint_state_publisher": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-joint-state-publisher"
+        }
+      },
+      "joint_state_publisher_gui": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-joint-state-publisher-gui"
+        }
+      },
+      "nav2_bt_navigator": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-bt-navigator"
+        }
+      },
+      "nav2_amcl": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-amcl"
+        }
+      },
+      "nav2_costmap_2d": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-costmap-2d"
+        }
+      },
+      "nav2_lifecycle_manager": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-lifecycle-manager"
+        }
+      },
+      "nav2_util": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-nav2-util"
+        }
+      },
+      "moveit_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-msgs"
+        }
+      },
+      "ros_gz_sim": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros-gz-sim"
+        }
+      },
+      "ros_gz_interfaces": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros-gz-interfaces"
+        }
+      },
+      "rviz2": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rviz2"
+        }
+      },
+      "rqt": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rqt"
+        }
+      },
+      "rqt_graph": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rqt-graph"
+        }
+      },
+      "rqt_plot": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rqt-plot"
+        }
+      },
+      "rqt_console": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rqt-console"
+        }
+      },
+      "rqt_tf_tree": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rqt-tf-tree"
+        }
+      },
+      "ros2_control": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2-control"
+        }
+      },
+      "ros2_controllers": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2-controllers"
+        }
+      },
+      "control_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-control-msgs"
+        }
+      },
+      "hardware_interface": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-hardware-interface"
+        }
+      },
+      "joint_trajectory_controller": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-joint-trajectory-controller"
+        }
+      },
+      "diff_drive_controller": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-diff-drive-controller"
+        }
+      },
+      "ros2cli": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2cli"
+        }
+      },
+      "ros2launch": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2launch"
+        }
+      },
+      "ros2topic": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2topic"
+        }
+      },
+      "ros2service": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2service"
+        }
+      },
+      "ros2action": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2action"
+        }
+      },
+      "ros2param": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2param"
+        }
+      },
+      "rosbag2": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rosbag2"
+        }
+      },
+      "rosbag2_transport": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rosbag2-transport"
+        }
+      },
+      "rosbag2_storage": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rosbag2-storage"
+        }
+      },
+      "diagnostic_updater": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-diagnostic-updater"
+        }
+      },
+      "diagnostic_aggregator": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-diagnostic-aggregator"
+        }
+      },
+      "rviz": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rviz2"
+        }
+      },
+      "eigen_conversions": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-tf2-eigen"
+        }
+      },
+      "gazebo_plugins": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-gazebo-plugins"
+        }
+      },
+      "usb_cam": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-usb-cam"
+        }
+      },
+      "moveit_configs_utils": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-configs-utils"
+        }
+      },
+      "moveit_kinematics": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-kinematics"
+        }
+      },
+      "moveit_planners": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-planners"
+        }
+      },
+      "moveit_simple_controller_manager": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-simple-controller-manager"
+        }
+      },
+      "moveit_ros_visualization": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-ros-visualization"
+        }
+      },
+      "moveit_ros_warehouse": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-ros-warehouse"
+        }
+      },
+      "moveit_setup_assistant": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-setup-assistant"
+        }
+      },
+      "moveit_visual_tools": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-moveit-visual-tools"
+        }
+      },
+      "actionlib": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-actionlib-msgs"
+        }
+      },
+      "camera_calibration_parsers": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-camera-calibration-parsers"
+        }
+      },
+      "rviz_common": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rviz-common"
+        }
+      },
+      "rviz_default_plugins": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rviz-default-plugins"
+        }
+      },
+      "rqt_gui": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-rqt-gui ros-${ROS_DISTRO}-rqt-common-plugins"
+        }
+      },
+      "gz_ros2_control": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-gz-ros2-control"
+        }
+      },
+      "ros_gz": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros-gz"
+        }
+      },
+      "ign_ros2_control": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-gz-ros2-control"
+        }
+      },
+      "gripper_controllers": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-gripper-controllers"
+        }
+      },
+      "ros2controlcli": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-ros2controlcli"
+        }
+      },
+      "gazebo_ros2_control": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-gz-ros2-control"
+        }
+      },
+      "navigation": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-navigation2"
+        }
+      },
+      "teleop_twist_joy": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-teleop-twist-joy"
+        }
+      },
+      "joy": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-joy"
+        }
+      },
+      "urg_node": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-urg-node"
+        }
+      },
+      "turtlebot3_description": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-turtlebot3-description"
+        }
+      },
+      "turtlebot3_msgs": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-turtlebot3-msgs"
+        }
+      },
+      "turtlebot3_teleop": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-turtlebot3-teleop"
+        }
+      },
+      "turtlebot3_bringup": {
+        "ros2": {
+          "apt": "ros-${ROS_DISTRO}-turtlebot3-bringup"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+string mode
+bool enable_safety
+---
+bool success
+string message

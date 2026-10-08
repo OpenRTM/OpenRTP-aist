@@ -1,0 +1,6 @@
+eval5_operator_node:
+  ros__parameters:
+    # Parameter: operator_name
+    # Type: string
+    # Description: Operator name.
+    operator_name: "operator"

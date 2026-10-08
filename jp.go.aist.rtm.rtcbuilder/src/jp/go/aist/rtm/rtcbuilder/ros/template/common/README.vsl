@@ -1,0 +1,280 @@
+${sharp} ${rosParam.packageName}
+
+${sharp}${sharp} Description
+
+${rosParam.description}
+
+#if( ${rosParam.docInOut.length()} > 0 )
+${sharp}${sharp}${sharp} Input and Output
+
+${rosParam.docInOut}
+
+#end
+#if( ${rosParam.docAlgorithm.length()} > 0 )
+${sharp}${sharp}${sharp} Algorithm etc
+
+${rosParam.docAlgorithm}
+
+#end
+
+${sharp}${sharp} Package Summary
+
+- Package: `${rosParam.packageName}`
+- Node executable: `${rosParam.nodeName}`
+- Node class: `${rosParam.className}`
+- Language: `${rosParam.langList.get(0)}`
+- License: `${rosParam.license}`
+
+#if( ${rosParam.extMsgFiles.size()}>0 ||${rosParam.extSrvFiles.size()}>0 || ${rosParam.extActionFiles.size()}>0)
+This node uses custom interfaces from the companion `${rosParam.packageName}_interfaces` package. Build both packages from the same workspace.
+#end
+
+${sharp}${sharp} Generated Files
+
+- `package.xml`
+- `LICENSE`
+- `README.md`
+- `launch/${rosParam.nodeName}.launch.py`
+- `config/params.yaml`
+- `CMakeLists.txt`
+- `include/${rosParam.packageName}/${rosParam.nodeName}.hpp`
+- `src/${rosParam.nodeName}.cpp`
+- `src/main.cpp`
+
+${sharp}${sharp} Build
+
+From the generated workspace directory:
+
+```bash
+colcon build
+source install/setup.bash
+```
+
+${sharp}${sharp} Distribution Notes
+
+`.deb` is the Ubuntu / Debian install package format. For official ROS 2 style
+distribution, prefer `bloom`; it reads `package.xml` and generates the release
+metadata used by the ROS packaging workflow.
+
+This generated package keeps build-time and runtime dependencies explicit in
+`package.xml` so the package is easier to review before a bloom release.
+
+For C++ packages, CPack can be used as a simple local `.deb` helper when an optional CPack DEB block is enabled in `CMakeLists.txt`. Keep this separate from the normal `colcon build` flow, and prefer bloom for ROS 2 release workflows.
+
+The companion `${rosParam.packageName}_interfaces` package is generated as a sibling package.
+If it is empty, it is a lightweight extension point. When adding `.msg`, `.srv`,
+or `.action` files later, enable the rosidl settings in that package and make
+sure the node package depends on `${rosParam.packageName}_interfaces`.
+
+${sharp}${sharp} Dependency Rules
+
+Interface type dependencies are inferred from Topic, Service, and Action type
+names. For example, `sensor_msgs/msg/Image` adds `sensor_msgs` and generates the
+corresponding message include or import in the node code.
+
+Inferred interface dependencies:
+#if( ${tmpltHelper.getIfTypes(${rosParam}).size()} == 0 )
+- None
+#else
+#foreach($type in ${tmpltHelper.getIfTypes(${rosParam})})
+- `${type}`
+#end
+#end
+
+Extra dependencies are user-declared packages that the generated package should
+depend on for later manual implementation work. They are added to package
+metadata, CMake `find_package()`, and `ament_target_dependencies()`,
+but the generator does not add arbitrary library includes or API calls for them.
+
+Extra dependencies:
+#if( ${tmpltHelper.hasDefinedIF(${rosParam})})
+#foreach($type in ${tmpltHelper.getDefinedIf(${rosParam})})
+- `${type}`
+#end
+#else
+- None
+#end
+
+${sharp}${sharp} Run
+
+```bash
+ros2 launch ${rosParam.packageName} ${rosParam.nodeName}.launch.py
+```
+
+${sharp}${sharp} Lifecycle Operation
+
+This package generates a ROS 2 Lifecycle node. After launch, configure and activate it:
+
+```bash
+ros2 lifecycle get /${rosParam.nodeName}
+ros2 lifecycle set /${rosParam.nodeName} configure
+ros2 lifecycle set /${rosParam.nodeName} activate
+```
+
+To stop active publishers and timers:
+
+```bash
+ros2 lifecycle set /${rosParam.nodeName} deactivate
+```
+
+${sharp}${sharp} Topics
+
+#if( ${rosParam.topicSubscribes.size()}==0 && ${rosParam.topicPublishes.size()}==0 )
+None.
+#else
+| Direction | Name | Type | QoS | Callback / Variable | Summary |
+| --- | --- | --- | --- | --- | --- |
+#foreach($topic in ${rosParam.topicPublishes})
+| Publish | ${topic.name} | ${tmpltHelper.convTopicType(${topic.messageType}, ${rosParam})} | ${topic.reliabilityType}, ${topic.historyType}, depth=${topic.depth} | Publisher variable: ${topic.varCallbackName} | ${topic.docDescription} |
+#end
+#foreach($topic in ${rosParam.topicSubscribes})
+| Subscribe | ${topic.name} | ${tmpltHelper.convTopicType(${topic.messageType}, ${rosParam})} | ${topic.reliabilityType}, ${topic.historyType}, depth=${topic.depth} | Callback: ${topic.varCallbackName} | ${topic.docDescription} |
+#end
+Useful commands:
+
+```bash
+ros2 topic list
+#foreach($topic in ${rosParam.topicPublishes})
+ros2 topic info ${topic.name}
+ros2 topic echo ${topic.name}
+#end
+#foreach($topic in ${rosParam.topicSubscribes})
+ros2 topic info ${topic.name}
+${sharp} ros2 topic pub ${topic.name} ${topic.messageType} '<yaml-message>'
+#end
+```
+#end
+
+${sharp}${sharp} Services
+
+#if( ${rosParam.serviceClients.size()}==0 && ${rosParam.serviceServers.size()}==0 )
+None.
+#else
+| Role | Name | Type | Callback / Variable | Summary |
+| --- | --- | --- | --- | --- |
+#foreach($service in ${rosParam.serviceClients})
+| Client | ${service.name} | ${tmpltHelper.convServiceType(${service.type}, ${rosParam})} | ${service.varCallbackName} | ${service.docDescription} |
+#end
+#foreach($service in ${rosParam.serviceServers})
+| Server | ${service.name} | ${tmpltHelper.convServiceType(${service.type}, ${rosParam})} | ${service.varCallbackName} | ${service.docDescription} |
+#end
+Useful commands:
+
+```bash
+ros2 service list
+#foreach($service in ${rosParam.serviceClients})
+ros2 service type ${service.name}
+#end
+#foreach($service in ${rosParam.serviceServers})
+ros2 service type ${service.name}
+${sharp} ros2 service call ${service.name} ${tmpltHelper.convServiceType(${service.type}, ${rosParam})} '<yaml-request>'
+#end
+```
+#end
+
+${sharp}${sharp} Actions
+
+#if( ${rosParam.actionClients.size()}==0 && ${rosParam.actionServers.size()}==0 )
+None.
+#else
+| Role | Name | Type | Callback Base | Summary |
+| --- | --- | --- | --- | --- |
+#foreach($action in ${rosParam.actionClients})
+| Client | ${action.name} | ${tmpltHelper.convActionType(${action.type}, ${rosParam})} | ${action.callbackName} | ${action.docDescription} |
+#end
+#foreach($action in ${rosParam.actionServers})
+| Server | ${action.name} | ${tmpltHelper.convActionType(${action.type}, ${rosParam})} | ${action.callbackName} | ${action.docDescription} |
+#end
+Useful commands:
+
+```bash
+ros2 action list
+#foreach($action in ${rosParam.actionClients})
+ros2 action info ${action.name}
+#end
+#foreach($action in ${rosParam.actionServers})
+ros2 action info ${action.name}
+${sharp} ros2 action send_goal ${action.name} ${tmpltHelper.convActionType(${action.type}, ${rosParam})} '<yaml-goal>' --feedback
+#end
+```
+#end
+#if( ${rosParam.actionClients.size()}>0 )
+${sharp}${sharp} Action Client Note
+
+Action Client helper functions such as `send_<action_name>_goal()` are not
+called automatically. Call them from a timer, topic callback, service callback,
+or other user-defined logic when the node should send a goal.
+
+#end
+
+${sharp}${sharp} Parameters
+
+#if( ${rosParam.parameters.size()}==0 )
+None.
+
+This package does not define user parameters.
+
+#else
+| Name | Type | Default | Min | Max | Step | ReadOnly | Summary |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+#foreach($param in ${rosParam.parameters})
+| ${param.name} | ${param.type} | ${param.defaultValue} | ${tmpltHelper.convZero(${param.min})} | ${tmpltHelper.convZero(${param.max})} | ${tmpltHelper.convZero(${param.step})} | ${param.readOnly} | ${param.docDescription} |
+#end
+
+Parameter values are generated in `config/params.yaml`.
+
+`ReadOnly=true` is generated as ROS 2 `ParameterDescriptor.read_only`. This marks
+the parameter as read-only after declaration. `min`, `max`, and `step` are
+preserved as ROS Profile / documentation information only. They are not used for
+automatic runtime checks in the generated node. If the node must reject
+out-of-range values, implement the required validation manually in
+`on_set_parameters()`.
+
+Useful commands:
+
+```bash
+ros2 param list /${rosParam.nodeName}
+ros2 param dump /${rosParam.nodeName}
+# ros2 param set /${rosParam.nodeName} <parameter_name> <value>
+```
+#end
+
+${sharp}${sharp} Timers
+
+#if( ${rosParam.timers.size()}==0 )
+None.
+#else
+| Name | Period | Callback | Description |
+| --- | --- | --- | --- |
+#foreach($timer in ${rosParam.timers})
+| ${timer.name} | ${timer.rate} sec | ${timer.callBack} | ${timer.description} |
+#end
+
+Timers are created during `on_configure`, started during `on_activate`, and stopped during `on_deactivate`.
+#end
+
+${sharp}${sharp} Manual Editing Guide
+
+- Add topic receive logic in generated subscriber callbacks.
+- Add publish logic after the lifecycle node is active. Lifecycle publishers should publish after activation.
+- Add service server behavior in generated service callback functions.
+- Fill service client request fields before calling the generated client helper.
+- Fill action goal, feedback, and result fields according to the selected action type.
+- Add timer behavior in generated timer callbacks.
+- Keep reusable helper functions near the generated callback that uses them, or add a clearly named user helper section.
+
+${sharp}${sharp} Quick Evaluation Checklist
+
+```bash
+colcon build
+source install/setup.bash
+ros2 launch ${rosParam.packageName} ${rosParam.nodeName}.launch.py
+ros2 lifecycle set /${rosParam.nodeName} configure
+ros2 lifecycle set /${rosParam.nodeName} activate
+```
+#if( ${rosParam.docReference.length()} > 0 )
+${sharp}${sharp} References
+
+${rosParam.docReference}
+
+#end

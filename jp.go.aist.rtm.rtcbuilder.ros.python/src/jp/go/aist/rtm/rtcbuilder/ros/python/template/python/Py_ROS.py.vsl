@@ -1,0 +1,482 @@
+#if( ${rosParam.isDocExist()} )
+"""
+ @file ${rosParam.nodeName}.py
+ @brief ${rosParam.description}
+ @author ${rosParam.maintainer} <${rosParam.contactAddress}>
+ ${rosParam.docCreator}
+"""
+
+#end
+import rclpy
+
+#foreach($topic in ${rosParam.topicPublishes})
+from ${helperPy.getTypePackage(${topic.messageType}, ${rosParam})} import ${helperPy.getTypeName(${topic.messageType})}
+#end
+#if( ${rosParam.parameters.size()}>0 )
+from rcl_interfaces.msg import ParameterDescriptor, SetParametersResult
+#end
+#if( ${rosParam.actionClients.size()}>0 )
+${helperPy.convActionImport(${rosParam})}
+from rclpy.action import ActionClient
+#end
+#if( ${rosParam.actionServers.size()}>0 )
+${helperPy.convActionImport(${rosParam})}
+from rclpy.action import ActionServer, CancelResponse, GoalResponse
+from rclpy.callback_groups import ReentrantCallbackGroup
+#end
+from rclpy.executors import MultiThreadedExecutor
+from rclpy.lifecycle import LifecycleNode, State, TransitionCallbackReturn
+#if( ${rosParam.topicPublishes.size()}>0 )
+from rclpy.qos import QoSHistoryPolicy, QoSProfile, QoSReliabilityPolicy
+#end
+#foreach($topic in ${helperPy.getTopicTypesSubscribe(${rosParam})})
+from ${helperPy.getTypePackage(${topic}, ${rosParam})} import ${helperPy.getTypeName(${topic})}
+#end
+#if( ${rosParam.serviceClients.size()}>0 || ${rosParam.serviceServers.size()}>0 )
+${helperPy.convServiceImport(${rosParam})}
+#end
+
+#if( ${rosParam.isDocExist()} )
+${sharp}${sharp}
+${sharp} @class ${rosParam.className}
+${sharp} @brief ${rosParam.description}
+${sharp} 
+${sharp} ${rosParam.docInOut}
+${sharp} 
+${sharp} ${rosParam.docAlgorithm}
+${sharp} 
+${sharp} ${rosParam.docReference}
+${sharp} 
+${sharp} 
+#end
+
+class ${rosParam.className}(LifecycleNode):
+    def __init__(self, node_name: str, **kwargs):
+        super().__init__(node_name, **kwargs)
+        self.get_logger().info("[Constructor] Node created.")
+#foreach($topic in ${rosParam.topicPublishes})
+        self.${topic.name}_publisher = None
+#end
+#foreach($topic in ${rosParam.topicSubscribes})
+        self.${topic.name}_sub = None
+#end
+#foreach($service in ${rosParam.serviceClients})
+        self.${service.varCallbackName} = None
+#end
+#foreach($service in ${rosParam.serviceServers})
+        self.${service.name}_srv = None
+#end
+#foreach($action in ${rosParam.actionClients})
+        self.${action.name}_client = None
+#end
+#foreach($action in ${rosParam.actionServers})
+        self.${action.name}_server = None
+#end
+#if( ${rosParam.timers.size()}>0 )
+#foreach($timer in ${rosParam.timers})
+        self._${timer.name} = None
+#end
+#end
+#if( ${rosParam.parameters.size()}>0 )
+        self._declare_parameters()
+#end
+
+#if( ${rosParam.parameters.size()}>0 )
+    ${sharp} ============================================================
+    ${sharp} Parameter handling
+    ${sharp} ============================================================
+
+    def _declare_parameters(self):
+#foreach($param in ${rosParam.parameters})
+#if( ${param.isDocExist()} )
+        """
+        ${param.docDescription}
+         - Name: ${param.docDataname}
+         - DefaultValue: ${param.docDefault}
+         - Unit: ${param.docUnit}
+         - Range: ${param.docRange}
+         - Constraint: ${param.docConstraint}
+        """
+#end
+        desc_${param.name} = ParameterDescriptor(description='${param.docDescription}'#if(${param.readOnly}), read_only=True#end)
+        self.declare_parameter('${param.name}', ${helperPy.convDefault(${param})}, desc_${param.name})
+#end
+        self.add_on_set_parameters_callback(self._on_set_parameters)
+
+    def _on_set_parameters(self, params):
+        for param in params:
+#foreach($param in ${rosParam.parameters})
+            if param.name == '${param.name}':
+                ${sharp} TODO: Update internal state when this parameter changes.
+                ${sharp} Note: min / max / step are documentation metadata only. Add explicit validation here if needed.
+                value = param.value
+                ${sharp} TODO: Store the parameter value in member variables or runtime settings as needed.
+                _ = value
+#end
+        return SetParametersResult(successful=True, reason='')
+#end
+
+    ${sharp} ============================================================
+    ${sharp} Lifecycle callbacks
+    ${sharp} ============================================================
+
+#if( ${rosParam.isCallbackDocExist(0)} )
+    ${sharp}${sharp}
+    ${sharp} ${rosParam.getDocActionOverView(0)}
+    ${sharp}
+    ${sharp} @pre ${rosParam.getDocActionPreCondition(0)}
+    ${sharp} @post ${rosParam.getDocActionPostCondition(0)}
+    ${sharp}
+#end
+    def on_configure(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_configure] called.')
+        ${sharp} TODO: Implement initialization required for this lifecycle transition.
+#foreach($topic in ${rosParam.topicPublishes})
+#if( ${topic.isDocExist()} )
+        """
+        ${topic.docDescription}
+         - Type: ${topic.docType}
+         - Semantics: ${topic.docSemantics}
+	     - Unit: ${topic.docUnit}
+         - Operation Cycle: ${topic.docOccurrence}
+        """
+#end
+        ${sharp} Publish Topic: ${topic.name}
+        ${sharp} Type: ${helperPy.convTopicType(${topic.messageType}, ${rosParam})}
+        ${sharp} Description: ${topic.docDescription}
+        self.${topic.name}_publisher = self.create_lifecycle_publisher(${helperPy.getTypeName(${topic.messageType})}, '${topic.name}', QoSProfile(depth=${topic.depth}, reliability=QoSReliabilityPolicy.${helperPy.getReliableType(${topic.reliabilityType})}, history=QoSHistoryPolicy.${helperPy.getHistoryType(${topic.historyType})}))
+#end
+#foreach($topic in ${rosParam.topicSubscribes})
+#if( ${topic.isDocExist()} )
+        """
+        ${topic.docDescription}
+	     - Type: ${topic.docType}
+         - Semantics: ${topic.docSemantics}
+	     - Unit: ${topic.docUnit}
+         - Operation Cycle: ${topic.docOccurrence}
+        """
+#end
+        self.${topic.name}_sub = self.create_subscription(${helperPy.getTypeName(${topic.messageType})}, '${topic.name}', self.${topic.name}_callback, QoSProfile(depth=${topic.depth}, reliability=QoSReliabilityPolicy.${helperPy.getReliableType(${topic.reliabilityType})}, history=QoSHistoryPolicy.${helperPy.getHistoryType(${topic.historyType})}))
+#end
+#foreach($service in ${rosParam.serviceClients})
+#if( ${service.isDocExist()} )
+        """
+        ${service.docDescription}
+         - Argument: ${service.docArgument}
+         - Return: ${service.docReturn}
+        """
+#end
+        self.${service.varCallbackName} = self.create_client(${helperPy.getTypeName(${service.type})}, '${service.name}')
+#end
+#foreach($service in ${rosParam.serviceServers})
+#if( ${service.isDocExist()} )
+        """
+        ${service.docDescription}
+         - Argument: ${service.docArgument}
+         - Return: ${service.docReturn}
+        """
+#end
+        self.${service.name}_srv = self.create_service(${helperPy.getTypeName(${service.type})}, '${service.name}', self.handle_${service.varCallbackName})
+#end
+#foreach($action in ${rosParam.actionClients})
+#if( ${action.isDocExist()} )
+        """
+        ${action.docDescription}
+         - Goal: ${action.docGoal}
+         - Feedback: ${action.docFeedback}
+         - Result: ${action.docResult}
+        """
+#end
+        self.${action.name}_client = ActionClient(self, ${helperPy.capitalize(${action.name})}, '${action.name}')
+#end
+#foreach($action in ${rosParam.actionServers})
+        self._action_cb_group_${action.name} = ReentrantCallbackGroup()
+#if( ${action.isDocExist()} )
+        """
+        ${action.docDescription}
+         - Goal: ${action.docGoal}
+         - Feedback: ${action.docFeedback}
+         - Result: ${action.docResult}
+        """
+#end
+        self.${action.name}_server = ActionServer(self, ${helperPy.capitalize(${action.name})}, '${action.name}', execute_callback=self.execute_${action.name}, goal_callback=self.handle_goal_${action.name}, cancel_callback=self.handle_cancel_${action.name}, callback_group=self._action_cb_group_${action.name})
+#end
+#foreach($timer in ${rosParam.timers})
+        ${sharp} Timer: ${timer.name}
+        ${sharp} Period: ${timer.rate} sec
+        ${sharp} Callback: ${timer.callBack}()
+        ${sharp} Description: ${timer.description}
+        self._${timer.name} = self.create_timer(${timer.rate}, self.${timer.callBack})
+        self._${timer.name}.cancel()
+#end
+        return TransitionCallbackReturn.SUCCESS
+
+#if( ${rosParam.isCallbackDocExist(1)} )
+    ${sharp}${sharp}
+    ${sharp} ${rosParam.getDocActionOverView(1)}
+    ${sharp}
+    ${sharp} @pre ${rosParam.getDocActionPreCondition(1)}
+    ${sharp} @post ${rosParam.getDocActionPostCondition(1)}
+    ${sharp}
+#end
+    def on_activate(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_activate] called.')
+        ${sharp} TODO: Start processing required while the node is active.
+        super().on_activate(state)
+#foreach($timer in ${rosParam.timers})
+        if self._${timer.name} is not None:
+            self._${timer.name}.reset()
+#end
+        return TransitionCallbackReturn.SUCCESS
+
+#if( ${rosParam.isCallbackDocExist(2)} )
+    ${sharp}${sharp}
+    ${sharp} ${rosParam.getDocActionOverView(2)}
+    ${sharp}
+    ${sharp} @pre ${rosParam.getDocActionPreCondition(2)}
+    ${sharp} @post ${rosParam.getDocActionPostCondition(2)}
+    ${sharp}
+#end
+    def on_deactivate(self, state: State) -> TransitionCallbackReturn:
+        self.get_logger().info('[on_deactivate] called.')
+        ${sharp} TODO: Stop processing before returning to the inactive state.
+#foreach($timer in ${rosParam.timers})
+        if self._${timer.name} is not None:
+            self._${timer.name}.cancel()
+#end
+        super().on_deactivate(state)
+        return TransitionCallbackReturn.SUCCESS
+
+#if( ${rosParam.isCallbackDocExist(3)} )
+    ${sharp}${sharp}
+    ${sharp} ${rosParam.getDocActionOverView(3)}
+    ${sharp}
+    ${sharp} @pre ${rosParam.getDocActionPreCondition(3)}
+    ${sharp} @post ${rosParam.getDocActionPostCondition(3)}
+    ${sharp}
+#end
+#if(${rosParam.IsNotImplemented(3)})    ${sharp} Optional: on_cleanup. Uncomment this block to use it.
+#end
+   #if(${rosParam.IsNotImplemented(3)}) ${sharp}#end def on_cleanup(self, state: State) -> TransitionCallbackReturn:
+   #if(${rosParam.IsNotImplemented(3)}) ${sharp}#end     self.get_logger().info('[on_cleanup] called.')
+   #if(${rosParam.IsNotImplemented(3)}) ${sharp}#end     ${sharp} TODO: Release resources when the node is cleaned up.
+#foreach($timer in ${rosParam.timers})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self._${timer.name} is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.destroy_timer(self._${timer.name})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self._${timer.name} = None
+#end
+#foreach($topic in ${rosParam.topicPublishes})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self.${topic.name}_publisher is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.destroy_publisher(self.${topic.name}_publisher)
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${topic.name}_publisher = None
+#end
+#foreach($topic in ${rosParam.topicSubscribes})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self.${topic.name}_sub is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.destroy_subscription(self.${topic.name}_sub)
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${topic.name}_sub = None
+#end
+#foreach($service in ${rosParam.serviceClients})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self.${service.varCallbackName} is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.destroy_client(self.${service.varCallbackName})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${service.varCallbackName} = None
+#end
+#foreach($service in ${rosParam.serviceServers})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self.${service.name}_srv is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.destroy_service(self.${service.name}_srv)
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${service.name}_srv = None
+#end
+#foreach($action in ${rosParam.actionClients})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self.${action.name}_client is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${action.name}_client.destroy()
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${action.name}_client = None
+#end
+#foreach($action in ${rosParam.actionServers})
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    if self.${action.name}_server is not None:
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${action.name}_server.destroy()
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end        self.${action.name}_server = None
+#end
+    #if(${rosParam.IsNotImplemented(3)})${sharp} #end    return TransitionCallbackReturn.SUCCESS
+
+#if( ${rosParam.isCallbackDocExist(4)} )
+    ${sharp}${sharp}
+    ${sharp} ${rosParam.getDocActionOverView(4)}
+    ${sharp}
+    ${sharp} @pre ${rosParam.getDocActionPreCondition(4)}
+    ${sharp} @post ${rosParam.getDocActionPostCondition(4)}
+    ${sharp}
+#end
+#if(${rosParam.IsNotImplemented(4)})    ${sharp} Optional: on_shutdown. Uncomment this block to use it.
+#end
+   #if(${rosParam.IsNotImplemented(4)}) ${sharp}#end def on_shutdown(self, state: State) -> TransitionCallbackReturn:
+   #if(${rosParam.IsNotImplemented(4)}) ${sharp}#end     self.get_logger().info('[on_shutdown] called.')
+   #if(${rosParam.IsNotImplemented(4)}) ${sharp}#end     ${sharp} TODO: Implement shutdown handling.
+   #if(${rosParam.IsNotImplemented(4)}) ${sharp}#end     return TransitionCallbackReturn.SUCCESS
+
+#if( ${rosParam.isCallbackDocExist(5)} )
+    ${sharp}${sharp}
+    ${sharp} ${rosParam.getDocActionOverView(5)}
+    ${sharp}
+    ${sharp} @pre ${rosParam.getDocActionPreCondition(5)}
+    ${sharp} @post ${rosParam.getDocActionPostCondition(5)}
+    ${sharp}
+#end
+#if(${rosParam.IsNotImplemented(5)})    ${sharp} Optional: on_error. Uncomment this block to use it.
+#end
+   #if(${rosParam.IsNotImplemented(5)}) ${sharp}#end def on_error(self, state: State) -> TransitionCallbackReturn:
+   #if(${rosParam.IsNotImplemented(5)}) ${sharp}#end     self.get_logger().info('[on_error] called.')
+   #if(${rosParam.IsNotImplemented(5)}) ${sharp}#end     ${sharp} TODO: Implement error recovery or safe-stop handling.
+   #if(${rosParam.IsNotImplemented(5)}) ${sharp}#end     return TransitionCallbackReturn.SUCCESS
+
+#if( ${rosParam.topicSubscribes.size()}>0 )
+    ${sharp} ============================================================
+    ${sharp} Topic callbacks
+    ${sharp} ============================================================
+
+#foreach($topic in ${rosParam.topicSubscribes})
+    def ${topic.name}_callback(self, msg):
+        ${sharp} Subscribe Topic: ${topic.name}
+        ${sharp} Type: ${topic.messageType}
+        ${sharp} Description: ${topic.docDescription}
+        ${sharp} TODO: Use the received message to implement this node's behavior.
+        ${sharp} Note: This callback is called each time a message arrives on the subscribed topic.
+        pass
+#end
+#end
+
+#if( ${rosParam.serviceClients.size()}>0 ||${rosParam.serviceServers.size()}>0 )
+    ${sharp} ============================================================
+    ${sharp} Service callbacks and clients
+    ${sharp} ============================================================
+
+#foreach($service in ${rosParam.serviceClients})
+    def call_${service.name}(self):
+        ${sharp} Service Client: ${service.name}
+        ${sharp} Type: ${helperPy.convServiceType(${service.type}, ${rosParam})}
+        ${sharp} Description: ${service.docDescription}
+        ${sharp} Service Client helper: create a request and send it asynchronously to the server.
+        request = ${helperPy.getTypeName(${service.type})}.Request()
+
+        ${sharp} TODO: Call this helper at the appropriate time in your node logic.
+        ${sharp} TODO: Fill the request fields according to the selected service type.
+        ${sharp} Note: After filling the request, call_async() sends it to the service server.
+
+        return self.${service.varCallbackName}.call_async(request)
+#end
+
+#foreach($service in ${rosParam.serviceServers})
+    def handle_${service.name}(self, request, response):
+        ${sharp} Service Server: ${service.name}
+        ${sharp} Type: ${helperPy.convServiceType(${service.type}, ${rosParam})}
+        ${sharp} Description: ${service.docDescription}
+        ${sharp} TODO: Read the request and implement the service behavior.
+        ${sharp} TODO: Fill the response fields before returning.
+        return response
+#end
+#end
+
+#if( ${rosParam.actionClients.size()}>0 || ${rosParam.actionServers.size()}>0 )
+    ${sharp} ============================================================
+    ${sharp} Action callbacks and clients
+    ${sharp} ============================================================
+
+#foreach($action in ${rosParam.actionClients})
+    def send_${action.name}_goal(self):
+        ${sharp} Action Client: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        ${sharp} Action Client helper: create a goal and send it to the action server.
+        ${sharp} TODO: Call this goal-sending helper at the appropriate time in your node logic.
+        ${sharp} Note: Goal fields differ by action type, so this generator does not set concrete values.
+        ${sharp} TODO: Create a goal, configure response / feedback / result callbacks, and send it.
+        self.get_logger().warning('Goal send skeleton is disabled. Implement goal send code before use.')
+        return None
+
+    def ${action.name}_action_response(self, future):
+        ${sharp} Action Client: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        goal_handle = future.result()
+        if not goal_handle.accepted:
+            self.get_logger().error('Goal rejected')
+            return
+        result_future = goal_handle.get_result_async()
+        result_future.add_done_callback(self.${action.name}_action_result)
+
+    def ${action.name}_action_feedback(self, feedback_msg):
+        ${sharp} Action Client: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        ${sharp} TODO: Use feedback data as needed.
+        pass
+
+    def ${action.name}_action_result(self, future):
+        ${sharp} Action Client: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        ${sharp} TODO: Use result data as needed.
+        pass
+#end
+#foreach($action in ${rosParam.actionServers})
+    def handle_goal_${action.name}(self, goal_request):
+        ${sharp} Action Server: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        ${sharp} TODO: Decide whether this goal should be accepted.
+        return GoalResponse.ACCEPT
+
+    def handle_cancel_${action.name}(self, goal_handle):
+        ${sharp} Action Server: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        ${sharp} TODO: Decide whether this cancel request should be accepted.
+        return CancelResponse.ACCEPT
+
+    def execute_${action.name}(self, goal_handle):
+        ${sharp} Action Server: ${action.name}
+        ${sharp} Type: ${helperPy.convActionType(${action.type}, ${rosParam})}
+        ${sharp} Description: ${action.docDescription}
+        goal = goal_handle.request
+        result = ${helperPy.capitalize(${action.name})}.Result()
+
+        ${sharp} TODO: Read the goal and implement the action execution logic.
+        ${sharp} TODO: Set feedback and result fields as needed.
+        _ = goal
+
+        goal_handle.succeed()
+        return result
+#end
+#end
+
+#if( ${rosParam.timers.size()}>0 )
+    ${sharp} ============================================================
+    ${sharp} Timer callbacks
+    ${sharp} ============================================================
+
+#foreach($timer in ${rosParam.timers})
+    def ${timer.callBack}(self):
+        ${sharp} Timer: ${timer.name}
+        ${sharp} Period: ${timer.rate} sec
+        ${sharp} Callback: ${timer.callBack}()
+        ${sharp} Description: ${timer.description}
+        ${sharp} TODO: Implement the periodic behavior described above.
+        pass
+#end
+#end
+
+def main(args=None):
+    rclpy.init(args=args)
+    node_instance = ${rosParam.className}('${rosParam.nodeName}')
+    executor = MultiThreadedExecutor()
+    executor.add_node(node_instance)
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node_instance.destroy_node()
+        if rclpy.ok():
+            rclpy.shutdown()
+
+
+if __name__ == '__main__':
+    main()

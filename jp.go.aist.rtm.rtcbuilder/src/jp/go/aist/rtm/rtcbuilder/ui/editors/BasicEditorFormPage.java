@@ -188,10 +188,10 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 		createExportImportSection(toolkit, form);
 		//
 		managerList = RtcBuilderPlugin.getDefault().getLoader()
-				.getManagerList();
+				.getManagerList(IRtcBuilderConstants.MIDDLEWARE_RTM);
 		if (managerList != null) {
 			for (String key : RtcBuilderPlugin.getDefault().getLoader()
-					.getManagerKeyList()) {
+					.getManagerKeyList(IRtcBuilderConstants.MIDDLEWARE_RTM)) {
 				Button extRadio = createRadioCheckButton(toolkit, LangGroup,
 						key, SWT.RADIO);
 				extRadio.addSelectionListener(createLanguageRadioListner());
@@ -444,7 +444,7 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 				editor.addDefaultComboValue();
 				GuiRtcBuilder rtcBuilder = new GuiRtcBuilder();
 				List<GenerateManager> managerList = RtcBuilderPlugin
-						.getDefault().getLoader().getManagerList();
+						.getDefault().getLoader().getManagerList(IRtcBuilderConstants.MIDDLEWARE_RTM);
 				if (managerList != null) {
 					for (GenerateManager manager : managerList) {
 						rtcBuilder.addGenerateManager(manager);
@@ -509,7 +509,7 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 				//
 				editor.addDefaultComboValue();
 				GuiRtcBuilder rtcBuilder = new GuiRtcBuilder();
-				List<GenerateManager> managerList = RtcBuilderPlugin.getDefault().getLoader().getManagerList();
+				List<GenerateManager> managerList = RtcBuilderPlugin.getDefault().getLoader().getManagerList(IRtcBuilderConstants.MIDDLEWARE_RTM);
 				if (managerList != null) {
 					for (GenerateManager manager : managerList) {
 						rtcBuilder.addGenerateManager(manager);
@@ -667,7 +667,6 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 					LOGGER.error("Fail to save rtc-profile", e);
 				}
 			}
-
 		});
 	}
 
@@ -846,6 +845,7 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 			public void widgetSelected(SelectionEvent e) {
 				RestoreDialog dialog = new RestoreDialog(getSite().getShell());
 				dialog.setTargetProject(editor.getRtcParam().getOutputProject());
+				dialog.setTargetFile(IRtcBuilderConstants.DEFAULT_RTC_XML);
 				int ret = dialog.open();
 				if(ret != IDialogConstants.OK_ID) return;
 				
@@ -965,6 +965,7 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
         		ExportCreator export = new ExportCreator();
         		if(!export.canCreateProfileName(editor)) {
     				ExportDialog dialog = new ExportDialog(getSite().getShell());
+    				dialog.setTargetKind("RtcProfile");
     				int ret = dialog.open();
     				if(ret != IDialogConstants.OK_ID) return;
 
@@ -1053,6 +1054,7 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 			public void widgetSelected(SelectionEvent e) {
 				ImportExtension extension = getTargetImportExtension();
 				ImportDialog dialog = new ImportDialog(getSite().getShell());
+				dialog.setTargetKind("RtcProfile");
 				dialog.setExtension(extension);
 				int ret = dialog.open();
 				if(ret != IDialogConstants.OK_ID) return;
@@ -1172,7 +1174,6 @@ public class BasicEditorFormPage extends AbstractEditorFormPage {
 				extractDataTypes();
 				load();
 				//
-//				editor.getRtcParam().resetUpdated();
 				editor.updateDirty();
 			}
 		});

@@ -238,10 +238,20 @@ public class TargetEnvironment {
         this.cpuOther = value;
     }
 
-    public void setLibraries(List<Library> list) {
+    public boolean isNull() {
+        if(osVersions != null) return false;
+        if(cpus != null) return false;
+        if(libraries != null) return false;
+        if(langVersion != null) return false;
+        if(os != null) return false;
+        if(other != null) return false;
+        if(cpuOther != null) return false;
+        return true;
     }
-    public void setCpus(List<String> ist) {
-    }
-    public void setOsVersions(List<String> list) {
-    }
+//    public void setLibraries(List<Library> list) {
+//    }
+//    public void setCpus(List<String> ist) {
+//    }
+//    public void setOsVersions(List<String> list) {
+//    }
 }

@@ -1,0 +1,62 @@
+pose_controller_node:
+  ros__parameters:
+    # Parameter: linear_gain
+    # Type: double
+    # Description: Proportional gain for linear velocity control.
+    # Min: 0.0
+    # Max: 10.0
+    # Step: 0.1
+    linear_gain: 1.0
+
+    # Parameter: angular_gain
+    # Type: double
+    # Description: Proportional gain for angular velocity control.
+    # Min: 0.0
+    # Max: 10.0
+    # Step: 0.1
+    angular_gain: 2.0
+
+    # Parameter: max_linear_speed
+    # Type: double
+    # Description: Maximum commanded linear velocity.
+    # Min: 0.0
+    # Max: 2.0
+    # Step: 0.1
+    max_linear_speed: 0.5
+
+    # Parameter: max_angular_speed
+    # Type: double
+    # Description: Maximum commanded angular velocity.
+    # Min: 0.0
+    # Max: 5.0
+    # Step: 0.1
+    max_angular_speed: 1.0
+
+    # Parameter: goal_tolerance
+    # Type: double
+    # Description: Position tolerance used to determine goal completion.
+    # Min: 0.001
+    # Max: 1.0
+    # Step: 0.01
+    goal_tolerance: 0.05
+
+    # Parameter: yaw_tolerance
+    # Type: double
+    # Description: Yaw tolerance used to determine final orientation completion.
+    # Min: 0.001
+    # Max: 3.14
+    # Step: 0.01
+    yaw_tolerance: 0.05
+
+    # Parameter: odom_timeout_sec
+    # Type: double
+    # Description: Maximum allowed age of odometry data before stopping the robot.
+    # Min: 0.05
+    # Max: 10.0
+    # Step: 0.05
+    odom_timeout_sec: 0.5
+
+    # Parameter: control_enabled
+    # Type: bool
+    # Description: Enable or disable velocity control.
+    control_enabled: true

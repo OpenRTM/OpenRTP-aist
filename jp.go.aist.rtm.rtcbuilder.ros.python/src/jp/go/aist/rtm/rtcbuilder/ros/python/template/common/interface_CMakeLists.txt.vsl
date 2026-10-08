@@ -1,0 +1,39 @@
+cmake_minimum_required(VERSION 3.8)
+project(${rosParam.packageName}_interfaces)
+
+#if( ${rosParam.extMsgFiles.size()}>0 ||${rosParam.extSrvFiles.size()}>0 || ${rosParam.extActionFiles.size()}>0)
+${sharp} Core dependencies
+#end
+find_package(ament_cmake REQUIRED)
+
+#if( ${rosParam.extMsgFiles.size()}>0 ||${rosParam.extSrvFiles.size()}>0 || ${rosParam.extActionFiles.size()}>0)
+find_package(rosidl_default_generators REQUIRED)
+
+${sharp} Custom interface dependencies
+find_package(builtin_interfaces REQUIRED)
+find_package(std_msgs REQUIRED)
+
+${sharp} Action interface dependencies
+find_package(action_msgs REQUIRED)
+rosidl_generate_interfaces(${PROJECT_NAME}
+#foreach($file in ${rosParam.extMsgFiles})
+  "msg/${file}"
+#end
+#foreach($file in ${rosParam.extSrvFiles})
+  "srv/${file}"
+#end
+#foreach($file in ${rosParam.extActionFiles})
+  "action/${file}"
+#end
+  DEPENDENCIES builtin_interfaces std_msgs action_msgs
+)
+#else
+${sharp} Enable rosidl generation after adding custom interfaces.
+${sharp} find_package(rosidl_default_generators REQUIRED)
+${sharp} ament_export_dependencies(rosidl_default_runtime)
+#end
+
+install(DIRECTORY msg srv action DESTINATION share/${PROJECT_NAME})
+install(FILES LICENSE README.md DESTINATION share/${PROJECT_NAME})
+
+ament_package()
